@@ -479,7 +479,8 @@ lung_cancer.head()
 
 ```python
 ##################################
-# Performing a general exploration of the numeric variables
+# Performing a general exploration 
+# of the numeric variables
 ##################################
 print('Numeric Variable Summary:')
 display(lung_cancer.describe(include='number').transpose())
@@ -537,13 +538,14 @@ display(lung_cancer.describe(include='number').transpose())
 
 ```python
 ##################################
-# Performing a general exploration of the object variables
+# Performing a general exploration 
+# of the object and categorical variables
 ##################################
-print('Object Variable Summary:')
-display(lung_cancer.describe(include='object').transpose())
+print('Categorical Variable Summary:')
+display(lung_cancer.describe(include=['category','object']).transpose())
 ```
 
-    Object Variable Summary:
+    Categorical Variable Summary:
     
 
 
@@ -572,6 +574,13 @@ display(lung_cancer.describe(include='object').transpose())
     </tr>
   </thead>
   <tbody>
+    <tr>
+      <th>GENDER</th>
+      <td>309</td>
+      <td>2</td>
+      <td>M</td>
+      <td>162</td>
+    </tr>
     <tr>
       <th>SMOKING</th>
       <td>309</td>
@@ -662,56 +671,6 @@ display(lung_cancer.describe(include='object').transpose())
       <td>2</td>
       <td>Present</td>
       <td>172</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-
-
-
-```python
-##################################
-# Performing a general exploration of the object variables
-##################################
-print('Categorical Variable Summary:')
-display(lung_cancer.describe(include='category').transpose())
-```
-
-    Categorical Variable Summary:
-    
-
-
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>count</th>
-      <th>unique</th>
-      <th>top</th>
-      <th>freq</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>GENDER</th>
-      <td>309</td>
-      <td>2</td>
-      <td>M</td>
-      <td>162</td>
     </tr>
     <tr>
       <th>LUNG_CANCER</th>
@@ -1178,6 +1137,687 @@ print('Number of Rows with Missing Data:',str(len(all_row_quality_summary[all_ro
 
     Number of Rows with Missing Data: 0
     
+
+
+```python
+##################################
+# Formulating the dataset
+# with numeric columns only
+##################################
+lung_cancer_numeric = lung_cancer.select_dtypes(include=['number','int'])
+```
+
+
+```python
+##################################
+# Gathering the variable names for each numeric column
+##################################
+numeric_variable_name_list = lung_cancer_numeric.columns
+```
+
+
+```python
+##################################
+# Gathering the minimum value for each numeric column
+##################################
+numeric_minimum_list = lung_cancer_numeric.min()
+```
+
+
+```python
+##################################
+# Gathering the mean value for each numeric column
+##################################
+numeric_mean_list = lung_cancer_numeric.mean()
+```
+
+
+```python
+##################################
+# Gathering the median value for each numeric column
+##################################
+numeric_median_list = lung_cancer_numeric.median()
+```
+
+
+```python
+##################################
+# Gathering the maximum value for each numeric column
+##################################
+numeric_maximum_list = lung_cancer_numeric.max()
+```
+
+
+```python
+##################################
+# Gathering the first mode values for each numeric column
+##################################
+numeric_first_mode_list = [lung_cancer[x].value_counts(dropna=True).index.tolist()[0] for x in lung_cancer_numeric]
+```
+
+
+```python
+##################################
+# Gathering the second mode values for each numeric column
+##################################
+numeric_second_mode_list = [lung_cancer[x].value_counts(dropna=True).index.tolist()[1] for x in lung_cancer_numeric]
+```
+
+
+```python
+##################################
+# Gathering the count of first mode values for each numeric column
+##################################
+numeric_first_mode_count_list = [lung_cancer_numeric[x].isin([lung_cancer[x].value_counts(dropna=True).index.tolist()[0]]).sum() for x in lung_cancer_numeric]
+```
+
+
+```python
+##################################
+# Gathering the count of second mode values for each numeric column
+##################################
+numeric_second_mode_count_list = [lung_cancer_numeric[x].isin([lung_cancer[x].value_counts(dropna=True).index.tolist()[1]]).sum() for x in lung_cancer_numeric]
+```
+
+
+```python
+##################################
+# Gathering the first mode to second mode ratio for each numeric column
+##################################
+numeric_first_second_mode_ratio_list = map(truediv, numeric_first_mode_count_list, numeric_second_mode_count_list)
+```
+
+
+```python
+##################################
+# Gathering the count of unique values for each numeric column
+##################################
+numeric_unique_count_list = lung_cancer_numeric.nunique(dropna=True)
+```
+
+
+```python
+##################################
+# Gathering the number of observations for each numeric column
+##################################
+numeric_row_count_list = list([len(lung_cancer_numeric)] * len(lung_cancer_numeric.columns))
+```
+
+
+```python
+##################################
+# Gathering the unique to count ratio for each numeric column
+##################################
+numeric_unique_count_ratio_list = map(truediv, numeric_unique_count_list, numeric_row_count_list)
+```
+
+
+```python
+##################################
+# Gathering the skewness value for each numeric column
+##################################
+numeric_skewness_list = lung_cancer_numeric.skew()
+```
+
+
+```python
+##################################
+# Gathering the kurtosis value for each numeric column
+##################################
+numeric_kurtosis_list = lung_cancer_numeric.kurtosis()
+```
+
+
+```python
+numeric_column_quality_summary = pd.DataFrame(zip(numeric_variable_name_list,
+                                                numeric_minimum_list,
+                                                numeric_mean_list,
+                                                numeric_median_list,
+                                                numeric_maximum_list,
+                                                numeric_first_mode_list,
+                                                numeric_second_mode_list,
+                                                numeric_first_mode_count_list,
+                                                numeric_second_mode_count_list,
+                                                numeric_first_second_mode_ratio_list,
+                                                numeric_unique_count_list,
+                                                numeric_row_count_list,
+                                                numeric_unique_count_ratio_list,
+                                                numeric_skewness_list,
+                                                numeric_kurtosis_list), 
+                                        columns=['Numeric.Column.Name',
+                                                 'Minimum',
+                                                 'Mean',
+                                                 'Median',
+                                                 'Maximum',
+                                                 'First.Mode',
+                                                 'Second.Mode',
+                                                 'First.Mode.Count',
+                                                 'Second.Mode.Count',
+                                                 'First.Second.Mode.Ratio',
+                                                 'Unique.Count',
+                                                 'Row.Count',
+                                                 'Unique.Count.Ratio',
+                                                 'Skewness',
+                                                 'Kurtosis'])
+display(numeric_column_quality_summary)
+```
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Numeric.Column.Name</th>
+      <th>Minimum</th>
+      <th>Mean</th>
+      <th>Median</th>
+      <th>Maximum</th>
+      <th>First.Mode</th>
+      <th>Second.Mode</th>
+      <th>First.Mode.Count</th>
+      <th>Second.Mode.Count</th>
+      <th>First.Second.Mode.Ratio</th>
+      <th>Unique.Count</th>
+      <th>Row.Count</th>
+      <th>Unique.Count.Ratio</th>
+      <th>Skewness</th>
+      <th>Kurtosis</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>AGE</td>
+      <td>21</td>
+      <td>62.673139</td>
+      <td>62.0</td>
+      <td>87</td>
+      <td>64</td>
+      <td>63</td>
+      <td>20</td>
+      <td>19</td>
+      <td>1.052632</td>
+      <td>39</td>
+      <td>309</td>
+      <td>0.126214</td>
+      <td>-0.395086</td>
+      <td>1.746558</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+```python
+##################################
+# Counting the number of numeric columns
+# with First.Second.Mode.Ratio > 5.00
+##################################
+len(numeric_column_quality_summary[(numeric_column_quality_summary['First.Second.Mode.Ratio']>5)])
+```
+
+
+
+
+    0
+
+
+
+
+```python
+##################################
+# Counting the number of numeric columns
+# with Unique.Count.Ratio > 10.00
+##################################
+len(numeric_column_quality_summary[(numeric_column_quality_summary['Unique.Count.Ratio']>10)])
+```
+
+
+
+
+    0
+
+
+
+
+```python
+##################################
+# Counting the number of numeric columns
+# with Skewness > 3.00 or Skewness < -3.00
+##################################
+len(numeric_column_quality_summary[(numeric_column_quality_summary['Skewness']>3) | (numeric_column_quality_summary['Skewness']<(-3))])
+```
+
+
+
+
+    0
+
+
+
+
+```python
+##################################
+# Formulating the dataset
+# with object or categorical column only
+##################################
+lung_cancer_object = lung_cancer.select_dtypes(include=['object','category'])
+```
+
+
+```python
+##################################
+# Gathering the variable names for the object or categorical column
+##################################
+categorical_variable_name_list = lung_cancer_object.columns
+```
+
+
+```python
+##################################
+# Gathering the first mode values for the object or categorical column
+##################################
+categorical_first_mode_list = [lung_cancer[x].value_counts().index.tolist()[0] for x in lung_cancer_object]
+```
+
+
+```python
+##################################
+# Gathering the second mode values for each object or categorical column
+##################################
+categorical_second_mode_list = [lung_cancer[x].value_counts().index.tolist()[1] for x in lung_cancer_object]
+```
+
+
+```python
+##################################
+# Gathering the count of first mode values for each object or categorical column
+##################################
+categorical_first_mode_count_list = [lung_cancer_object[x].isin([lung_cancer[x].value_counts(dropna=True).index.tolist()[0]]).sum() for x in lung_cancer_object]
+```
+
+
+```python
+##################################
+# Gathering the count of second mode values for each object or categorical column
+##################################
+categorical_second_mode_count_list = [lung_cancer_object[x].isin([lung_cancer[x].value_counts(dropna=True).index.tolist()[1]]).sum() for x in lung_cancer_object]
+```
+
+
+```python
+##################################
+# Gathering the first mode to second mode ratio for each object or categorical column
+##################################
+categorical_first_second_mode_ratio_list = map(truediv, categorical_first_mode_count_list, categorical_second_mode_count_list)
+```
+
+
+```python
+##################################
+# Gathering the count of unique values for each object or categorical column
+##################################
+categorical_unique_count_list = lung_cancer_object.nunique(dropna=True)
+```
+
+
+```python
+##################################
+# Gathering the number of observations for each object or categorical column
+##################################
+categorical_row_count_list = list([len(lung_cancer_object)] * len(lung_cancer_object.columns))
+```
+
+
+```python
+##################################
+# Gathering the unique to count ratio for each object or categorical column
+##################################
+categorical_unique_count_ratio_list = map(truediv, categorical_unique_count_list, categorical_row_count_list)
+```
+
+
+```python
+categorical_column_quality_summary = pd.DataFrame(zip(categorical_variable_name_list,
+                                                 categorical_first_mode_list,
+                                                 categorical_second_mode_list,
+                                                 categorical_first_mode_count_list,
+                                                 categorical_second_mode_count_list,
+                                                 categorical_first_second_mode_ratio_list,
+                                                 categorical_unique_count_list,
+                                                 categorical_row_count_list,
+                                                 categorical_unique_count_ratio_list), 
+                                        columns=['Categorical.Column.Name',
+                                                 'First.Mode',
+                                                 'Second.Mode',
+                                                 'First.Mode.Count',
+                                                 'Second.Mode.Count',
+                                                 'First.Second.Mode.Ratio',
+                                                 'Unique.Count',
+                                                 'Row.Count',
+                                                 'Unique.Count.Ratio'])
+display(categorical_column_quality_summary)
+```
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Categorical.Column.Name</th>
+      <th>First.Mode</th>
+      <th>Second.Mode</th>
+      <th>First.Mode.Count</th>
+      <th>Second.Mode.Count</th>
+      <th>First.Second.Mode.Ratio</th>
+      <th>Unique.Count</th>
+      <th>Row.Count</th>
+      <th>Unique.Count.Ratio</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>GENDER</td>
+      <td>M</td>
+      <td>F</td>
+      <td>162</td>
+      <td>147</td>
+      <td>1.102041</td>
+      <td>2</td>
+      <td>309</td>
+      <td>0.006472</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>SMOKING</td>
+      <td>Present</td>
+      <td>Absent</td>
+      <td>174</td>
+      <td>135</td>
+      <td>1.288889</td>
+      <td>2</td>
+      <td>309</td>
+      <td>0.006472</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>YELLOW_FINGERS</td>
+      <td>Present</td>
+      <td>Absent</td>
+      <td>176</td>
+      <td>133</td>
+      <td>1.323308</td>
+      <td>2</td>
+      <td>309</td>
+      <td>0.006472</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>ANXIETY</td>
+      <td>Absent</td>
+      <td>Present</td>
+      <td>155</td>
+      <td>154</td>
+      <td>1.006494</td>
+      <td>2</td>
+      <td>309</td>
+      <td>0.006472</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>PEER_PRESSURE</td>
+      <td>Present</td>
+      <td>Absent</td>
+      <td>155</td>
+      <td>154</td>
+      <td>1.006494</td>
+      <td>2</td>
+      <td>309</td>
+      <td>0.006472</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>CHRONIC DISEASE</td>
+      <td>Present</td>
+      <td>Absent</td>
+      <td>156</td>
+      <td>153</td>
+      <td>1.019608</td>
+      <td>2</td>
+      <td>309</td>
+      <td>0.006472</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>FATIGUE</td>
+      <td>Present</td>
+      <td>Absent</td>
+      <td>208</td>
+      <td>101</td>
+      <td>2.059406</td>
+      <td>2</td>
+      <td>309</td>
+      <td>0.006472</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>ALLERGY</td>
+      <td>Present</td>
+      <td>Absent</td>
+      <td>172</td>
+      <td>137</td>
+      <td>1.255474</td>
+      <td>2</td>
+      <td>309</td>
+      <td>0.006472</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>WHEEZING</td>
+      <td>Present</td>
+      <td>Absent</td>
+      <td>172</td>
+      <td>137</td>
+      <td>1.255474</td>
+      <td>2</td>
+      <td>309</td>
+      <td>0.006472</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>ALCOHOL CONSUMING</td>
+      <td>Present</td>
+      <td>Absent</td>
+      <td>172</td>
+      <td>137</td>
+      <td>1.255474</td>
+      <td>2</td>
+      <td>309</td>
+      <td>0.006472</td>
+    </tr>
+    <tr>
+      <th>10</th>
+      <td>COUGHING</td>
+      <td>Present</td>
+      <td>Absent</td>
+      <td>179</td>
+      <td>130</td>
+      <td>1.376923</td>
+      <td>2</td>
+      <td>309</td>
+      <td>0.006472</td>
+    </tr>
+    <tr>
+      <th>11</th>
+      <td>SHORTNESS OF BREATH</td>
+      <td>Present</td>
+      <td>Absent</td>
+      <td>198</td>
+      <td>111</td>
+      <td>1.783784</td>
+      <td>2</td>
+      <td>309</td>
+      <td>0.006472</td>
+    </tr>
+    <tr>
+      <th>12</th>
+      <td>SWALLOWING DIFFICULTY</td>
+      <td>Absent</td>
+      <td>Present</td>
+      <td>164</td>
+      <td>145</td>
+      <td>1.131034</td>
+      <td>2</td>
+      <td>309</td>
+      <td>0.006472</td>
+    </tr>
+    <tr>
+      <th>13</th>
+      <td>CHEST PAIN</td>
+      <td>Present</td>
+      <td>Absent</td>
+      <td>172</td>
+      <td>137</td>
+      <td>1.255474</td>
+      <td>2</td>
+      <td>309</td>
+      <td>0.006472</td>
+    </tr>
+    <tr>
+      <th>14</th>
+      <td>LUNG_CANCER</td>
+      <td>YES</td>
+      <td>NO</td>
+      <td>270</td>
+      <td>39</td>
+      <td>6.923077</td>
+      <td>2</td>
+      <td>309</td>
+      <td>0.006472</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+```python
+##################################
+# Counting the number of object or categorical columns
+# with First.Second.Mode.Ratio > 5.00
+##################################
+len(categorical_column_quality_summary[(categorical_column_quality_summary['First.Second.Mode.Ratio']>5)])
+```
+
+
+
+
+    1
+
+
+
+
+```python
+##################################
+# Identifying the object or categorical columns
+# with First.Second.Mode.Ratio > 5.00
+##################################
+display(categorical_column_quality_summary[(categorical_column_quality_summary['First.Second.Mode.Ratio']>5)].sort_values(by=['First.Second.Mode.Ratio'], ascending=False))
+```
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Categorical.Column.Name</th>
+      <th>First.Mode</th>
+      <th>Second.Mode</th>
+      <th>First.Mode.Count</th>
+      <th>Second.Mode.Count</th>
+      <th>First.Second.Mode.Ratio</th>
+      <th>Unique.Count</th>
+      <th>Row.Count</th>
+      <th>Unique.Count.Ratio</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>14</th>
+      <td>LUNG_CANCER</td>
+      <td>YES</td>
+      <td>NO</td>
+      <td>270</td>
+      <td>39</td>
+      <td>6.923077</td>
+      <td>2</td>
+      <td>309</td>
+      <td>0.006472</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+```python
+##################################
+# Counting the number of object or categorical columns
+# with Unique.Count.Ratio > 10.00
+##################################
+len(categorical_column_quality_summary[(categorical_column_quality_summary['Unique.Count.Ratio']>10)])
+```
+
+
+
+
+    0
+
+
 
 
 ```python
