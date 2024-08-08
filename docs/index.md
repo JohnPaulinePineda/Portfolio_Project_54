@@ -10,14 +10,6 @@
     * [1.2 Data Description](#1.2)
     * [1.3 Data Quality Assessment](#1.3)
     * [1.4 Data Preprocessing](#1.4)
-        * [1.4.1 Data Cleaning](#1.4.1)
-        * [1.4.2 Missing Data Imputation](#1.4.2)
-        * [1.4.3 Outlier Treatment](#1.4.3)
-        * [1.4.4 Collinearity](#1.4.4)
-        * [1.4.5 Shape Transformation](#1.4.5)
-        * [1.4.6 Centering and Scaling](#1.4.6)
-        * [1.4.7 Data Encoding](#1.4.7)
-        * [1.4.8 Preprocessed Data Description](#1.4.8)
     * [1.5 Data Exploration](#1.5)
         * [1.5.1 Exploratory Data Analysis](#1.5.1)
         * [1.5.2 Hypothesis Testing](#1.5.2)
@@ -58,6 +50,7 @@ from sklearn.linear_model import LinearRegression
 from sklearn.preprocessing import PowerTransformer
 from sklearn.preprocessing import StandardScaler
 from scipy import stats
+from scipy.stats import pointbiserialr
 
 from sklearn.linear_model import LogisticRegression
 from sklearn.tree import DecisionTreeClassifier
@@ -1818,6 +1811,552 @@ len(categorical_column_quality_summary[(categorical_column_quality_summary['Uniq
     0
 
 
+
+## 1.4. Data Preprocessing <a class="anchor" id="1.4"></a>
+
+
+```python
+##################################
+# Formulating the dataset
+# with numeric columns only
+##################################
+lung_cancer_numeric = lung_cancer.select_dtypes(include=['number','int'])
+```
+
+
+```python
+##################################
+# Gathering the variable names for each numeric column
+##################################
+numeric_variable_name_list = lung_cancer_numeric.columns
+```
+
+
+```python
+##################################
+# Gathering the skewness value for each numeric column
+##################################
+numeric_skewness_list = lung_cancer_numeric.skew()
+```
+
+
+```python
+##################################
+# Computing the interquartile range
+# for all columns
+##################################
+lung_cancer_numeric_q1 = lung_cancer_numeric.quantile(0.25)
+lung_cancer_numeric_q3 = lung_cancer_numeric.quantile(0.75)
+lung_cancer_numeric_iqr = lung_cancer_numeric_q3 - lung_cancer_numeric_q1
+```
+
+
+```python
+##################################
+# Gathering the outlier count for each numeric column
+# based on the interquartile range criterion
+##################################
+numeric_outlier_count_list = ((lung_cancer_numeric < (lung_cancer_numeric_q1 - 1.5 * lung_cancer_numeric_iqr)) | (lung_cancer_numeric > (lung_cancer_numeric_q3 + 1.5 * lung_cancer_numeric_iqr))).sum()
+```
+
+
+```python
+##################################
+# Gathering the number of observations for each column
+##################################
+numeric_row_count_list = list([len(lung_cancer_numeric)] * len(lung_cancer_numeric.columns))
+```
+
+
+```python
+##################################
+# Gathering the unique to count ratio for each categorical column
+##################################
+numeric_outlier_ratio_list = map(truediv, numeric_outlier_count_list, numeric_row_count_list)
+```
+
+
+```python
+##################################
+# Formulating the outlier summary
+# for all numeric columns
+##################################
+numeric_column_outlier_summary = pd.DataFrame(zip(numeric_variable_name_list,
+                                                  numeric_skewness_list,
+                                                  numeric_outlier_count_list,
+                                                  numeric_row_count_list,
+                                                  numeric_outlier_ratio_list), 
+                                        columns=['Numeric.Column.Name',
+                                                 'Skewness',
+                                                 'Outlier.Count',
+                                                 'Row.Count',
+                                                 'Outlier.Ratio'])
+display(numeric_column_outlier_summary)
+```
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Numeric.Column.Name</th>
+      <th>Skewness</th>
+      <th>Outlier.Count</th>
+      <th>Row.Count</th>
+      <th>Outlier.Ratio</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>AGE</td>
+      <td>-0.395086</td>
+      <td>2</td>
+      <td>309</td>
+      <td>0.006472</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+```python
+##################################
+# Formulating the individual boxplots
+# for all numeric columns
+##################################
+for column in lung_cancer_numeric:
+        plt.figure(figsize=(17,1))
+        sns.boxplot(data=lung_cancer_numeric, x=column)
+```
+
+
+    
+![png](output_77_0.png)
+    
+
+
+
+```python
+##################################
+# Creating a dataset copy and
+# converting all values to numeric
+# for correlation analysis
+##################################
+lung_cancer_correlation = lung_cancer.copy()
+lung_cancer_correlation_object = lung_cancer_correlation.iloc[:,2:15].columns
+lung_cancer_correlation[lung_cancer_correlation_object] = lung_cancer_correlation[lung_cancer_correlation_object].replace({'Absent': 0, 'Present': 1})
+lung_cancer_correlation = lung_cancer_correlation.drop(['GENDER','LUNG_CANCER'], axis=1)
+display(lung_cancer_correlation)
+```
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>AGE</th>
+      <th>SMOKING</th>
+      <th>YELLOW_FINGERS</th>
+      <th>ANXIETY</th>
+      <th>PEER_PRESSURE</th>
+      <th>CHRONIC DISEASE</th>
+      <th>FATIGUE</th>
+      <th>ALLERGY</th>
+      <th>WHEEZING</th>
+      <th>ALCOHOL CONSUMING</th>
+      <th>COUGHING</th>
+      <th>SHORTNESS OF BREATH</th>
+      <th>SWALLOWING DIFFICULTY</th>
+      <th>CHEST PAIN</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>69</td>
+      <td>0</td>
+      <td>1</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>74</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>59</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>1</td>
+      <td>1</td>
+      <td>0</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>63</td>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>63</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>1</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>304</th>
+      <td>56</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>305</th>
+      <td>70</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+      <td>0</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>306</th>
+      <td>58</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>307</th>
+      <td>67</td>
+      <td>1</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>1</td>
+      <td>0</td>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+      <td>0</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>308</th>
+      <td>62</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+    </tr>
+  </tbody>
+</table>
+<p>309 rows × 14 columns</p>
+</div>
+
+
+
+```python
+##################################
+# Initializing the correlation matrix
+##################################
+lung_cancer_correlation_matrix = pd.DataFrame(np.zeros((len(lung_cancer_correlation.columns), len(lung_cancer_correlation.columns))),
+                                              columns=lung_cancer_correlation.columns,
+                                              index=lung_cancer_correlation.columns)
+```
+
+
+```python
+##################################
+# Calculating different types
+# of correlation coefficients
+# per variable type
+##################################
+for i in range(len(lung_cancer_correlation.columns)):
+    for j in range(i, len(lung_cancer_correlation.columns)):
+        if i == j:
+            lung_cancer_correlation_matrix.iloc[i, j] = 1.0
+        else:
+            if lung_cancer_correlation.dtypes[i] == 'int64' and lung_cancer_correlation.dtypes[j] == 'int64':
+                # Pearson correlation for two continuous variables
+                corr = lung_cancer_correlation.iloc[:, i].corr(lung_cancer_correlation.iloc[:, j])
+            elif lung_cancer_correlation.dtypes[i] == 'int64' or lung_cancer_correlation.dtypes[j] == 'int64':
+                # Point-biserial correlation for one continuous and one binary variable
+                continuous_var = lung_cancer_correlation.iloc[:, i] if lung_cancer_correlation.dtypes[i] == 'int64' else lung_cancer_correlation.iloc[:, j]
+                binary_var = lung_cancer_correlation.iloc[:, j] if lung_cancer_correlation.dtypes[j] == 'int64' else lung_cancer_correlation.iloc[:, i]
+                corr, _ = pointbiserialr(continuous_var, binary_var)
+            else:
+                # Phi coefficient for two binary variables
+                corr = lung_cancer_correlation.iloc[:, i].corr(lung_cancer_correlation.iloc[:, j])
+            lung_cancer_correlation_matrix.iloc[i, j] = corr
+            lung_cancer_correlation_matrix.iloc[j, i] = corr
+```
+
+
+```python
+##################################
+# Plotting the correlation matrix
+# for all pairwise combinations
+# of numeric and categorical columns
+##################################
+plt.figure(figsize=(17, 8))
+sns.heatmap(lung_cancer_correlation_matrix, annot=True, cmap='coolwarm', vmin=-1, vmax=1)
+plt.show()
+```
+
+
+    
+![png](output_81_0.png)
+    
+
+
+## 1.5. Data Exploration <a class="anchor" id="1.5"></a>
+
+### 1.5.1 Exploratory Data Analysis <a class="anchor" id="1.5.1"></a>
+
+
+```python
+##################################
+# Segregating the target
+# and predictor variables
+##################################
+lung_cancer_predictors = lung_cancer.iloc[:,:-1].columns
+lung_cancer_predictors_numeric = lung_cancer.iloc[:,:-1].loc[:,lung_cancer.iloc[:,:-1].columns == 'AGE'].columns
+lung_cancer_predictors_categorical = lung_cancer.iloc[:,:-1].loc[:,lung_cancer.iloc[:,:-1].columns != 'AGE'].columns
+```
+
+
+```python
+##################################
+# Segregating the target variable
+# and numeric predictors
+##################################
+boxplot_y_variable = 'LUNG_CANCER'
+boxplot_x_variable = lung_cancer_predictors_numeric.values[0]
+```
+
+
+```python
+##################################
+# Evaluating the numeric predictors
+# against the target variable
+##################################
+plt.figure(figsize=(7, 5))
+plt.boxplot([group[boxplot_x_variable] for name, group in lung_cancer.groupby(boxplot_y_variable)])
+plt.title(f'{boxplot_y_variable} Versus {boxplot_x_variable}')
+plt.xlabel(boxplot_y_variable)
+plt.ylabel(boxplot_x_variable)
+plt.xticks(range(1, len(lung_cancer[boxplot_y_variable].unique()) + 1), ['No', 'Yes'])
+plt.show()
+```
+
+
+    
+![png](output_86_0.png)
+    
+
+
+
+```python
+##################################
+# Segregating the target variable
+# and categorical predictors
+##################################
+proportion_y_variables = lung_cancer_predictors_categorical
+proportion_x_variable = 'LUNG_CANCER'
+```
+
+
+```python
+##################################
+# Defining the number of 
+# rows and columns for the subplots
+##################################
+num_rows = 7
+num_cols = 2
+
+##################################
+# Formulating the subplot structure
+##################################
+fig, axes = plt.subplots(num_rows, num_cols, figsize=(15, 40))
+
+##################################
+# Flattening the multi-row and
+# multi-column axes
+##################################
+axes = axes.ravel()
+
+##################################
+# Formulating the individual stacked column plots
+# for all categorical columns
+##################################
+for i, y_variable in enumerate(proportion_y_variables):
+    ax = axes[i]
+    category_counts = lung_cancer.groupby([proportion_x_variable, y_variable]).size().unstack(fill_value=0)
+    category_proportions = category_counts.div(category_counts.sum(axis=1), axis=0)
+    category_proportions.plot(kind='bar', stacked=True, ax=ax)
+    ax.set_title(f'{proportion_x_variable} Versus {y_variable}')
+    ax.set_xlabel(proportion_x_variable)
+    ax.set_ylabel('PROPORTIONS')
+    ax.legend(loc="lower center")
+
+##################################
+# Adjusting the subplot layout
+##################################
+plt.tight_layout()
+
+##################################
+# Presenting the subplots
+##################################
+plt.show()
+```
+
+
+    
+![png](output_88_0.png)
+    
+
+
+### 1.5.2 Exploratory Data Analysis <a class="anchor" id="1.5.2"></a>
 
 
 ```python
