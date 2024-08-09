@@ -2360,6 +2360,217 @@ plt.show()
 
 
 ```python
+##################################
+# Computing the t-test 
+# statistic and p-values
+# between the target variable
+# and numeric predictor columns
+##################################
+lung_cancer_numeric_ttest_target = {}
+lung_cancer_numeric = lung_cancer.loc[:,(lung_cancer.columns == 'AGE') | (lung_cancer.columns == 'LUNG_CANCER')]
+lung_cancer_numeric_columns = lung_cancer_predictors_numeric
+for numeric_column in lung_cancer_numeric_columns:
+    group_0 = lung_cancer_numeric[lung_cancer_numeric.loc[:,'LUNG_CANCER']=='NO']
+    group_1 = lung_cancer_numeric[lung_cancer_numeric.loc[:,'LUNG_CANCER']=='YES']
+    lung_cancer_numeric_ttest_target['LUNG_CANCER_' + numeric_column] = stats.ttest_ind(
+        group_0[numeric_column], 
+        group_1[numeric_column], 
+        equal_var=True)
+```
+
+
+```python
+##################################
+# Formulating the pairwise ttest summary
+# between the target variable
+# and numeric predictor columns
+##################################
+lung_cancer_numeric_summary = lung_cancer_numeric.from_dict(lung_cancer_numeric_ttest_target, orient='index')
+lung_cancer_numeric_summary.columns = ['T.Test.Statistic', 'T.Test.PValue']
+display(lung_cancer_numeric_summary.sort_values(by=['T.Test.PValue'], ascending=True).head(len(lung_cancer_predictors_numeric)))
+```
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>T.Test.Statistic</th>
+      <th>T.Test.PValue</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>LUNG_CANCER_AGE</th>
+      <td>-1.573857</td>
+      <td>0.11655</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+```python
+lung_cancer_predictors_categorical
+```
+
+
+
+
+    Index(['GENDER', 'SMOKING', 'YELLOW_FINGERS', 'ANXIETY', 'PEER_PRESSURE',
+           'CHRONIC DISEASE', 'FATIGUE ', 'ALLERGY ', 'WHEEZING',
+           'ALCOHOL CONSUMING', 'COUGHING', 'SHORTNESS OF BREATH',
+           'SWALLOWING DIFFICULTY', 'CHEST PAIN'],
+          dtype='object')
+
+
+
+
+```python
+##################################
+# Computing the chisquare
+# statistic and p-values
+# between the target variable
+# and categorical predictor columns
+##################################
+lung_cancer_categorical_chisquare_target = {}
+lung_cancer_categorical = lung_cancer.loc[:,(lung_cancer.columns != 'AGE') | (lung_cancer.columns == 'LUNG_CANCER')]
+lung_cancer_categorical_columns = lung_cancer_predictors_categorical
+for categorical_column in lung_cancer_categorical_columns:
+    contingency_table = pd.crosstab(lung_cancer_categorical[categorical_column], 
+                                    lung_cancer_categorical['LUNG_CANCER'])
+    lung_cancer_categorical_chisquare_target['LUNG_CANCER_' + categorical_column] = stats.chi2_contingency(
+        contingency_table)[0:2]
+```
+
+
+```python
+##################################
+# Formulating the pairwise chisquare summary
+# between the target variable
+# and categorical predictor columns
+##################################
+lung_cancer_categorical_summary = lung_cancer_categorical.from_dict(lung_cancer_categorical_chisquare_target, orient='index')
+lung_cancer_categorical_summary.columns = ['ChiSquare.Test.Statistic', 'ChiSquare.Test.PValue']
+display(lung_cancer_categorical_summary.sort_values(by=['ChiSquare.Test.PValue'], ascending=True).head(len(lung_cancer_predictors_categorical)))
+```
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>ChiSquare.Test.Statistic</th>
+      <th>ChiSquare.Test.PValue</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>LUNG_CANCER_ALLERGY</th>
+      <td>31.238952</td>
+      <td>2.281422e-08</td>
+    </tr>
+    <tr>
+      <th>LUNG_CANCER_ALCOHOL CONSUMING</th>
+      <td>24.005406</td>
+      <td>9.606559e-07</td>
+    </tr>
+    <tr>
+      <th>LUNG_CANCER_SWALLOWING DIFFICULTY</th>
+      <td>19.307277</td>
+      <td>1.112814e-05</td>
+    </tr>
+    <tr>
+      <th>LUNG_CANCER_WHEEZING</th>
+      <td>17.723096</td>
+      <td>2.555055e-05</td>
+    </tr>
+    <tr>
+      <th>LUNG_CANCER_COUGHING</th>
+      <td>17.606122</td>
+      <td>2.717123e-05</td>
+    </tr>
+    <tr>
+      <th>LUNG_CANCER_CHEST PAIN</th>
+      <td>10.083198</td>
+      <td>1.496275e-03</td>
+    </tr>
+    <tr>
+      <th>LUNG_CANCER_PEER_PRESSURE</th>
+      <td>9.641594</td>
+      <td>1.902201e-03</td>
+    </tr>
+    <tr>
+      <th>LUNG_CANCER_YELLOW_FINGERS</th>
+      <td>9.088186</td>
+      <td>2.572659e-03</td>
+    </tr>
+    <tr>
+      <th>LUNG_CANCER_FATIGUE</th>
+      <td>6.081100</td>
+      <td>1.366356e-02</td>
+    </tr>
+    <tr>
+      <th>LUNG_CANCER_ANXIETY</th>
+      <td>5.648390</td>
+      <td>1.747141e-02</td>
+    </tr>
+    <tr>
+      <th>LUNG_CANCER_CHRONIC DISEASE</th>
+      <td>3.161200</td>
+      <td>7.540772e-02</td>
+    </tr>
+    <tr>
+      <th>LUNG_CANCER_GENDER</th>
+      <td>1.021545</td>
+      <td>3.121527e-01</td>
+    </tr>
+    <tr>
+      <th>LUNG_CANCER_SHORTNESS OF BREATH</th>
+      <td>0.790604</td>
+      <td>3.739175e-01</td>
+    </tr>
+    <tr>
+      <th>LUNG_CANCER_SMOKING</th>
+      <td>0.722513</td>
+      <td>3.953209e-01</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+```python
 from IPython.display import display, HTML
 display(HTML("<style>.rendered_html { font-size: 15px; font-family: 'Trebuchet MS'; }</style>"))
 ```

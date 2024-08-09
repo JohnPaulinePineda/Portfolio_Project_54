@@ -18468,12 +18468,336 @@ class="
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[80]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+     <div class="CodeMirror cm-s-jupyter">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">##################################</span>
+<span class="c1"># Computing the t-test </span>
+<span class="c1"># statistic and p-values</span>
+<span class="c1"># between the target variable</span>
+<span class="c1"># and numeric predictor columns</span>
+<span class="c1">##################################</span>
+<span class="n">lung_cancer_numeric_ttest_target</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="n">lung_cancer_numeric</span> <span class="o">=</span> <span class="n">lung_cancer</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,(</span><span class="n">lung_cancer</span><span class="o">.</span><span class="n">columns</span> <span class="o">==</span> <span class="s1">'AGE'</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="n">lung_cancer</span><span class="o">.</span><span class="n">columns</span> <span class="o">==</span> <span class="s1">'LUNG_CANCER'</span><span class="p">)]</span>
+<span class="n">lung_cancer_numeric_columns</span> <span class="o">=</span> <span class="n">lung_cancer_predictors_numeric</span>
+<span class="k">for</span> <span class="n">numeric_column</span> <span class="ow">in</span> <span class="n">lung_cancer_numeric_columns</span><span class="p">:</span>
+    <span class="n">group_0</span> <span class="o">=</span> <span class="n">lung_cancer_numeric</span><span class="p">[</span><span class="n">lung_cancer_numeric</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span><span class="s1">'LUNG_CANCER'</span><span class="p">]</span><span class="o">==</span><span class="s1">'NO'</span><span class="p">]</span>
+    <span class="n">group_1</span> <span class="o">=</span> <span class="n">lung_cancer_numeric</span><span class="p">[</span><span class="n">lung_cancer_numeric</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span><span class="s1">'LUNG_CANCER'</span><span class="p">]</span><span class="o">==</span><span class="s1">'YES'</span><span class="p">]</span>
+    <span class="n">lung_cancer_numeric_ttest_target</span><span class="p">[</span><span class="s1">'LUNG_CANCER_'</span> <span class="o">+</span> <span class="n">numeric_column</span><span class="p">]</span> <span class="o">=</span> <span class="n">stats</span><span class="o">.</span><span class="n">ttest_ind</span><span class="p">(</span>
+        <span class="n">group_0</span><span class="p">[</span><span class="n">numeric_column</span><span class="p">],</span> 
+        <span class="n">group_1</span><span class="p">[</span><span class="n">numeric_column</span><span class="p">],</span> 
+        <span class="n">equal_var</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[81]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+     <div class="CodeMirror cm-s-jupyter">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">##################################</span>
+<span class="c1"># Formulating the pairwise ttest summary</span>
+<span class="c1"># between the target variable</span>
+<span class="c1"># and numeric predictor columns</span>
+<span class="c1">##################################</span>
+<span class="n">lung_cancer_numeric_summary</span> <span class="o">=</span> <span class="n">lung_cancer_numeric</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">lung_cancer_numeric_ttest_target</span><span class="p">,</span> <span class="n">orient</span><span class="o">=</span><span class="s1">'index'</span><span class="p">)</span>
+<span class="n">lung_cancer_numeric_summary</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'T.Test.Statistic'</span><span class="p">,</span> <span class="s1">'T.Test.PValue'</span><span class="p">]</span>
+<span class="n">display</span><span class="p">(</span><span class="n">lung_cancer_numeric_summary</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="p">[</span><span class="s1">'T.Test.PValue'</span><span class="p">],</span> <span class="n">ascending</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">lung_cancer_predictors_numeric</span><span class="p">)))</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+
+<div class="jp-OutputArea-child">
+
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+
+
+
+<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output " data-mime-type="text/html">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>T.Test.Statistic</th>
+      <th>T.Test.PValue</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>LUNG_CANCER_AGE</th>
+      <td>-1.573857</td>
+      <td>0.11655</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[82]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+     <div class="CodeMirror cm-s-jupyter">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">lung_cancer_predictors_categorical</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+
+<div class="jp-OutputArea-child">
+
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[82]:</div>
+
+
+
+
+<div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain">
+<pre>Index([&#39;GENDER&#39;, &#39;SMOKING&#39;, &#39;YELLOW_FINGERS&#39;, &#39;ANXIETY&#39;, &#39;PEER_PRESSURE&#39;,
+       &#39;CHRONIC DISEASE&#39;, &#39;FATIGUE &#39;, &#39;ALLERGY &#39;, &#39;WHEEZING&#39;,
+       &#39;ALCOHOL CONSUMING&#39;, &#39;COUGHING&#39;, &#39;SHORTNESS OF BREATH&#39;,
+       &#39;SWALLOWING DIFFICULTY&#39;, &#39;CHEST PAIN&#39;],
+      dtype=&#39;object&#39;)</pre>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[83]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+     <div class="CodeMirror cm-s-jupyter">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">##################################</span>
+<span class="c1"># Computing the chisquare</span>
+<span class="c1"># statistic and p-values</span>
+<span class="c1"># between the target variable</span>
+<span class="c1"># and categorical predictor columns</span>
+<span class="c1">##################################</span>
+<span class="n">lung_cancer_categorical_chisquare_target</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="n">lung_cancer_categorical</span> <span class="o">=</span> <span class="n">lung_cancer</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,(</span><span class="n">lung_cancer</span><span class="o">.</span><span class="n">columns</span> <span class="o">!=</span> <span class="s1">'AGE'</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="n">lung_cancer</span><span class="o">.</span><span class="n">columns</span> <span class="o">==</span> <span class="s1">'LUNG_CANCER'</span><span class="p">)]</span>
+<span class="n">lung_cancer_categorical_columns</span> <span class="o">=</span> <span class="n">lung_cancer_predictors_categorical</span>
+<span class="k">for</span> <span class="n">categorical_column</span> <span class="ow">in</span> <span class="n">lung_cancer_categorical_columns</span><span class="p">:</span>
+    <span class="n">contingency_table</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">crosstab</span><span class="p">(</span><span class="n">lung_cancer_categorical</span><span class="p">[</span><span class="n">categorical_column</span><span class="p">],</span> 
+                                    <span class="n">lung_cancer_categorical</span><span class="p">[</span><span class="s1">'LUNG_CANCER'</span><span class="p">])</span>
+    <span class="n">lung_cancer_categorical_chisquare_target</span><span class="p">[</span><span class="s1">'LUNG_CANCER_'</span> <span class="o">+</span> <span class="n">categorical_column</span><span class="p">]</span> <span class="o">=</span> <span class="n">stats</span><span class="o">.</span><span class="n">chi2_contingency</span><span class="p">(</span>
+        <span class="n">contingency_table</span><span class="p">)[</span><span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[84]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+     <div class="CodeMirror cm-s-jupyter">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">##################################</span>
+<span class="c1"># Formulating the pairwise chisquare summary</span>
+<span class="c1"># between the target variable</span>
+<span class="c1"># and categorical predictor columns</span>
+<span class="c1">##################################</span>
+<span class="n">lung_cancer_categorical_summary</span> <span class="o">=</span> <span class="n">lung_cancer_categorical</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">lung_cancer_categorical_chisquare_target</span><span class="p">,</span> <span class="n">orient</span><span class="o">=</span><span class="s1">'index'</span><span class="p">)</span>
+<span class="n">lung_cancer_categorical_summary</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'ChiSquare.Test.Statistic'</span><span class="p">,</span> <span class="s1">'ChiSquare.Test.PValue'</span><span class="p">]</span>
+<span class="n">display</span><span class="p">(</span><span class="n">lung_cancer_categorical_summary</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="p">[</span><span class="s1">'ChiSquare.Test.PValue'</span><span class="p">],</span> <span class="n">ascending</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">lung_cancer_predictors_categorical</span><span class="p">)))</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+
+<div class="jp-OutputArea-child">
+
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+
+
+
+<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output " data-mime-type="text/html">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>ChiSquare.Test.Statistic</th>
+      <th>ChiSquare.Test.PValue</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>LUNG_CANCER_ALLERGY</th>
+      <td>31.238952</td>
+      <td>2.281422e-08</td>
+    </tr>
+    <tr>
+      <th>LUNG_CANCER_ALCOHOL CONSUMING</th>
+      <td>24.005406</td>
+      <td>9.606559e-07</td>
+    </tr>
+    <tr>
+      <th>LUNG_CANCER_SWALLOWING DIFFICULTY</th>
+      <td>19.307277</td>
+      <td>1.112814e-05</td>
+    </tr>
+    <tr>
+      <th>LUNG_CANCER_WHEEZING</th>
+      <td>17.723096</td>
+      <td>2.555055e-05</td>
+    </tr>
+    <tr>
+      <th>LUNG_CANCER_COUGHING</th>
+      <td>17.606122</td>
+      <td>2.717123e-05</td>
+    </tr>
+    <tr>
+      <th>LUNG_CANCER_CHEST PAIN</th>
+      <td>10.083198</td>
+      <td>1.496275e-03</td>
+    </tr>
+    <tr>
+      <th>LUNG_CANCER_PEER_PRESSURE</th>
+      <td>9.641594</td>
+      <td>1.902201e-03</td>
+    </tr>
+    <tr>
+      <th>LUNG_CANCER_YELLOW_FINGERS</th>
+      <td>9.088186</td>
+      <td>2.572659e-03</td>
+    </tr>
+    <tr>
+      <th>LUNG_CANCER_FATIGUE</th>
+      <td>6.081100</td>
+      <td>1.366356e-02</td>
+    </tr>
+    <tr>
+      <th>LUNG_CANCER_ANXIETY</th>
+      <td>5.648390</td>
+      <td>1.747141e-02</td>
+    </tr>
+    <tr>
+      <th>LUNG_CANCER_CHRONIC DISEASE</th>
+      <td>3.161200</td>
+      <td>7.540772e-02</td>
+    </tr>
+    <tr>
+      <th>LUNG_CANCER_GENDER</th>
+      <td>1.021545</td>
+      <td>3.121527e-01</td>
+    </tr>
+    <tr>
+      <th>LUNG_CANCER_SHORTNESS OF BREATH</th>
+      <td>0.790604</td>
+      <td>3.739175e-01</td>
+    </tr>
+    <tr>
+      <th>LUNG_CANCER_SMOKING</th>
+      <td>0.722513</td>
+      <td>3.953209e-01</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[85]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">IPython.display</span> <span class="kn">import</span> <span class="n">display</span><span class="p">,</span> <span class="n">HTML</span>
