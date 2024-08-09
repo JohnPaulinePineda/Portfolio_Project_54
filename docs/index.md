@@ -17,10 +17,12 @@
         * [1.6.1 Pre-Modelling Data Preparation](#1.6.1)
         * [1.6.2 Data Splitting](#1.6.2)
         * [1.6.3 Modelling Pipeline Development](#1.6.3)
-        * [1.6.4 Model Hyperparameter Tuning](#1.6.4)
-        * [1.6.5 Model Validation](#1.6.5)
-        * [1.6.6 Model Testing](#1.6.6)
-        * [1.6.7 Model Inference](#1.6.7)
+        * [1.6.4 Model Fitting using Upsampled Training Data | Hyperparameter Tuning | Validation](#1.6.4)
+        * [1.6.5 Model Fitting using Upsampled Training Data | Hyperparameter Tuning | Validation](#1.6.5)
+        * [1.6.6 Model Fitting using Downsampled Training Data | Hyperparameter Tuning | Validation](#1.6.6)
+        * [1.6.7 Model Testing](#1.6.7)
+        * [1.6.8 Model Testing](#1.6.8)
+        * [1.6.9 Model Inference | Interpretation](#1.6.9)
     * [1.7 Consolidated Findings](#1.7)
 * [**2. Summary**](#Summary)   
 * [**3. References**](#References)
@@ -56,6 +58,7 @@ from sklearn.preprocessing import StandardScaler
 from scipy import stats
 from scipy.stats import pointbiserialr
 
+from sklearn.pipeline import Pipeline
 from sklearn.linear_model import LogisticRegression
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.ensemble import RandomForestClassifier
@@ -73,10 +76,13 @@ from sklearn.ensemble import StackingClassifier
 DATASETS_ORIGINAL_PATH = r"datasets\original"
 DATASETS_PREPROCESSED_PATH = r"datasets\preprocessed"
 DATASETS_FINAL_PATH = r"datasets\final\complete"
+DATASETS_FINAL_TRAIN_PATH = r"datasets\final\train"
 DATASETS_FINAL_TRAIN_FEATURES_PATH = r"datasets\final\train\features"
 DATASETS_FINAL_TRAIN_TARGET_PATH = r"datasets\final\train\target"
+DATASETS_FINAL_VALIDATION_PATH = r"datasets\final\validation"
 DATASETS_FINAL_VALIDATION_FEATURES_PATH = r"datasets\final\validation\features"
 DATASETS_FINAL_VALIDATION_TARGET_PATH = r"datasets\final\validation\target"
+DATASETS_FINAL_TEST_PATH = r"datasets\final\test"
 DATASETS_FINAL_TEST_FEATURES_PATH = r"datasets\final\test\features"
 DATASETS_FINAL_TEST_TARGET_PATH = r"datasets\final\test\target"
 MODELS_PATH = r"models"
@@ -2958,22 +2964,15 @@ display(lung_cancer_breakdown)
 
 ```python
 ##################################
-# Separating the target 
-# and predictor columns
-##################################
-X = lung_cancer_final.drop('LUNG_CANCER', axis = 1)
-y = lung_cancer_final['LUNG_CANCER']
-```
-
-
-```python
-##################################
 # Formulating the train and test data
 # from the final dataset
 # by applying stratification and
 # using a 70-30 ratio
 ##################################
-X_train_initial, X_test, y_train_initial, y_test = train_test_split(X, y, test_size=0.20, stratify=y, random_state=88888888)
+lung_cancer_train_initial, lung_cancer_test = train_test_split(lung_cancer_final, 
+                                                               test_size=0.20, 
+                                                               stratify=lung_cancer_final['LUNG_CANCER'], 
+                                                               random_state=88888888)
 ```
 
 
@@ -2982,14 +2981,16 @@ X_train_initial, X_test, y_train_initial, y_test = train_test_split(X, y, test_s
 # Performing a general exploration
 # of the initial training dataset
 ##################################
-print('Training Dataset Dimensions: ')
+X_train_initial = lung_cancer_train_initial.drop('LUNG_CANCER', axis = 1)
+y_train_initial = lung_cancer_train_initial['LUNG_CANCER']
+print('Initial Training Dataset Dimensions: ')
 display(X_train_initial.shape)
 display(y_train_initial.shape)
-print('Training Target Variable Breakdown: ')
+print('Initial Training Target Variable Breakdown: ')
 display(y_train_initial.value_counts(normalize = True))
 ```
 
-    Training Dataset Dimensions: 
+    Initial Training Dataset Dimensions: 
     
 
 
@@ -3000,7 +3001,7 @@ display(y_train_initial.value_counts(normalize = True))
     (247,)
 
 
-    Training Target Variable Breakdown: 
+    Initial Training Target Variable Breakdown: 
     
 
 
@@ -3015,6 +3016,8 @@ display(y_train_initial.value_counts(normalize = True))
 # Performing a general exploration
 # of the test dataset
 ##################################
+X_test = lung_cancer_test.drop('LUNG_CANCER', axis = 1)
+y_test = lung_cancer_test['LUNG_CANCER']
 print('Test Dataset Dimensions: ')
 display(X_test.shape)
 display(y_test.shape)
@@ -3050,7 +3053,10 @@ display(y_test.value_counts(normalize = True))
 # by applying stratification and
 # using a 70-30 ratio
 ##################################
-X_train, X_validation, y_train, y_validation = train_test_split(X_train_initial, y_train_initial, test_size=0.20, random_state=88888888)
+lung_cancer_train, lung_cancer_validation = train_test_split(lung_cancer_train_initial, 
+                                                             test_size=0.20, 
+                                                             stratify=lung_cancer_train_initial['LUNG_CANCER'], 
+                                                             random_state=88888888)
 ```
 
 
@@ -3059,6 +3065,8 @@ X_train, X_validation, y_train, y_validation = train_test_split(X_train_initial,
 # Performing a general exploration
 # of the final training dataset
 ##################################
+X_train = lung_cancer_train.drop('LUNG_CANCER', axis = 1)
+y_train = lung_cancer_train['LUNG_CANCER']
 print('Training Dataset Dimensions: ')
 display(X_train.shape)
 display(y_train.shape)
@@ -3092,6 +3100,8 @@ display(y_train.value_counts(normalize = True))
 # Performing a general exploration
 # of the validation dataset
 ##################################
+X_validation = lung_cancer_validation.drop('LUNG_CANCER', axis = 1)
+y_validation = lung_cancer_validation['LUNG_CANCER']
 print('Validation Dataset Dimensions: ')
 display(X_validation.shape)
 display(y_validation.shape)
@@ -3123,9 +3133,11 @@ display(y_validation.value_counts(normalize = True))
 ```python
 ##################################
 # Saving the training data
-# to the DATASETS_FINAL_TRAIN_FEATURES_PATH
+# to the DATASETS_FINAL_TRAIN_PATH
+# and DATASETS_FINAL_TRAIN_FEATURES_PATH
 # and DATASETS_FINAL_TRAIN_TARGET_PATH
 ##################################
+lung_cancer_train.to_csv(os.path.join("..", DATASETS_FINAL_TRAIN_PATH, "lung_cancer_train.csv"), index=False)
 X_train.to_csv(os.path.join("..", DATASETS_FINAL_TRAIN_FEATURES_PATH, "X_train.csv"), index=False)
 y_train.to_csv(os.path.join("..", DATASETS_FINAL_TRAIN_TARGET_PATH, "y_train.csv"), index=False)
 ```
@@ -3134,9 +3146,11 @@ y_train.to_csv(os.path.join("..", DATASETS_FINAL_TRAIN_TARGET_PATH, "y_train.csv
 ```python
 ##################################
 # Saving the validation data
-# to the DATASETS_FINAL_VALIDATION_FEATURES_PATH
+# to the DATASETS_FINAL_VALIDATION_PATH
+# and DATASETS_FINAL_VALIDATION_FEATURE_PATH
 # and DATASETS_FINAL_VALIDATION_TARGET_PATH
 ##################################
+lung_cancer_validation.to_csv(os.path.join("..", DATASETS_FINAL_VALIDATION_PATH, "lung_cancer_validation.csv"), index=False)
 X_validation.to_csv(os.path.join("..", DATASETS_FINAL_VALIDATION_FEATURES_PATH, "X_validation.csv"), index=False)
 y_validation.to_csv(os.path.join("..", DATASETS_FINAL_VALIDATION_TARGET_PATH, "y_validation.csv"), index=False)
 ```
@@ -3145,22 +3159,250 @@ y_validation.to_csv(os.path.join("..", DATASETS_FINAL_VALIDATION_TARGET_PATH, "y
 ```python
 ##################################
 # Saving the test data
-# to the DATASETS_FINAL_TEST_FEATURES_PATH
+# to the DATASETS_FINAL_TEST_PATH
+# and DATASETS_FINAL_TEST_FEATURES_PATH
 # and DATASETS_FINAL_TEST_TARGET_PATH
 ##################################
+lung_cancer_test.to_csv(os.path.join("..", DATASETS_FINAL_TEST_PATH, "lung_cancer_test.csv"), index=False)
 X_test.to_csv(os.path.join("..", DATASETS_FINAL_TEST_FEATURES_PATH, "X_test.csv"), index=False)
 y_test.to_csv(os.path.join("..", DATASETS_FINAL_TEST_TARGET_PATH, "y_test.csv"), index=False)
 ```
 
 ### 1.6.3 Modelling Pipeline Development <a class="anchor" id="1.6.3"></a>
 
-### 1.6.4 Model Hyperparameter Tuning <a class="anchor" id="1.6.4"></a>
 
-### 1.6.5 Model Validation <a class="anchor" id="1.6.5"></a>
+```python
+##################################
+# Defining the modelling pipeline
+# using the logistic regression structure
+##################################
+pipeline = Pipeline([('model', LogisticRegression(solver='saga', random_state=88888888, max_iter=5000))])
+```
 
-### 1.6.6 Model Testing <a class="anchor" id="1.6.6"></a>
 
-### 1.6.7 Model Inference <a class="anchor" id="1.6.7"></a>
+```python
+##################################
+# Defining the hyperparameters for grid search
+# including the regularization penalties
+# and class weights for unbalanced class
+##################################
+unbalanced_class_hyperparameter_grid = {'model__penalty': ['l1', 'l2', 'elasticnet', 'none'],
+                                        'model__l1_ratio': [0.25, 0.50, 0.75],
+                                        'model__class_weight': ['balanced']}
+```
+
+
+```python
+##################################
+# Setting up the GridSearchCV with 5-fold cross-validation
+# and using F1 score as the model evaluation metric
+##################################
+unbalanced_class_grid_search = GridSearchCV(pipeline,
+                                            param_grid=unbalanced_class_hyperparameter_grid,
+                                            scoring='f1',
+                                            cv=5, 
+                                            n_jobs=-1,
+                                            verbose=1)
+```
+
+
+```python
+##################################
+# Defining the hyperparameters for grid search
+# including the regularization penalties
+# and class weights for unbalanced class
+##################################
+balanced_class_hyperparameter_grid = {'model__penalty': ['l1', 'l2', 'elasticnet', 'none'],
+                                      'model__l1_ratio': [0.25, 0.50, 0.75],
+                                      'model__class_weight': ['none']}
+```
+
+
+```python
+##################################
+# Setting up the GridSearchCV with 5-fold cross-validation
+# and using F1 score as the model evaluation metric
+##################################
+balanced_class_grid_search = GridSearchCV(pipeline,
+                                          param_grid=balanced_class_hyperparameter_grid,
+                                          scoring='f1',
+                                          cv=5, 
+                                          n_jobs=-1,
+                                          verbose=1)
+```
+
+### 1.6.4 Model Fitting using Original Training Data | Hyperparameter Tuning | Validation <a class="anchor" id="1.6.4"></a>
+
+
+```python
+##################################
+# Fitting the model on the 
+# original training data
+##################################
+unbalanced_class_grid_search.fit(X_train, y_train)
+```
+
+    Fitting 5 folds for each of 12 candidates, totalling 60 fits
+    
+
+
+
+
+<style>#sk-container-id-1 {color: black;}#sk-container-id-1 pre{padding: 0;}#sk-container-id-1 div.sk-toggleable {background-color: white;}#sk-container-id-1 label.sk-toggleable__label {cursor: pointer;display: block;width: 100%;margin-bottom: 0;padding: 0.3em;box-sizing: border-box;text-align: center;}#sk-container-id-1 label.sk-toggleable__label-arrow:before {content: "▸";float: left;margin-right: 0.25em;color: #696969;}#sk-container-id-1 label.sk-toggleable__label-arrow:hover:before {color: black;}#sk-container-id-1 div.sk-estimator:hover label.sk-toggleable__label-arrow:before {color: black;}#sk-container-id-1 div.sk-toggleable__content {max-height: 0;max-width: 0;overflow: hidden;text-align: left;background-color: #f0f8ff;}#sk-container-id-1 div.sk-toggleable__content pre {margin: 0.2em;color: black;border-radius: 0.25em;background-color: #f0f8ff;}#sk-container-id-1 input.sk-toggleable__control:checked~div.sk-toggleable__content {max-height: 200px;max-width: 100%;overflow: auto;}#sk-container-id-1 input.sk-toggleable__control:checked~label.sk-toggleable__label-arrow:before {content: "▾";}#sk-container-id-1 div.sk-estimator input.sk-toggleable__control:checked~label.sk-toggleable__label {background-color: #d4ebff;}#sk-container-id-1 div.sk-label input.sk-toggleable__control:checked~label.sk-toggleable__label {background-color: #d4ebff;}#sk-container-id-1 input.sk-hidden--visually {border: 0;clip: rect(1px 1px 1px 1px);clip: rect(1px, 1px, 1px, 1px);height: 1px;margin: -1px;overflow: hidden;padding: 0;position: absolute;width: 1px;}#sk-container-id-1 div.sk-estimator {font-family: monospace;background-color: #f0f8ff;border: 1px dotted black;border-radius: 0.25em;box-sizing: border-box;margin-bottom: 0.5em;}#sk-container-id-1 div.sk-estimator:hover {background-color: #d4ebff;}#sk-container-id-1 div.sk-parallel-item::after {content: "";width: 100%;border-bottom: 1px solid gray;flex-grow: 1;}#sk-container-id-1 div.sk-label:hover label.sk-toggleable__label {background-color: #d4ebff;}#sk-container-id-1 div.sk-serial::before {content: "";position: absolute;border-left: 1px solid gray;box-sizing: border-box;top: 0;bottom: 0;left: 50%;z-index: 0;}#sk-container-id-1 div.sk-serial {display: flex;flex-direction: column;align-items: center;background-color: white;padding-right: 0.2em;padding-left: 0.2em;position: relative;}#sk-container-id-1 div.sk-item {position: relative;z-index: 1;}#sk-container-id-1 div.sk-parallel {display: flex;align-items: stretch;justify-content: center;background-color: white;position: relative;}#sk-container-id-1 div.sk-item::before, #sk-container-id-1 div.sk-parallel-item::before {content: "";position: absolute;border-left: 1px solid gray;box-sizing: border-box;top: 0;bottom: 0;left: 50%;z-index: -1;}#sk-container-id-1 div.sk-parallel-item {display: flex;flex-direction: column;z-index: 1;position: relative;background-color: white;}#sk-container-id-1 div.sk-parallel-item:first-child::after {align-self: flex-end;width: 50%;}#sk-container-id-1 div.sk-parallel-item:last-child::after {align-self: flex-start;width: 50%;}#sk-container-id-1 div.sk-parallel-item:only-child::after {width: 0;}#sk-container-id-1 div.sk-dashed-wrapped {border: 1px dashed gray;margin: 0 0.4em 0.5em 0.4em;box-sizing: border-box;padding-bottom: 0.4em;background-color: white;}#sk-container-id-1 div.sk-label label {font-family: monospace;font-weight: bold;display: inline-block;line-height: 1.2em;}#sk-container-id-1 div.sk-label-container {text-align: center;}#sk-container-id-1 div.sk-container {/* jupyter's `normalize.less` sets `[hidden] { display: none; }` but bootstrap.min.css set `[hidden] { display: none !important; }` so we also need the `!important` here to be able to override the default hidden behavior on the sphinx rendered scikit-learn.org. See: https://github.com/scikit-learn/scikit-learn/issues/21755 */display: inline-block !important;position: relative;}#sk-container-id-1 div.sk-text-repr-fallback {display: none;}</style><div id="sk-container-id-1" class="sk-top-container"><div class="sk-text-repr-fallback"><pre>GridSearchCV(cv=5,
+             estimator=Pipeline(steps=[(&#x27;model&#x27;,
+                                        LogisticRegression(max_iter=5000,
+                                                           random_state=88888888,
+                                                           solver=&#x27;saga&#x27;))]),
+             n_jobs=-1,
+             param_grid={&#x27;model__class_weight&#x27;: [&#x27;balanced&#x27;],
+                         &#x27;model__l1_ratio&#x27;: [0.25, 0.5, 0.75],
+                         &#x27;model__penalty&#x27;: [&#x27;l1&#x27;, &#x27;l2&#x27;, &#x27;elasticnet&#x27;, &#x27;none&#x27;]},
+             scoring=&#x27;f1&#x27;, verbose=1)</pre><b>In a Jupyter environment, please rerun this cell to show the HTML representation or trust the notebook. <br />On GitHub, the HTML representation is unable to render, please try loading this page with nbviewer.org.</b></div><div class="sk-container" hidden><div class="sk-item sk-dashed-wrapped"><div class="sk-label-container"><div class="sk-label sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually" id="sk-estimator-id-1" type="checkbox" ><label for="sk-estimator-id-1" class="sk-toggleable__label sk-toggleable__label-arrow">GridSearchCV</label><div class="sk-toggleable__content"><pre>GridSearchCV(cv=5,
+             estimator=Pipeline(steps=[(&#x27;model&#x27;,
+                                        LogisticRegression(max_iter=5000,
+                                                           random_state=88888888,
+                                                           solver=&#x27;saga&#x27;))]),
+             n_jobs=-1,
+             param_grid={&#x27;model__class_weight&#x27;: [&#x27;balanced&#x27;],
+                         &#x27;model__l1_ratio&#x27;: [0.25, 0.5, 0.75],
+                         &#x27;model__penalty&#x27;: [&#x27;l1&#x27;, &#x27;l2&#x27;, &#x27;elasticnet&#x27;, &#x27;none&#x27;]},
+             scoring=&#x27;f1&#x27;, verbose=1)</pre></div></div></div><div class="sk-parallel"><div class="sk-parallel-item"><div class="sk-item"><div class="sk-label-container"><div class="sk-label sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually" id="sk-estimator-id-2" type="checkbox" ><label for="sk-estimator-id-2" class="sk-toggleable__label sk-toggleable__label-arrow">estimator: Pipeline</label><div class="sk-toggleable__content"><pre>Pipeline(steps=[(&#x27;model&#x27;,
+                 LogisticRegression(max_iter=5000, random_state=88888888,
+                                    solver=&#x27;saga&#x27;))])</pre></div></div></div><div class="sk-serial"><div class="sk-item"><div class="sk-serial"><div class="sk-item"><div class="sk-estimator sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually" id="sk-estimator-id-3" type="checkbox" ><label for="sk-estimator-id-3" class="sk-toggleable__label sk-toggleable__label-arrow">LogisticRegression</label><div class="sk-toggleable__content"><pre>LogisticRegression(max_iter=5000, random_state=88888888, solver=&#x27;saga&#x27;)</pre></div></div></div></div></div></div></div></div></div></div></div></div>
+
+
+
+
+```python
+##################################
+# Identifying the best model
+##################################
+best_model_lung_cancer_original = unbalanced_class_grid_search.best_estimator_
+```
+
+
+```python
+##################################
+# Evaluating the F1 scores
+# on the training, cross-validation, and validation data
+##################################
+best_model_lung_cancer_original_f1_cv = unbalanced_class_grid_search.best_score_
+best_model_lung_cancer_original_f1_train = f1_score(y_train, best_model_lung_cancer_original.predict(X_train))
+best_model_lung_cancer_original_f1_validation = f1_score(y_validation, best_model_lung_cancer_original.predict(X_validation))
+```
+
+
+```python
+##################################
+# Summarizing the F1 score results
+##################################
+print('Best Model using the Original Train Data: ')
+print(f"Best Model Parameters: {unbalanced_class_grid_search.best_params_}")
+print(f"F1 Score on Cross-Validated Data: {best_model_lung_cancer_original_f1_cv:.4f}")
+print(f"F1 Score on Training Data: {best_model_lung_cancer_original_f1_train:.4f}")
+print(f"F1 Score on Validation Data: {best_model_lung_cancer_original_f1_validation:.4f}")
+```
+
+    Best Model using the Original Train Data: 
+    Best Model Parameters: {'model__class_weight': 'balanced', 'model__l1_ratio': 0.25, 'model__penalty': 'elasticnet'}
+    F1 Score on Cross-Validated Data: 0.9339
+    F1 Score on Training Data: 0.9455
+    F1 Score on Validation Data: 0.9176
+    
+
+
+```python
+##################################
+# Obtaining the logit values (log-odds)
+# from the decision function for training data
+##################################
+best_model_lung_cancer_original_logit_values = best_model_lung_cancer_original.decision_function(X_train)
+```
+
+
+```python
+##################################
+# Obtaining the estimated probabilities 
+# for the positive class (LUNG_CANCER=YES) for training data
+##################################
+best_model_lung_cancer_original_probabilities = best_model_lung_cancer_original.predict_proba(X_train)[:, 1]
+```
+
+
+```python
+##################################
+# Sorting the values to generate
+# a smoother curve
+##################################
+best_model_lung_cancer_original_sorted_indices = np.argsort(best_model_lung_cancer_original_logit_values)
+best_model_lung_cancer_original_logit_values_sorted = best_model_lung_cancer_original_logit_values[best_model_lung_cancer_original_sorted_indices]
+best_model_lung_cancer_original_probabilities_sorted = best_model_lung_cancer_original_probabilities[best_model_lung_cancer_original_sorted_indices]
+```
+
+
+```python
+##################################
+# Plotting the estimated logistic curve
+# using the logit values
+# and estimated probabilities
+# obtained from the training data
+##################################
+plt.figure(figsize=(17, 8))
+plt.plot(best_model_lung_cancer_original_logit_values_sorted, 
+         best_model_lung_cancer_original_probabilities_sorted, label='Logistic Curve', color='black')
+plt.ylim(-0.05, 1.05)
+target_0_indices = y_train == 0
+target_1_indices = y_train == 1
+plt.scatter(best_model_lung_cancer_original_logit_values[target_0_indices], 
+            best_model_lung_cancer_original_probabilities[target_0_indices], 
+            color='cyan', alpha=0.80, s=100, edgecolor='k', label='LUNG_CANCER=NO')
+plt.scatter(best_model_lung_cancer_original_logit_values[target_1_indices], 
+            best_model_lung_cancer_original_probabilities[target_1_indices], 
+            color='orange', alpha=0.80, s=100, edgecolor='k', label='LUNG_CANCER=YES')
+plt.axhline(0.5, color='green', linestyle='--', label='Classification Threshold (50%)')
+plt.title('Logistic Curve (Original Training Data)')
+plt.xlabel('Logit (Log-Odds)')
+plt.ylabel('Estimated Lung Cancer Probability')
+plt.grid(True)
+plt.legend(loc='upper left')
+plt.show()
+```
+
+
+    
+![png](output_127_0.png)
+    
+
+
+### 1.6.5 Model Fitting using Upsampled Training Data | Hyperparameter Tuning | Validation <a class="anchor" id="1.6.5"></a>
+
+### 1.6.6 Model Fitting using Downsampled Training Data | Hyperparameter Tuning | Validation <a class="anchor" id="1.6.5"></a>
+
+### 1.6.7 Model Selection <a class="anchor" id="1.6.7"></a>
+
+### 1.6.8 Model Testing <a class="anchor" id="1.6.8"></a>
+
+
+```python
+##################################
+# Evaluating the F1 scores
+# on the test data
+##################################
+best_model_lung_cancer_original_f1_test = f1_score(y_test, best_model_lung_cancer_original.predict(X_test))
+```
+
+
+```python
+##################################
+# Summarizing the F1 score results
+##################################
+print(f"F1 Score of the Best Model using the Original Train Data on Test Data: {best_model_lung_cancer_original_f1_test:.4f}")
+```
+
+    F1 Score of the Best Model using the Original Train Data on Test Data: 0.9200
+    
+
+### 1.6.9 Model Inference | Interpretation <a class="anchor" id="1.6.7"></a>
 
 
 ```python
