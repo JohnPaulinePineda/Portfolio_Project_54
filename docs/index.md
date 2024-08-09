@@ -14,9 +14,13 @@
         * [1.5.1 Exploratory Data Analysis](#1.5.1)
         * [1.5.2 Hypothesis Testing](#1.5.2)
     * [1.6 Predictive Model Development](#1.6)
-        * [1.6.1 Data Preprocessing Pipeline](#1.6.1)
-        * [1.6.2 Model Testing](#1.6.2)
-        * [1.6.3 Model Validation](#1.6.2)
+        * [1.6.1 Pre-Modelling Data Preparation](#1.6.1)
+        * [1.6.2 Data Splitting](#1.6.2)
+        * [1.6.3 Modelling Pipeline Development](#1.6.3)
+        * [1.6.4 Model Hyperparameter Tuning](#1.6.4)
+        * [1.6.5 Model Validation](#1.6.5)
+        * [1.6.6 Model Testing](#1.6.6)
+        * [1.6.7 Model Inference](#1.6.7)
     * [1.7 Consolidated Findings](#1.7)
 * [**2. Summary**](#Summary)   
 * [**3. References**](#References)
@@ -67,16 +71,24 @@ from sklearn.ensemble import StackingClassifier
 # Defining file paths
 ##################################
 DATASETS_ORIGINAL_PATH = r"datasets\original"
-DATASET_PREPROCESSED_PATH = r"datasets\preprocessed"
-DATASET_FINAL_PATH = r"datasets\final"
+DATASETS_PREPROCESSED_PATH = r"datasets\preprocessed"
+DATASETS_FINAL_PATH = r"datasets\final\complete"
+DATASETS_FINAL_TRAIN_FEATURES_PATH = r"datasets\final\train\features"
+DATASETS_FINAL_TRAIN_TARGET_PATH = r"datasets\final\train\target"
+DATASETS_FINAL_VALIDATION_FEATURES_PATH = r"datasets\final\validation\features"
+DATASETS_FINAL_VALIDATION_TARGET_PATH = r"datasets\final\validation\target"
+DATASETS_FINAL_TEST_FEATURES_PATH = r"datasets\final\test\features"
+DATASETS_FINAL_TEST_TARGET_PATH = r"datasets\final\test\target"
+MODELS_PATH = r"models"
 ```
 
 
 ```python
 ##################################
 # Loading the dataset
+# from the DATASETS_ORIGINAL_PATH
 ##################################
-lung_cancer = pd.read_csv(os.path.join("..", DATASETS_ORIGINAL_PATH, "LungCancer.csv"))
+lung_cancer = pd.read_csv(os.path.join("..", DATASETS_ORIGINAL_PATH, "lung_cancer.csv"))
 ```
 
 
@@ -2568,6 +2580,587 @@ display(lung_cancer_categorical_summary.sort_values(by=['ChiSquare.Test.PValue']
 </table>
 </div>
 
+
+## 1.6. Predictive Model Development <a class="anchor" id="1.6"></a>
+
+### 1.6.1 Pre-Modelling Data Preparation <a class="anchor" id="1.6.1"></a>
+
+
+```python
+##################################
+# Creating a dataset copy and
+# transforming all values to numeric
+# prior to data splitting and modelling
+##################################
+lung_cancer_transformed = lung_cancer.copy()
+lung_cancer_transformed_object = lung_cancer_transformed.iloc[:,2:15].columns
+lung_cancer_transformed['GENDER'] = lung_cancer_transformed['GENDER'].replace({'F': 0, 'M': 1})
+lung_cancer_transformed['LUNG_CANCER'] = lung_cancer_transformed['LUNG_CANCER'].replace({'NO': 0, 'YES': 1})
+lung_cancer_transformed[lung_cancer_transformed_object] = lung_cancer_transformed[lung_cancer_transformed_object].replace({'Absent': 0, 'Present': 1})
+display(lung_cancer_transformed)
+```
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>GENDER</th>
+      <th>AGE</th>
+      <th>SMOKING</th>
+      <th>YELLOW_FINGERS</th>
+      <th>ANXIETY</th>
+      <th>PEER_PRESSURE</th>
+      <th>CHRONIC DISEASE</th>
+      <th>FATIGUE</th>
+      <th>ALLERGY</th>
+      <th>WHEEZING</th>
+      <th>ALCOHOL CONSUMING</th>
+      <th>COUGHING</th>
+      <th>SHORTNESS OF BREATH</th>
+      <th>SWALLOWING DIFFICULTY</th>
+      <th>CHEST PAIN</th>
+      <th>LUNG_CANCER</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>1</td>
+      <td>69</td>
+      <td>0</td>
+      <td>1</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>1</td>
+      <td>74</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>0</td>
+      <td>59</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>1</td>
+      <td>1</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>1</td>
+      <td>63</td>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>1</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>0</td>
+      <td>63</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>1</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>304</th>
+      <td>0</td>
+      <td>56</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+      <td>0</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>305</th>
+      <td>1</td>
+      <td>70</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+      <td>0</td>
+      <td>1</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>306</th>
+      <td>1</td>
+      <td>58</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>307</th>
+      <td>1</td>
+      <td>67</td>
+      <td>1</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>1</td>
+      <td>0</td>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+      <td>0</td>
+      <td>1</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>308</th>
+      <td>1</td>
+      <td>62</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>1</td>
+    </tr>
+  </tbody>
+</table>
+<p>309 rows × 16 columns</p>
+</div>
+
+
+
+```python
+##################################
+# Saving the tranformed data
+# to the DATASETS_PREPROCESSED_PATH
+##################################
+lung_cancer_transformed.to_csv(os.path.join("..", DATASETS_PREPROCESSED_PATH, "lung_cancer_transformed.csv"), index=False)
+```
+
+
+```python
+##################################
+# Filtering out predictors that did not exhibit 
+# sufficient discrimination of the target variable
+# Saving the tranformed data
+# to the DATASETS_PREPROCESSED_PATH
+##################################
+lung_cancer_filtered = lung_cancer_transformed.drop(['GENDER','CHRONIC DISEASE', 'SHORTNESS OF BREATH', 'SMOKING', 'AGE'], axis=1)
+lung_cancer_filtered.to_csv(os.path.join("..", DATASETS_FINAL_PATH, "lung_cancer_final.csv"), index=False)
+```
+
+### 1.6.2 Data Splitting <a class="anchor" id="1.6.2"></a>
+
+
+```python
+##################################
+# Creating a dataset copy
+# of the filtered data
+##################################
+lung_cancer_final = lung_cancer_filtered.copy()
+```
+
+
+```python
+##################################
+# Performing a general exploration
+# of the final dataset
+##################################
+print('Final Dataset Dimensions: ')
+display(lung_cancer_final.shape)
+```
+
+    Final Dataset Dimensions: 
+    
+
+
+    (309, 11)
+
+
+
+```python
+print('Target Variable Breakdown: ')
+lung_cancer_breakdown = lung_cancer_final.groupby('LUNG_CANCER').size().reset_index(name='Count')
+lung_cancer_breakdown['Percentage'] = (lung_cancer_breakdown['Count'] / len(lung_cancer_final)) * 100
+display(lung_cancer_breakdown)
+```
+
+    Target Variable Breakdown: 
+    
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>LUNG_CANCER</th>
+      <th>Count</th>
+      <th>Percentage</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>0</td>
+      <td>39</td>
+      <td>12.621359</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>1</td>
+      <td>270</td>
+      <td>87.378641</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+```python
+##################################
+# Separating the target 
+# and predictor columns
+##################################
+X = lung_cancer_final.drop('LUNG_CANCER', axis = 1)
+y = lung_cancer_final['LUNG_CANCER']
+```
+
+
+```python
+##################################
+# Formulating the train and test data
+# from the final dataset
+# by applying stratification and
+# using a 70-30 ratio
+##################################
+X_train_initial, X_test, y_train_initial, y_test = train_test_split(X, y, test_size=0.20, stratify=y, random_state=88888888)
+```
+
+
+```python
+##################################
+# Performing a general exploration
+# of the initial training dataset
+##################################
+print('Training Dataset Dimensions: ')
+display(X_train_initial.shape)
+display(y_train_initial.shape)
+print('Training Target Variable Breakdown: ')
+display(y_train_initial.value_counts(normalize = True))
+```
+
+    Training Dataset Dimensions: 
+    
+
+
+    (247, 10)
+
+
+
+    (247,)
+
+
+    Training Target Variable Breakdown: 
+    
+
+
+    1    0.874494
+    0    0.125506
+    Name: LUNG_CANCER, dtype: float64
+
+
+
+```python
+##################################
+# Performing a general exploration
+# of the test dataset
+##################################
+print('Test Dataset Dimensions: ')
+display(X_test.shape)
+display(y_test.shape)
+print('Test Target Variable Breakdown: ')
+display(y_test.value_counts(normalize = True))
+```
+
+    Test Dataset Dimensions: 
+    
+
+
+    (62, 10)
+
+
+
+    (62,)
+
+
+    Test Target Variable Breakdown: 
+    
+
+
+    1    0.870968
+    0    0.129032
+    Name: LUNG_CANCER, dtype: float64
+
+
+
+```python
+##################################
+# Formulating the train and validation data
+# from the train dataset
+# by applying stratification and
+# using a 70-30 ratio
+##################################
+X_train, X_validation, y_train, y_validation = train_test_split(X_train_initial, y_train_initial, test_size=0.20, random_state=88888888)
+```
+
+
+```python
+##################################
+# Performing a general exploration
+# of the final training dataset
+##################################
+print('Training Dataset Dimensions: ')
+display(X_train.shape)
+display(y_train.shape)
+print('Training Target Variable Breakdown: ')
+display(y_train.value_counts(normalize = True))
+```
+
+    Training Dataset Dimensions: 
+    
+
+
+    (197, 10)
+
+
+
+    (197,)
+
+
+    Training Target Variable Breakdown: 
+    
+
+
+    1    0.873096
+    0    0.126904
+    Name: LUNG_CANCER, dtype: float64
+
+
+
+```python
+##################################
+# Performing a general exploration
+# of the validation dataset
+##################################
+print('Validation Dataset Dimensions: ')
+display(X_validation.shape)
+display(y_validation.shape)
+print('Validation Target Variable Breakdown: ')
+display(y_validation.value_counts(normalize = True))
+```
+
+    Validation Dataset Dimensions: 
+    
+
+
+    (50, 10)
+
+
+
+    (50,)
+
+
+    Validation Target Variable Breakdown: 
+    
+
+
+    1    0.88
+    0    0.12
+    Name: LUNG_CANCER, dtype: float64
+
+
+
+```python
+##################################
+# Saving the training data
+# to the DATASETS_FINAL_TRAIN_FEATURES_PATH
+# and DATASETS_FINAL_TRAIN_TARGET_PATH
+##################################
+X_train.to_csv(os.path.join("..", DATASETS_FINAL_TRAIN_FEATURES_PATH, "X_train.csv"), index=False)
+y_train.to_csv(os.path.join("..", DATASETS_FINAL_TRAIN_TARGET_PATH, "y_train.csv"), index=False)
+```
+
+
+```python
+##################################
+# Saving the validation data
+# to the DATASETS_FINAL_VALIDATION_FEATURES_PATH
+# and DATASETS_FINAL_VALIDATION_TARGET_PATH
+##################################
+X_validation.to_csv(os.path.join("..", DATASETS_FINAL_VALIDATION_FEATURES_PATH, "X_validation.csv"), index=False)
+y_validation.to_csv(os.path.join("..", DATASETS_FINAL_VALIDATION_TARGET_PATH, "y_validation.csv"), index=False)
+```
+
+
+```python
+##################################
+# Saving the test data
+# to the DATASETS_FINAL_TEST_FEATURES_PATH
+# and DATASETS_FINAL_TEST_TARGET_PATH
+##################################
+X_test.to_csv(os.path.join("..", DATASETS_FINAL_TEST_FEATURES_PATH, "X_test.csv"), index=False)
+y_test.to_csv(os.path.join("..", DATASETS_FINAL_TEST_TARGET_PATH, "y_test.csv"), index=False)
+```
+
+### 1.6.3 Modelling Pipeline Development <a class="anchor" id="1.6.3"></a>
+
+### 1.6.4 Model Hyperparameter Tuning <a class="anchor" id="1.6.4"></a>
+
+### 1.6.5 Model Validation <a class="anchor" id="1.6.5"></a>
+
+### 1.6.6 Model Testing <a class="anchor" id="1.6.6"></a>
+
+### 1.6.7 Model Inference <a class="anchor" id="1.6.7"></a>
 
 
 ```python
