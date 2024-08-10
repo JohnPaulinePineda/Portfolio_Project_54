@@ -46,6 +46,18 @@
 
 ```python
 ##################################
+# Setting up compatibility issues
+# between the scikit-learn and imblearn packages
+##################################
+# !pip uninstall scikit-learn --yes
+# !pip uninstall imblearn --yes
+# !pip install scikit-learn==1.2.2
+# !pip install imblearn
+```
+
+
+```python
+##################################
 # Loading Python Libraries
 ##################################
 import numpy as np
@@ -73,6 +85,9 @@ from sklearn.ensemble import RandomForestClassifier, StackingClassifier
 from sklearn.svm import SVC
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, roc_auc_score, confusion_matrix, ConfusionMatrixDisplay, classification_report
 from sklearn.model_selection import train_test_split, GridSearchCV, cross_val_score
+
+from imblearn.over_sampling import SMOTE
+from imblearn.under_sampling import CondensedNearestNeighbour
 ```
 
 
@@ -1972,7 +1987,7 @@ for column in lung_cancer_numeric:
 
 
     
-![png](output_77_0.png)
+![png](output_78_0.png)
     
 
 
@@ -2270,7 +2285,7 @@ plt.show()
 
 
     
-![png](output_81_0.png)
+![png](output_82_0.png)
     
 
 
@@ -2316,7 +2331,7 @@ plt.show()
 
 
     
-![png](output_86_0.png)
+![png](output_87_0.png)
     
 
 
@@ -2377,7 +2392,7 @@ plt.show()
 
 
     
-![png](output_88_0.png)
+![png](output_89_0.png)
     
 
 
@@ -2447,22 +2462,6 @@ display(lung_cancer_numeric_summary.sort_values(by=['T.Test.PValue'], ascending=
   </tbody>
 </table>
 </div>
-
-
-
-```python
-lung_cancer_predictors_categorical
-```
-
-
-
-
-    Index(['GENDER', 'SMOKING', 'YELLOW_FINGERS', 'ANXIETY', 'PEER_PRESSURE',
-           'CHRONIC DISEASE', 'FATIGUE ', 'ALLERGY ', 'WHEEZING',
-           'ALCOHOL CONSUMING', 'COUGHING', 'SHORTNESS OF BREATH',
-           'SWALLOWING DIFFICULTY', 'CHEST PAIN'],
-          dtype='object')
-
 
 
 
@@ -3074,16 +3073,16 @@ lung_cancer_train, lung_cancer_validation = train_test_split(lung_cancer_train_i
 ##################################
 X_train = lung_cancer_train.drop('LUNG_CANCER', axis = 1)
 y_train = lung_cancer_train['LUNG_CANCER']
-print('Training Dataset Dimensions: ')
+print('Original Training Dataset Dimensions: ')
 display(X_train.shape)
 display(y_train.shape)
-print('Training Target Variable Breakdown: ')
+print('Original Training Target Variable Breakdown: ')
 display(y_train.value_counts())
-print('Training Target Variable Proportion: ')
+print('Original Training Target Variable Proportion: ')
 display(y_train.value_counts(normalize = True))
 ```
 
-    Training Dataset Dimensions: 
+    Original Training Dataset Dimensions: 
     
 
 
@@ -3094,7 +3093,7 @@ display(y_train.value_counts(normalize = True))
     (197,)
 
 
-    Training Target Variable Breakdown: 
+    Original Training Target Variable Breakdown: 
     
 
 
@@ -3103,7 +3102,7 @@ display(y_train.value_counts(normalize = True))
     Name: LUNG_CANCER, dtype: int64
 
 
-    Training Target Variable Proportion: 
+    Original Training Target Variable Proportion: 
     
 
 
@@ -3150,6 +3149,100 @@ display(y_validation.value_counts(normalize = True))
 
 ```python
 ##################################
+# Initiating an oversampling instance
+# on the training data using
+# Synthetic Minority Oversampling Technique
+##################################
+smote = SMOTE(random_state = 88888888)
+X_train_smote, y_train_smote = smote.fit_resample(X_train,y_train)
+print('Upsampled Training Dataset Dimensions: ')
+display(X_train_smote.shape)
+display(y_train_smote.shape)
+print('Upsampled Training Target Variable Breakdown: ')
+display(y_train_smote.value_counts())
+print('Upsampled Training Target Variable Proportion: ')
+display(y_train_smote.value_counts(normalize = True))
+```
+
+    Upsampled Training Dataset Dimensions: 
+    
+
+
+    (344, 10)
+
+
+
+    (344,)
+
+
+    Upsampled Training Target Variable Breakdown: 
+    
+
+
+    0    172
+    1    172
+    Name: LUNG_CANCER, dtype: int64
+
+
+    Upsampled Training Target Variable Proportion: 
+    
+
+
+    0    0.5
+    1    0.5
+    Name: LUNG_CANCER, dtype: float64
+
+
+
+```python
+##################################
+# Initiating an undersampling instance
+# on the training data using
+# Condense Nearest Neighbors
+##################################
+cnn = CondensedNearestNeighbour(random_state = 88888888, n_neighbors=3)
+X_train_cnn, y_train_cnn = cnn.fit_resample(X_train,y_train)
+print('Downsampled Training Dataset Dimensions: ')
+display(X_train_cnn.shape)
+display(y_train_cnn.shape)
+print('Downsampled Training Target Variable Breakdown: ')
+display(y_train_cnn.value_counts())
+print('Downsampled Training Target Variable Proportion: ')
+display(y_train_cnn.value_counts(normalize = True))
+```
+
+    Downsampled Training Dataset Dimensions: 
+    
+
+
+    (63, 10)
+
+
+
+    (63,)
+
+
+    Downsampled Training Target Variable Breakdown: 
+    
+
+
+    1    38
+    0    25
+    Name: LUNG_CANCER, dtype: int64
+
+
+    Downsampled Training Target Variable Proportion: 
+    
+
+
+    1    0.603175
+    0    0.396825
+    Name: LUNG_CANCER, dtype: float64
+
+
+
+```python
+##################################
 # Saving the training data
 # to the DATASETS_FINAL_TRAIN_PATH
 # and DATASETS_FINAL_TRAIN_FEATURES_PATH
@@ -3158,6 +3251,10 @@ display(y_validation.value_counts(normalize = True))
 lung_cancer_train.to_csv(os.path.join("..", DATASETS_FINAL_TRAIN_PATH, "lung_cancer_train.csv"), index=False)
 X_train.to_csv(os.path.join("..", DATASETS_FINAL_TRAIN_FEATURES_PATH, "X_train.csv"), index=False)
 y_train.to_csv(os.path.join("..", DATASETS_FINAL_TRAIN_TARGET_PATH, "y_train.csv"), index=False)
+X_train_smote.to_csv(os.path.join("..", DATASETS_FINAL_TRAIN_FEATURES_PATH, "X_train_smote.csv"), index=False)
+y_train_smote.to_csv(os.path.join("..", DATASETS_FINAL_TRAIN_TARGET_PATH, "y_train_smote.csv"), index=False)
+X_train_cnn.to_csv(os.path.join("..", DATASETS_FINAL_TRAIN_FEATURES_PATH, "X_train_cnn.csv"), index=False)
+y_train_cnn.to_csv(os.path.join("..", DATASETS_FINAL_TRAIN_TARGET_PATH, "y_train_cnn.csv"), index=False)
 ```
 
 
@@ -3208,8 +3305,7 @@ individual_pipeline = Pipeline([('individual_model', LogisticRegression(solver='
 # including the regularization penalties
 # and class weights for unbalanced class
 ##################################
-individual_unbalanced_class_hyperparameter_grid = {'individual_model__penalty': ['l1', 'l2', 'elasticnet', 'none'],
-                                                   'individual_model__l1_ratio': [0.25, 0.50, 0.75],
+individual_unbalanced_class_hyperparameter_grid = {'individual_model__penalty': ['l1', 'l2', None],
                                                    'individual_model__class_weight': ['balanced']}
 ```
 
@@ -3234,9 +3330,8 @@ individual_unbalanced_class_grid_search = GridSearchCV(estimator=individual_pipe
 # including the regularization penalties
 # and class weights for unbalanced class
 ##################################
-individual_balanced_class_hyperparameter_grid = {'individual_model__penalty': ['l1', 'l2', 'elasticnet', 'none'],
-                                                 'individual_model__l1_ratio': [0.25, 0.50, 0.75],
-                                                 'individual_model__class_weight': ['none']}
+individual_balanced_class_hyperparameter_grid = {'individual_model__penalty': ['l1', 'l2', None],
+                                                 'individual_model__class_weight': [None]}
 ```
 
 
@@ -3320,8 +3415,7 @@ stacked_unbalanced_class_pipeline = Pipeline([('stacked_model', stacked_unbalanc
 stacked_unbalanced_class_hyperparameter_grid = {'stacked_model__dt__max_depth': [3, 5],
                                                 'stacked_model__rf__max_depth': [3, 5],
                                                 'stacked_model__svm__kernel': ['linear', 'poly', 'rbf'],
-                                                'stacked_model__final_estimator__penalty': ['l1', 'l2', 'elasticnet'],
-                                                'stacked_model__final_estimator__l1_ratio': [0.25, 0.50, 0.75],
+                                                'stacked_model__final_estimator__penalty': ['l1', 'l2', None],
                                                 'stacked_model__final_estimator__class_weight': ['balanced']}
 ```
 
@@ -3352,22 +3446,20 @@ stacked_unbalanced_class_grid_search = GridSearchCV(estimator=stacked_unbalanced
 individual_unbalanced_class_grid_search.fit(X_train, y_train)
 ```
 
-    Fitting 5 folds for each of 12 candidates, totalling 60 fits
+    Fitting 5 folds for each of 3 candidates, totalling 15 fits
     
 
 
 
 
-<style>#sk-container-id-1 {color: black;}#sk-container-id-1 pre{padding: 0;}#sk-container-id-1 div.sk-toggleable {background-color: white;}#sk-container-id-1 label.sk-toggleable__label {cursor: pointer;display: block;width: 100%;margin-bottom: 0;padding: 0.3em;box-sizing: border-box;text-align: center;}#sk-container-id-1 label.sk-toggleable__label-arrow:before {content: "▸";float: left;margin-right: 0.25em;color: #696969;}#sk-container-id-1 label.sk-toggleable__label-arrow:hover:before {color: black;}#sk-container-id-1 div.sk-estimator:hover label.sk-toggleable__label-arrow:before {color: black;}#sk-container-id-1 div.sk-toggleable__content {max-height: 0;max-width: 0;overflow: hidden;text-align: left;background-color: #f0f8ff;}#sk-container-id-1 div.sk-toggleable__content pre {margin: 0.2em;color: black;border-radius: 0.25em;background-color: #f0f8ff;}#sk-container-id-1 input.sk-toggleable__control:checked~div.sk-toggleable__content {max-height: 200px;max-width: 100%;overflow: auto;}#sk-container-id-1 input.sk-toggleable__control:checked~label.sk-toggleable__label-arrow:before {content: "▾";}#sk-container-id-1 div.sk-estimator input.sk-toggleable__control:checked~label.sk-toggleable__label {background-color: #d4ebff;}#sk-container-id-1 div.sk-label input.sk-toggleable__control:checked~label.sk-toggleable__label {background-color: #d4ebff;}#sk-container-id-1 input.sk-hidden--visually {border: 0;clip: rect(1px 1px 1px 1px);clip: rect(1px, 1px, 1px, 1px);height: 1px;margin: -1px;overflow: hidden;padding: 0;position: absolute;width: 1px;}#sk-container-id-1 div.sk-estimator {font-family: monospace;background-color: #f0f8ff;border: 1px dotted black;border-radius: 0.25em;box-sizing: border-box;margin-bottom: 0.5em;}#sk-container-id-1 div.sk-estimator:hover {background-color: #d4ebff;}#sk-container-id-1 div.sk-parallel-item::after {content: "";width: 100%;border-bottom: 1px solid gray;flex-grow: 1;}#sk-container-id-1 div.sk-label:hover label.sk-toggleable__label {background-color: #d4ebff;}#sk-container-id-1 div.sk-serial::before {content: "";position: absolute;border-left: 1px solid gray;box-sizing: border-box;top: 0;bottom: 0;left: 50%;z-index: 0;}#sk-container-id-1 div.sk-serial {display: flex;flex-direction: column;align-items: center;background-color: white;padding-right: 0.2em;padding-left: 0.2em;position: relative;}#sk-container-id-1 div.sk-item {position: relative;z-index: 1;}#sk-container-id-1 div.sk-parallel {display: flex;align-items: stretch;justify-content: center;background-color: white;position: relative;}#sk-container-id-1 div.sk-item::before, #sk-container-id-1 div.sk-parallel-item::before {content: "";position: absolute;border-left: 1px solid gray;box-sizing: border-box;top: 0;bottom: 0;left: 50%;z-index: -1;}#sk-container-id-1 div.sk-parallel-item {display: flex;flex-direction: column;z-index: 1;position: relative;background-color: white;}#sk-container-id-1 div.sk-parallel-item:first-child::after {align-self: flex-end;width: 50%;}#sk-container-id-1 div.sk-parallel-item:last-child::after {align-self: flex-start;width: 50%;}#sk-container-id-1 div.sk-parallel-item:only-child::after {width: 0;}#sk-container-id-1 div.sk-dashed-wrapped {border: 1px dashed gray;margin: 0 0.4em 0.5em 0.4em;box-sizing: border-box;padding-bottom: 0.4em;background-color: white;}#sk-container-id-1 div.sk-label label {font-family: monospace;font-weight: bold;display: inline-block;line-height: 1.2em;}#sk-container-id-1 div.sk-label-container {text-align: center;}#sk-container-id-1 div.sk-container {/* jupyter's `normalize.less` sets `[hidden] { display: none; }` but bootstrap.min.css set `[hidden] { display: none !important; }` so we also need the `!important` here to be able to override the default hidden behavior on the sphinx rendered scikit-learn.org. See: https://github.com/scikit-learn/scikit-learn/issues/21755 */display: inline-block !important;position: relative;}#sk-container-id-1 div.sk-text-repr-fallback {display: none;}</style><div id="sk-container-id-1" class="sk-top-container"><div class="sk-text-repr-fallback"><pre>GridSearchCV(cv=5,
+<style>#sk-container-id-1 {color: black;background-color: white;}#sk-container-id-1 pre{padding: 0;}#sk-container-id-1 div.sk-toggleable {background-color: white;}#sk-container-id-1 label.sk-toggleable__label {cursor: pointer;display: block;width: 100%;margin-bottom: 0;padding: 0.3em;box-sizing: border-box;text-align: center;}#sk-container-id-1 label.sk-toggleable__label-arrow:before {content: "▸";float: left;margin-right: 0.25em;color: #696969;}#sk-container-id-1 label.sk-toggleable__label-arrow:hover:before {color: black;}#sk-container-id-1 div.sk-estimator:hover label.sk-toggleable__label-arrow:before {color: black;}#sk-container-id-1 div.sk-toggleable__content {max-height: 0;max-width: 0;overflow: hidden;text-align: left;background-color: #f0f8ff;}#sk-container-id-1 div.sk-toggleable__content pre {margin: 0.2em;color: black;border-radius: 0.25em;background-color: #f0f8ff;}#sk-container-id-1 input.sk-toggleable__control:checked~div.sk-toggleable__content {max-height: 200px;max-width: 100%;overflow: auto;}#sk-container-id-1 input.sk-toggleable__control:checked~label.sk-toggleable__label-arrow:before {content: "▾";}#sk-container-id-1 div.sk-estimator input.sk-toggleable__control:checked~label.sk-toggleable__label {background-color: #d4ebff;}#sk-container-id-1 div.sk-label input.sk-toggleable__control:checked~label.sk-toggleable__label {background-color: #d4ebff;}#sk-container-id-1 input.sk-hidden--visually {border: 0;clip: rect(1px 1px 1px 1px);clip: rect(1px, 1px, 1px, 1px);height: 1px;margin: -1px;overflow: hidden;padding: 0;position: absolute;width: 1px;}#sk-container-id-1 div.sk-estimator {font-family: monospace;background-color: #f0f8ff;border: 1px dotted black;border-radius: 0.25em;box-sizing: border-box;margin-bottom: 0.5em;}#sk-container-id-1 div.sk-estimator:hover {background-color: #d4ebff;}#sk-container-id-1 div.sk-parallel-item::after {content: "";width: 100%;border-bottom: 1px solid gray;flex-grow: 1;}#sk-container-id-1 div.sk-label:hover label.sk-toggleable__label {background-color: #d4ebff;}#sk-container-id-1 div.sk-serial::before {content: "";position: absolute;border-left: 1px solid gray;box-sizing: border-box;top: 0;bottom: 0;left: 50%;z-index: 0;}#sk-container-id-1 div.sk-serial {display: flex;flex-direction: column;align-items: center;background-color: white;padding-right: 0.2em;padding-left: 0.2em;position: relative;}#sk-container-id-1 div.sk-item {position: relative;z-index: 1;}#sk-container-id-1 div.sk-parallel {display: flex;align-items: stretch;justify-content: center;background-color: white;position: relative;}#sk-container-id-1 div.sk-item::before, #sk-container-id-1 div.sk-parallel-item::before {content: "";position: absolute;border-left: 1px solid gray;box-sizing: border-box;top: 0;bottom: 0;left: 50%;z-index: -1;}#sk-container-id-1 div.sk-parallel-item {display: flex;flex-direction: column;z-index: 1;position: relative;background-color: white;}#sk-container-id-1 div.sk-parallel-item:first-child::after {align-self: flex-end;width: 50%;}#sk-container-id-1 div.sk-parallel-item:last-child::after {align-self: flex-start;width: 50%;}#sk-container-id-1 div.sk-parallel-item:only-child::after {width: 0;}#sk-container-id-1 div.sk-dashed-wrapped {border: 1px dashed gray;margin: 0 0.4em 0.5em 0.4em;box-sizing: border-box;padding-bottom: 0.4em;background-color: white;}#sk-container-id-1 div.sk-label label {font-family: monospace;font-weight: bold;display: inline-block;line-height: 1.2em;}#sk-container-id-1 div.sk-label-container {text-align: center;}#sk-container-id-1 div.sk-container {/* jupyter's `normalize.less` sets `[hidden] { display: none; }` but bootstrap.min.css set `[hidden] { display: none !important; }` so we also need the `!important` here to be able to override the default hidden behavior on the sphinx rendered scikit-learn.org. See: https://github.com/scikit-learn/scikit-learn/issues/21755 */display: inline-block !important;position: relative;}#sk-container-id-1 div.sk-text-repr-fallback {display: none;}</style><div id="sk-container-id-1" class="sk-top-container"><div class="sk-text-repr-fallback"><pre>GridSearchCV(cv=5,
              estimator=Pipeline(steps=[(&#x27;individual_model&#x27;,
                                         LogisticRegression(max_iter=5000,
                                                            random_state=88888888,
                                                            solver=&#x27;saga&#x27;))]),
              n_jobs=-1,
              param_grid={&#x27;individual_model__class_weight&#x27;: [&#x27;balanced&#x27;],
-                         &#x27;individual_model__l1_ratio&#x27;: [0.25, 0.5, 0.75],
-                         &#x27;individual_model__penalty&#x27;: [&#x27;l1&#x27;, &#x27;l2&#x27;, &#x27;elasticnet&#x27;,
-                                                       &#x27;none&#x27;]},
+                         &#x27;individual_model__penalty&#x27;: [&#x27;l1&#x27;, &#x27;l2&#x27;, None]},
              scoring=&#x27;f1&#x27;, verbose=1)</pre><b>In a Jupyter environment, please rerun this cell to show the HTML representation or trust the notebook. <br />On GitHub, the HTML representation is unable to render, please try loading this page with nbviewer.org.</b></div><div class="sk-container" hidden><div class="sk-item sk-dashed-wrapped"><div class="sk-label-container"><div class="sk-label sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually" id="sk-estimator-id-1" type="checkbox" ><label for="sk-estimator-id-1" class="sk-toggleable__label sk-toggleable__label-arrow">GridSearchCV</label><div class="sk-toggleable__content"><pre>GridSearchCV(cv=5,
              estimator=Pipeline(steps=[(&#x27;individual_model&#x27;,
                                         LogisticRegression(max_iter=5000,
@@ -3375,9 +3467,7 @@ individual_unbalanced_class_grid_search.fit(X_train, y_train)
                                                            solver=&#x27;saga&#x27;))]),
              n_jobs=-1,
              param_grid={&#x27;individual_model__class_weight&#x27;: [&#x27;balanced&#x27;],
-                         &#x27;individual_model__l1_ratio&#x27;: [0.25, 0.5, 0.75],
-                         &#x27;individual_model__penalty&#x27;: [&#x27;l1&#x27;, &#x27;l2&#x27;, &#x27;elasticnet&#x27;,
-                                                       &#x27;none&#x27;]},
+                         &#x27;individual_model__penalty&#x27;: [&#x27;l1&#x27;, &#x27;l2&#x27;, None]},
              scoring=&#x27;f1&#x27;, verbose=1)</pre></div></div></div><div class="sk-parallel"><div class="sk-parallel-item"><div class="sk-item"><div class="sk-label-container"><div class="sk-label sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually" id="sk-estimator-id-2" type="checkbox" ><label for="sk-estimator-id-2" class="sk-toggleable__label sk-toggleable__label-arrow">estimator: Pipeline</label><div class="sk-toggleable__content"><pre>Pipeline(steps=[(&#x27;individual_model&#x27;,
                  LogisticRegression(max_iter=5000, random_state=88888888,
                                     solver=&#x27;saga&#x27;))])</pre></div></div></div><div class="sk-serial"><div class="sk-item"><div class="sk-serial"><div class="sk-item"><div class="sk-estimator sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually" id="sk-estimator-id-3" type="checkbox" ><label for="sk-estimator-id-3" class="sk-toggleable__label sk-toggleable__label-arrow">LogisticRegression</label><div class="sk-toggleable__content"><pre>LogisticRegression(max_iter=5000, random_state=88888888, solver=&#x27;saga&#x27;)</pre></div></div></div></div></div></div></div></div></div></div></div></div>
@@ -3413,7 +3503,7 @@ print(f"Best Individual Model Parameters: {individual_unbalanced_class_grid_sear
 ```
 
     Best Individual Model using the Original Train Data: 
-    Best Individual Model Parameters: {'individual_model__class_weight': 'balanced', 'individual_model__l1_ratio': 0.25, 'individual_model__penalty': 'elasticnet'}
+    Best Individual Model Parameters: {'individual_model__class_weight': 'balanced', 'individual_model__penalty': 'l2'}
     
 
 
@@ -3428,7 +3518,7 @@ print(f"F1 Score on Training Data: {individual_unbalanced_class_best_model_origi
 print("\nClassification Report on Training Data:\n", classification_report(y_train, individual_unbalanced_class_best_model_original.predict(X_train)))
 ```
 
-    F1 Score on Cross-Validated Data: 0.9339
+    F1 Score on Cross-Validated Data: 0.9336
     F1 Score on Training Data: 0.9455
     
     Classification Report on Training Data:
@@ -3467,7 +3557,7 @@ plt.show()
 
 
     
-![png](output_134_0.png)
+![png](output_136_0.png)
     
 
 
@@ -3520,7 +3610,7 @@ plt.show()
 
 
     
-![png](output_136_0.png)
+![png](output_138_0.png)
     
 
 
@@ -3585,7 +3675,7 @@ plt.show()
 
 
     
-![png](output_140_0.png)
+![png](output_142_0.png)
     
 
 
@@ -3617,16 +3707,13 @@ joblib.dump(individual_unbalanced_class_best_model_original,
 stacked_unbalanced_class_grid_search.fit(X_train, y_train)
 ```
 
-    Fitting 5 folds for each of 108 candidates, totalling 540 fits
-    
-
-    l1_ratio parameter is only used when penalty is 'elasticnet'. Got (penalty=l1)
+    Fitting 5 folds for each of 36 candidates, totalling 180 fits
     
 
 
 
 
-<style>#sk-container-id-2 {color: black;}#sk-container-id-2 pre{padding: 0;}#sk-container-id-2 div.sk-toggleable {background-color: white;}#sk-container-id-2 label.sk-toggleable__label {cursor: pointer;display: block;width: 100%;margin-bottom: 0;padding: 0.3em;box-sizing: border-box;text-align: center;}#sk-container-id-2 label.sk-toggleable__label-arrow:before {content: "▸";float: left;margin-right: 0.25em;color: #696969;}#sk-container-id-2 label.sk-toggleable__label-arrow:hover:before {color: black;}#sk-container-id-2 div.sk-estimator:hover label.sk-toggleable__label-arrow:before {color: black;}#sk-container-id-2 div.sk-toggleable__content {max-height: 0;max-width: 0;overflow: hidden;text-align: left;background-color: #f0f8ff;}#sk-container-id-2 div.sk-toggleable__content pre {margin: 0.2em;color: black;border-radius: 0.25em;background-color: #f0f8ff;}#sk-container-id-2 input.sk-toggleable__control:checked~div.sk-toggleable__content {max-height: 200px;max-width: 100%;overflow: auto;}#sk-container-id-2 input.sk-toggleable__control:checked~label.sk-toggleable__label-arrow:before {content: "▾";}#sk-container-id-2 div.sk-estimator input.sk-toggleable__control:checked~label.sk-toggleable__label {background-color: #d4ebff;}#sk-container-id-2 div.sk-label input.sk-toggleable__control:checked~label.sk-toggleable__label {background-color: #d4ebff;}#sk-container-id-2 input.sk-hidden--visually {border: 0;clip: rect(1px 1px 1px 1px);clip: rect(1px, 1px, 1px, 1px);height: 1px;margin: -1px;overflow: hidden;padding: 0;position: absolute;width: 1px;}#sk-container-id-2 div.sk-estimator {font-family: monospace;background-color: #f0f8ff;border: 1px dotted black;border-radius: 0.25em;box-sizing: border-box;margin-bottom: 0.5em;}#sk-container-id-2 div.sk-estimator:hover {background-color: #d4ebff;}#sk-container-id-2 div.sk-parallel-item::after {content: "";width: 100%;border-bottom: 1px solid gray;flex-grow: 1;}#sk-container-id-2 div.sk-label:hover label.sk-toggleable__label {background-color: #d4ebff;}#sk-container-id-2 div.sk-serial::before {content: "";position: absolute;border-left: 1px solid gray;box-sizing: border-box;top: 0;bottom: 0;left: 50%;z-index: 0;}#sk-container-id-2 div.sk-serial {display: flex;flex-direction: column;align-items: center;background-color: white;padding-right: 0.2em;padding-left: 0.2em;position: relative;}#sk-container-id-2 div.sk-item {position: relative;z-index: 1;}#sk-container-id-2 div.sk-parallel {display: flex;align-items: stretch;justify-content: center;background-color: white;position: relative;}#sk-container-id-2 div.sk-item::before, #sk-container-id-2 div.sk-parallel-item::before {content: "";position: absolute;border-left: 1px solid gray;box-sizing: border-box;top: 0;bottom: 0;left: 50%;z-index: -1;}#sk-container-id-2 div.sk-parallel-item {display: flex;flex-direction: column;z-index: 1;position: relative;background-color: white;}#sk-container-id-2 div.sk-parallel-item:first-child::after {align-self: flex-end;width: 50%;}#sk-container-id-2 div.sk-parallel-item:last-child::after {align-self: flex-start;width: 50%;}#sk-container-id-2 div.sk-parallel-item:only-child::after {width: 0;}#sk-container-id-2 div.sk-dashed-wrapped {border: 1px dashed gray;margin: 0 0.4em 0.5em 0.4em;box-sizing: border-box;padding-bottom: 0.4em;background-color: white;}#sk-container-id-2 div.sk-label label {font-family: monospace;font-weight: bold;display: inline-block;line-height: 1.2em;}#sk-container-id-2 div.sk-label-container {text-align: center;}#sk-container-id-2 div.sk-container {/* jupyter's `normalize.less` sets `[hidden] { display: none; }` but bootstrap.min.css set `[hidden] { display: none !important; }` so we also need the `!important` here to be able to override the default hidden behavior on the sphinx rendered scikit-learn.org. See: https://github.com/scikit-learn/scikit-learn/issues/21755 */display: inline-block !important;position: relative;}#sk-container-id-2 div.sk-text-repr-fallback {display: none;}</style><div id="sk-container-id-2" class="sk-top-container"><div class="sk-text-repr-fallback"><pre>GridSearchCV(cv=5,
+<style>#sk-container-id-2 {color: black;background-color: white;}#sk-container-id-2 pre{padding: 0;}#sk-container-id-2 div.sk-toggleable {background-color: white;}#sk-container-id-2 label.sk-toggleable__label {cursor: pointer;display: block;width: 100%;margin-bottom: 0;padding: 0.3em;box-sizing: border-box;text-align: center;}#sk-container-id-2 label.sk-toggleable__label-arrow:before {content: "▸";float: left;margin-right: 0.25em;color: #696969;}#sk-container-id-2 label.sk-toggleable__label-arrow:hover:before {color: black;}#sk-container-id-2 div.sk-estimator:hover label.sk-toggleable__label-arrow:before {color: black;}#sk-container-id-2 div.sk-toggleable__content {max-height: 0;max-width: 0;overflow: hidden;text-align: left;background-color: #f0f8ff;}#sk-container-id-2 div.sk-toggleable__content pre {margin: 0.2em;color: black;border-radius: 0.25em;background-color: #f0f8ff;}#sk-container-id-2 input.sk-toggleable__control:checked~div.sk-toggleable__content {max-height: 200px;max-width: 100%;overflow: auto;}#sk-container-id-2 input.sk-toggleable__control:checked~label.sk-toggleable__label-arrow:before {content: "▾";}#sk-container-id-2 div.sk-estimator input.sk-toggleable__control:checked~label.sk-toggleable__label {background-color: #d4ebff;}#sk-container-id-2 div.sk-label input.sk-toggleable__control:checked~label.sk-toggleable__label {background-color: #d4ebff;}#sk-container-id-2 input.sk-hidden--visually {border: 0;clip: rect(1px 1px 1px 1px);clip: rect(1px, 1px, 1px, 1px);height: 1px;margin: -1px;overflow: hidden;padding: 0;position: absolute;width: 1px;}#sk-container-id-2 div.sk-estimator {font-family: monospace;background-color: #f0f8ff;border: 1px dotted black;border-radius: 0.25em;box-sizing: border-box;margin-bottom: 0.5em;}#sk-container-id-2 div.sk-estimator:hover {background-color: #d4ebff;}#sk-container-id-2 div.sk-parallel-item::after {content: "";width: 100%;border-bottom: 1px solid gray;flex-grow: 1;}#sk-container-id-2 div.sk-label:hover label.sk-toggleable__label {background-color: #d4ebff;}#sk-container-id-2 div.sk-serial::before {content: "";position: absolute;border-left: 1px solid gray;box-sizing: border-box;top: 0;bottom: 0;left: 50%;z-index: 0;}#sk-container-id-2 div.sk-serial {display: flex;flex-direction: column;align-items: center;background-color: white;padding-right: 0.2em;padding-left: 0.2em;position: relative;}#sk-container-id-2 div.sk-item {position: relative;z-index: 1;}#sk-container-id-2 div.sk-parallel {display: flex;align-items: stretch;justify-content: center;background-color: white;position: relative;}#sk-container-id-2 div.sk-item::before, #sk-container-id-2 div.sk-parallel-item::before {content: "";position: absolute;border-left: 1px solid gray;box-sizing: border-box;top: 0;bottom: 0;left: 50%;z-index: -1;}#sk-container-id-2 div.sk-parallel-item {display: flex;flex-direction: column;z-index: 1;position: relative;background-color: white;}#sk-container-id-2 div.sk-parallel-item:first-child::after {align-self: flex-end;width: 50%;}#sk-container-id-2 div.sk-parallel-item:last-child::after {align-self: flex-start;width: 50%;}#sk-container-id-2 div.sk-parallel-item:only-child::after {width: 0;}#sk-container-id-2 div.sk-dashed-wrapped {border: 1px dashed gray;margin: 0 0.4em 0.5em 0.4em;box-sizing: border-box;padding-bottom: 0.4em;background-color: white;}#sk-container-id-2 div.sk-label label {font-family: monospace;font-weight: bold;display: inline-block;line-height: 1.2em;}#sk-container-id-2 div.sk-label-container {text-align: center;}#sk-container-id-2 div.sk-container {/* jupyter's `normalize.less` sets `[hidden] { display: none; }` but bootstrap.min.css set `[hidden] { display: none !important; }` so we also need the `!important` here to be able to override the default hidden behavior on the sphinx rendered scikit-learn.org. See: https://github.com/scikit-learn/scikit-learn/issues/21755 */display: inline-block !important;position: relative;}#sk-container-id-2 div.sk-text-repr-fallback {display: none;}</style><div id="sk-container-id-2" class="sk-top-container"><div class="sk-text-repr-fallback"><pre>GridSearchCV(cv=5,
              estimator=Pipeline(steps=[(&#x27;stacked_model&#x27;,
                                         StackingClassifier(estimators=[(&#x27;dt&#x27;,
                                                                         DecisionTreeClassifier(class_weight=&#x27;balanced&#x27;,
@@ -3640,13 +3727,14 @@ stacked_unbalanced_class_grid_search.fit(X_train, y_train)
                                                                                                random_state=88888888)),
                                                                        (&#x27;svm&#x27;,
                                                                         SVC(class_weight=&#x27;b...
+                                                           final_estimator=LogisticRegression(max_iter=5000,
+                                                                                              random_state=88888888,
+                                                                                              solver=&#x27;saga&#x27;)))]),
              n_jobs=-1,
              param_grid={&#x27;stacked_model__dt__max_depth&#x27;: [3, 5],
                          &#x27;stacked_model__final_estimator__class_weight&#x27;: [&#x27;balanced&#x27;],
-                         &#x27;stacked_model__final_estimator__l1_ratio&#x27;: [0.25, 0.5,
-                                                                      0.75],
                          &#x27;stacked_model__final_estimator__penalty&#x27;: [&#x27;l1&#x27;, &#x27;l2&#x27;,
-                                                                     &#x27;elasticnet&#x27;],
+                                                                     None],
                          &#x27;stacked_model__rf__max_depth&#x27;: [3, 5],
                          &#x27;stacked_model__svm__kernel&#x27;: [&#x27;linear&#x27;, &#x27;poly&#x27;,
                                                         &#x27;rbf&#x27;]},
@@ -3664,13 +3752,14 @@ stacked_unbalanced_class_grid_search.fit(X_train, y_train)
                                                                                                random_state=88888888)),
                                                                        (&#x27;svm&#x27;,
                                                                         SVC(class_weight=&#x27;b...
+                                                           final_estimator=LogisticRegression(max_iter=5000,
+                                                                                              random_state=88888888,
+                                                                                              solver=&#x27;saga&#x27;)))]),
              n_jobs=-1,
              param_grid={&#x27;stacked_model__dt__max_depth&#x27;: [3, 5],
                          &#x27;stacked_model__final_estimator__class_weight&#x27;: [&#x27;balanced&#x27;],
-                         &#x27;stacked_model__final_estimator__l1_ratio&#x27;: [0.25, 0.5,
-                                                                      0.75],
                          &#x27;stacked_model__final_estimator__penalty&#x27;: [&#x27;l1&#x27;, &#x27;l2&#x27;,
-                                                                     &#x27;elasticnet&#x27;],
+                                                                     None],
                          &#x27;stacked_model__rf__max_depth&#x27;: [3, 5],
                          &#x27;stacked_model__svm__kernel&#x27;: [&#x27;linear&#x27;, &#x27;poly&#x27;,
                                                         &#x27;rbf&#x27;]},
@@ -3740,7 +3829,7 @@ print(f"Best Stacked Model Parameters: {stacked_unbalanced_class_grid_search.bes
 ```
 
     Best Stacked Model using the Original Train Data: 
-    Best Stacked Model Parameters: {'stacked_model__dt__max_depth': 5, 'stacked_model__final_estimator__class_weight': 'balanced', 'stacked_model__final_estimator__l1_ratio': 0.25, 'stacked_model__final_estimator__penalty': 'l1', 'stacked_model__rf__max_depth': 3, 'stacked_model__svm__kernel': 'rbf'}
+    Best Stacked Model Parameters: {'stacked_model__dt__max_depth': 5, 'stacked_model__final_estimator__class_weight': 'balanced', 'stacked_model__final_estimator__penalty': None, 'stacked_model__rf__max_depth': 3, 'stacked_model__svm__kernel': 'linear'}
     
 
 
@@ -3755,18 +3844,18 @@ print(f"F1 Score on Training Data: {stacked_unbalanced_class_best_model_original
 print("\nClassification Report on Training Data:\n", classification_report(y_train, stacked_unbalanced_class_best_model_original.predict(X_train)))
 ```
 
-    F1 Score on Cross-Validated Data: 0.9245
-    F1 Score on Training Data: 0.9483
+    F1 Score on Cross-Validated Data: 0.9335
+    F1 Score on Training Data: 0.9422
     
     Classification Report on Training Data:
                    precision    recall  f1-score   support
     
-               0       0.60      0.96      0.74        25
-               1       0.99      0.91      0.95       172
+               0       0.57      0.92      0.71        25
+               1       0.99      0.90      0.94       172
     
-        accuracy                           0.91       197
-       macro avg       0.80      0.93      0.84       197
-    weighted avg       0.94      0.91      0.92       197
+        accuracy                           0.90       197
+       macro avg       0.78      0.91      0.82       197
+    weighted avg       0.93      0.90      0.91       197
     
     
 
@@ -3794,7 +3883,7 @@ plt.show()
 
 
     
-![png](output_148_0.png)
+![png](output_150_0.png)
     
 
 
@@ -3809,17 +3898,17 @@ print(f"F1 Score on Validation Data: {stacked_unbalanced_class_best_model_origin
 print("\nClassification Report on Validation Data:\n", classification_report(y_validation, stacked_unbalanced_class_best_model_original.predict(X_validation)))
 ```
 
-    F1 Score on Validation Data: 0.8916
+    F1 Score on Validation Data: 0.9048
     
     Classification Report on Validation Data:
                    precision    recall  f1-score   support
     
-               0       0.36      0.67      0.47         6
-               1       0.95      0.84      0.89        44
+               0       0.40      0.67      0.50         6
+               1       0.95      0.86      0.90        44
     
-        accuracy                           0.82        50
-       macro avg       0.66      0.75      0.68        50
-    weighted avg       0.88      0.82      0.84        50
+        accuracy                           0.84        50
+       macro avg       0.68      0.77      0.70        50
+    weighted avg       0.88      0.84      0.86        50
     
     
 
@@ -3847,7 +3936,7 @@ plt.show()
 
 
     
-![png](output_150_0.png)
+![png](output_152_0.png)
     
 
 
@@ -3912,7 +4001,7 @@ plt.show()
 
 
     
-![png](output_154_0.png)
+![png](output_156_0.png)
     
 
 
@@ -3937,11 +4026,529 @@ joblib.dump(stacked_unbalanced_class_best_model_original,
 
 #### 1.6.5.1 Individual Classifier <a class="anchor" id="1.6.5.1"></a>
 
+
+```python
+##################################
+# Fitting the model on the 
+# upsampled training data
+##################################
+individual_balanced_class_grid_search.fit(X_train_smote, y_train_smote)
+```
+
+    Fitting 5 folds for each of 3 candidates, totalling 15 fits
+    
+
+
+
+
+<style>#sk-container-id-3 {color: black;background-color: white;}#sk-container-id-3 pre{padding: 0;}#sk-container-id-3 div.sk-toggleable {background-color: white;}#sk-container-id-3 label.sk-toggleable__label {cursor: pointer;display: block;width: 100%;margin-bottom: 0;padding: 0.3em;box-sizing: border-box;text-align: center;}#sk-container-id-3 label.sk-toggleable__label-arrow:before {content: "▸";float: left;margin-right: 0.25em;color: #696969;}#sk-container-id-3 label.sk-toggleable__label-arrow:hover:before {color: black;}#sk-container-id-3 div.sk-estimator:hover label.sk-toggleable__label-arrow:before {color: black;}#sk-container-id-3 div.sk-toggleable__content {max-height: 0;max-width: 0;overflow: hidden;text-align: left;background-color: #f0f8ff;}#sk-container-id-3 div.sk-toggleable__content pre {margin: 0.2em;color: black;border-radius: 0.25em;background-color: #f0f8ff;}#sk-container-id-3 input.sk-toggleable__control:checked~div.sk-toggleable__content {max-height: 200px;max-width: 100%;overflow: auto;}#sk-container-id-3 input.sk-toggleable__control:checked~label.sk-toggleable__label-arrow:before {content: "▾";}#sk-container-id-3 div.sk-estimator input.sk-toggleable__control:checked~label.sk-toggleable__label {background-color: #d4ebff;}#sk-container-id-3 div.sk-label input.sk-toggleable__control:checked~label.sk-toggleable__label {background-color: #d4ebff;}#sk-container-id-3 input.sk-hidden--visually {border: 0;clip: rect(1px 1px 1px 1px);clip: rect(1px, 1px, 1px, 1px);height: 1px;margin: -1px;overflow: hidden;padding: 0;position: absolute;width: 1px;}#sk-container-id-3 div.sk-estimator {font-family: monospace;background-color: #f0f8ff;border: 1px dotted black;border-radius: 0.25em;box-sizing: border-box;margin-bottom: 0.5em;}#sk-container-id-3 div.sk-estimator:hover {background-color: #d4ebff;}#sk-container-id-3 div.sk-parallel-item::after {content: "";width: 100%;border-bottom: 1px solid gray;flex-grow: 1;}#sk-container-id-3 div.sk-label:hover label.sk-toggleable__label {background-color: #d4ebff;}#sk-container-id-3 div.sk-serial::before {content: "";position: absolute;border-left: 1px solid gray;box-sizing: border-box;top: 0;bottom: 0;left: 50%;z-index: 0;}#sk-container-id-3 div.sk-serial {display: flex;flex-direction: column;align-items: center;background-color: white;padding-right: 0.2em;padding-left: 0.2em;position: relative;}#sk-container-id-3 div.sk-item {position: relative;z-index: 1;}#sk-container-id-3 div.sk-parallel {display: flex;align-items: stretch;justify-content: center;background-color: white;position: relative;}#sk-container-id-3 div.sk-item::before, #sk-container-id-3 div.sk-parallel-item::before {content: "";position: absolute;border-left: 1px solid gray;box-sizing: border-box;top: 0;bottom: 0;left: 50%;z-index: -1;}#sk-container-id-3 div.sk-parallel-item {display: flex;flex-direction: column;z-index: 1;position: relative;background-color: white;}#sk-container-id-3 div.sk-parallel-item:first-child::after {align-self: flex-end;width: 50%;}#sk-container-id-3 div.sk-parallel-item:last-child::after {align-self: flex-start;width: 50%;}#sk-container-id-3 div.sk-parallel-item:only-child::after {width: 0;}#sk-container-id-3 div.sk-dashed-wrapped {border: 1px dashed gray;margin: 0 0.4em 0.5em 0.4em;box-sizing: border-box;padding-bottom: 0.4em;background-color: white;}#sk-container-id-3 div.sk-label label {font-family: monospace;font-weight: bold;display: inline-block;line-height: 1.2em;}#sk-container-id-3 div.sk-label-container {text-align: center;}#sk-container-id-3 div.sk-container {/* jupyter's `normalize.less` sets `[hidden] { display: none; }` but bootstrap.min.css set `[hidden] { display: none !important; }` so we also need the `!important` here to be able to override the default hidden behavior on the sphinx rendered scikit-learn.org. See: https://github.com/scikit-learn/scikit-learn/issues/21755 */display: inline-block !important;position: relative;}#sk-container-id-3 div.sk-text-repr-fallback {display: none;}</style><div id="sk-container-id-3" class="sk-top-container"><div class="sk-text-repr-fallback"><pre>GridSearchCV(cv=5,
+             estimator=Pipeline(steps=[(&#x27;individual_model&#x27;,
+                                        LogisticRegression(max_iter=5000,
+                                                           random_state=88888888,
+                                                           solver=&#x27;saga&#x27;))]),
+             n_jobs=-1,
+             param_grid={&#x27;individual_model__class_weight&#x27;: [None],
+                         &#x27;individual_model__penalty&#x27;: [&#x27;l1&#x27;, &#x27;l2&#x27;, None]},
+             scoring=&#x27;f1&#x27;, verbose=1)</pre><b>In a Jupyter environment, please rerun this cell to show the HTML representation or trust the notebook. <br />On GitHub, the HTML representation is unable to render, please try loading this page with nbviewer.org.</b></div><div class="sk-container" hidden><div class="sk-item sk-dashed-wrapped"><div class="sk-label-container"><div class="sk-label sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually" id="sk-estimator-id-11" type="checkbox" ><label for="sk-estimator-id-11" class="sk-toggleable__label sk-toggleable__label-arrow">GridSearchCV</label><div class="sk-toggleable__content"><pre>GridSearchCV(cv=5,
+             estimator=Pipeline(steps=[(&#x27;individual_model&#x27;,
+                                        LogisticRegression(max_iter=5000,
+                                                           random_state=88888888,
+                                                           solver=&#x27;saga&#x27;))]),
+             n_jobs=-1,
+             param_grid={&#x27;individual_model__class_weight&#x27;: [None],
+                         &#x27;individual_model__penalty&#x27;: [&#x27;l1&#x27;, &#x27;l2&#x27;, None]},
+             scoring=&#x27;f1&#x27;, verbose=1)</pre></div></div></div><div class="sk-parallel"><div class="sk-parallel-item"><div class="sk-item"><div class="sk-label-container"><div class="sk-label sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually" id="sk-estimator-id-12" type="checkbox" ><label for="sk-estimator-id-12" class="sk-toggleable__label sk-toggleable__label-arrow">estimator: Pipeline</label><div class="sk-toggleable__content"><pre>Pipeline(steps=[(&#x27;individual_model&#x27;,
+                 LogisticRegression(max_iter=5000, random_state=88888888,
+                                    solver=&#x27;saga&#x27;))])</pre></div></div></div><div class="sk-serial"><div class="sk-item"><div class="sk-serial"><div class="sk-item"><div class="sk-estimator sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually" id="sk-estimator-id-13" type="checkbox" ><label for="sk-estimator-id-13" class="sk-toggleable__label sk-toggleable__label-arrow">LogisticRegression</label><div class="sk-toggleable__content"><pre>LogisticRegression(max_iter=5000, random_state=88888888, solver=&#x27;saga&#x27;)</pre></div></div></div></div></div></div></div></div></div></div></div></div>
+
+
+
+
+```python
+##################################
+# Identifying the best model
+##################################
+individual_balanced_class_best_model_upsampled = individual_balanced_class_grid_search.best_estimator_
+```
+
+
+```python
+##################################
+# Evaluating the F1 scores
+# on the training, cross-validation, and validation data
+##################################
+individual_balanced_class_best_model_upsampled_f1_cv = individual_balanced_class_grid_search.best_score_
+individual_balanced_class_best_model_upsampled_f1_train_smote = f1_score(y_train_smote, individual_balanced_class_best_model_upsampled.predict(X_train_smote))
+individual_balanced_class_best_model_upsampled_f1_validation = f1_score(y_validation, individual_balanced_class_best_model_upsampled.predict(X_validation))
+```
+
+
+```python
+##################################
+# Identifying the optimal model
+##################################
+print('Best Individual Model using the Original Train Data: ')
+print(f"Best Individual Model Parameters: {individual_balanced_class_grid_search.best_params_}")
+```
+
+    Best Individual Model using the Original Train Data: 
+    Best Individual Model Parameters: {'individual_model__class_weight': None, 'individual_model__penalty': 'l2'}
+    
+
+
+```python
+##################################
+# Summarizing the F1 score results
+# on the training and cross-validated data
+# to assess overfitting optimism
+##################################
+print(f"F1 Score on Cross-Validated Data: {individual_balanced_class_best_model_upsampled_f1_cv:.4f}")
+print(f"F1 Score on Training Data: {individual_balanced_class_best_model_upsampled_f1_train_smote:.4f}")
+print("\nClassification Report on Training Data:\n", classification_report(y_train_smote, individual_balanced_class_best_model_upsampled.predict(X_train_smote)))
+```
+
+    F1 Score on Cross-Validated Data: 0.9561
+    F1 Score on Training Data: 0.9614
+    
+    Classification Report on Training Data:
+                   precision    recall  f1-score   support
+    
+               0       0.94      0.98      0.96       172
+               1       0.98      0.94      0.96       172
+    
+        accuracy                           0.96       344
+       macro avg       0.96      0.96      0.96       344
+    weighted avg       0.96      0.96      0.96       344
+    
+    
+
+
+```python
+##################################
+# Formulating the raw and normalized
+# confusion matrices
+# from the training data
+##################################
+cm_raw = confusion_matrix(y_train_smote, individual_balanced_class_best_model_upsampled.predict(X_train_smote))
+cm_normalized = confusion_matrix(y_train_smote, individual_balanced_class_best_model_upsampled.predict(X_train_smote), normalize='true')
+fig, ax = plt.subplots(1, 2, figsize=(17, 8))
+sns.heatmap(cm_raw, annot=True, fmt='d', cmap='Blues', ax=ax[0])
+ax[0].set_title('Confusion Matrix (Raw Count): Best Individual Model on Training Data')
+ax[0].set_xlabel('Predicted')
+ax[0].set_ylabel('Actual')
+sns.heatmap(cm_normalized, annot=True, fmt='.2f', cmap='Blues', ax=ax[1])
+ax[1].set_title('Confusion Matrix (Normalized): Best Individual Model on Training Data')
+ax[1].set_xlabel('Predicted')
+ax[1].set_ylabel('Actual')
+plt.tight_layout()
+plt.show()
+```
+
+
+    
+![png](output_165_0.png)
+    
+
+
+
+```python
+##################################
+# Summarizing the F1 score results
+# and classification metrics
+# on the validation data
+##################################
+print(f"F1 Score on Validation Data: {individual_balanced_class_best_model_upsampled_f1_validation:.4f}")
+print("\nClassification Report on Validation Data:\n", classification_report(y_validation, individual_balanced_class_best_model_upsampled.predict(X_validation)))
+```
+
+    F1 Score on Validation Data: 0.9545
+    
+    Classification Report on Validation Data:
+                   precision    recall  f1-score   support
+    
+               0       0.67      0.67      0.67         6
+               1       0.95      0.95      0.95        44
+    
+        accuracy                           0.92        50
+       macro avg       0.81      0.81      0.81        50
+    weighted avg       0.92      0.92      0.92        50
+    
+    
+
+
+```python
+##################################
+# Formulating the raw and normalized
+# confusion matrices
+# from the validation data
+##################################
+cm_raw = confusion_matrix(y_validation, individual_balanced_class_best_model_upsampled.predict(X_validation))
+cm_normalized = confusion_matrix(y_validation, individual_balanced_class_best_model_upsampled.predict(X_validation), normalize='true')
+fig, ax = plt.subplots(1, 2, figsize=(17, 8))
+sns.heatmap(cm_raw, annot=True, fmt='d', cmap='Blues', ax=ax[0])
+ax[0].set_title('Confusion Matrix (Raw Count): Best Individual Model on Validation Data')
+ax[0].set_xlabel('Predicted')
+ax[0].set_ylabel('Actual')
+sns.heatmap(cm_normalized, annot=True, fmt='.2f', cmap='Blues', ax=ax[1])
+ax[1].set_title('Confusion Matrix (Normalized): Best Individual Model on Validation Data')
+ax[1].set_xlabel('Predicted')
+ax[1].set_ylabel('Actual')
+plt.tight_layout()
+plt.show()
+```
+
+
+    
+![png](output_167_0.png)
+    
+
+
+
+```python
+##################################
+# Obtaining the logit values (log-odds)
+# from the decision function for training data
+##################################
+individual_balanced_class_best_model_upsampled_logit_values = individual_balanced_class_best_model_upsampled.decision_function(X_train_smote)
+```
+
+
+```python
+##################################
+# Obtaining the estimated probabilities 
+# for the positive class (LUNG_CANCER=YES) for training data
+##################################
+individual_balanced_class_best_model_upsampled_probabilities = individual_balanced_class_best_model_upsampled.predict_proba(X_train_smote)[:, 1]
+```
+
+
+```python
+##################################
+# Sorting the values to generate
+# a smoother curve
+##################################
+individual_balanced_class_best_model_upsampled_sorted_indices = np.argsort(individual_balanced_class_best_model_upsampled_logit_values)
+individual_balanced_class_best_model_upsampled_logit_values_sorted = individual_balanced_class_best_model_upsampled_logit_values[individual_balanced_class_best_model_upsampled_sorted_indices]
+individual_balanced_class_best_model_upsampled_probabilities_sorted = individual_balanced_class_best_model_upsampled_probabilities[individual_balanced_class_best_model_upsampled_sorted_indices]
+```
+
+
+```python
+##################################
+# Plotting the estimated logistic curve
+# using the logit values
+# and estimated probabilities
+# obtained from the training data
+##################################
+plt.figure(figsize=(17, 8))
+plt.plot(individual_balanced_class_best_model_upsampled_logit_values_sorted, 
+         individual_balanced_class_best_model_upsampled_probabilities_sorted, label='Logistic Curve', color='black')
+plt.ylim(-0.05, 1.05)
+plt.xlim(-6.00, 6.00)
+target_0_indices = y_train_smote == 0
+target_1_indices = y_train_smote == 1
+plt.scatter(individual_balanced_class_best_model_upsampled_logit_values[target_0_indices], 
+            individual_balanced_class_best_model_upsampled_probabilities[target_0_indices], 
+            color='blue', alpha=0.40, s=100, marker= 'o', edgecolor='k', label='LUNG_CANCER=NO')
+plt.scatter(individual_balanced_class_best_model_upsampled_logit_values[target_1_indices], 
+            individual_balanced_class_best_model_upsampled_probabilities[target_1_indices], 
+            color='red', alpha=0.40, s=100, marker='o', edgecolor='k', label='LUNG_CANCER=YES')
+plt.axhline(0.5, color='green', linestyle='--', label='Classification Threshold (50%)')
+plt.title('Logistic Curve (Upsampled training Data): Individual Model')
+plt.xlabel('Logit (Log-Odds)')
+plt.ylabel('Estimated Lung Cancer Probability')
+plt.grid(True)
+plt.legend(loc='upper left')
+plt.show()
+```
+
+
+    
+![png](output_171_0.png)
+    
+
+
+
+```python
+##################################
+# Saving the best individual model
+# developed from the upsampled training data
+################################## 
+joblib.dump(individual_balanced_class_best_model_upsampled, 
+            os.path.join("..", MODELS_PATH, "individual_balanced_class_best_model_upsampled.pkl"))
+```
+
+
+
+
+    ['..\\models\\individual_balanced_class_best_model_upsampled.pkl']
+
+
+
 #### 1.6.5.2 Stacked Classifier <a class="anchor" id="1.6.5.2"></a>
 
 ### 1.6.6 Model Fitting using Downsampled Training Data | Hyperparameter Tuning | Validation <a class="anchor" id="1.6.5"></a>
 
 #### 1.6.6.1 Individual Classifier <a class="anchor" id="1.6.6.1"></a>
+
+
+```python
+##################################
+# Fitting the model on the 
+# downsampled training data
+##################################
+individual_unbalanced_class_grid_search.fit(X_train_cnn, y_train_cnn)
+```
+
+    Fitting 5 folds for each of 3 candidates, totalling 15 fits
+    
+
+
+
+
+<style>#sk-container-id-4 {color: black;background-color: white;}#sk-container-id-4 pre{padding: 0;}#sk-container-id-4 div.sk-toggleable {background-color: white;}#sk-container-id-4 label.sk-toggleable__label {cursor: pointer;display: block;width: 100%;margin-bottom: 0;padding: 0.3em;box-sizing: border-box;text-align: center;}#sk-container-id-4 label.sk-toggleable__label-arrow:before {content: "▸";float: left;margin-right: 0.25em;color: #696969;}#sk-container-id-4 label.sk-toggleable__label-arrow:hover:before {color: black;}#sk-container-id-4 div.sk-estimator:hover label.sk-toggleable__label-arrow:before {color: black;}#sk-container-id-4 div.sk-toggleable__content {max-height: 0;max-width: 0;overflow: hidden;text-align: left;background-color: #f0f8ff;}#sk-container-id-4 div.sk-toggleable__content pre {margin: 0.2em;color: black;border-radius: 0.25em;background-color: #f0f8ff;}#sk-container-id-4 input.sk-toggleable__control:checked~div.sk-toggleable__content {max-height: 200px;max-width: 100%;overflow: auto;}#sk-container-id-4 input.sk-toggleable__control:checked~label.sk-toggleable__label-arrow:before {content: "▾";}#sk-container-id-4 div.sk-estimator input.sk-toggleable__control:checked~label.sk-toggleable__label {background-color: #d4ebff;}#sk-container-id-4 div.sk-label input.sk-toggleable__control:checked~label.sk-toggleable__label {background-color: #d4ebff;}#sk-container-id-4 input.sk-hidden--visually {border: 0;clip: rect(1px 1px 1px 1px);clip: rect(1px, 1px, 1px, 1px);height: 1px;margin: -1px;overflow: hidden;padding: 0;position: absolute;width: 1px;}#sk-container-id-4 div.sk-estimator {font-family: monospace;background-color: #f0f8ff;border: 1px dotted black;border-radius: 0.25em;box-sizing: border-box;margin-bottom: 0.5em;}#sk-container-id-4 div.sk-estimator:hover {background-color: #d4ebff;}#sk-container-id-4 div.sk-parallel-item::after {content: "";width: 100%;border-bottom: 1px solid gray;flex-grow: 1;}#sk-container-id-4 div.sk-label:hover label.sk-toggleable__label {background-color: #d4ebff;}#sk-container-id-4 div.sk-serial::before {content: "";position: absolute;border-left: 1px solid gray;box-sizing: border-box;top: 0;bottom: 0;left: 50%;z-index: 0;}#sk-container-id-4 div.sk-serial {display: flex;flex-direction: column;align-items: center;background-color: white;padding-right: 0.2em;padding-left: 0.2em;position: relative;}#sk-container-id-4 div.sk-item {position: relative;z-index: 1;}#sk-container-id-4 div.sk-parallel {display: flex;align-items: stretch;justify-content: center;background-color: white;position: relative;}#sk-container-id-4 div.sk-item::before, #sk-container-id-4 div.sk-parallel-item::before {content: "";position: absolute;border-left: 1px solid gray;box-sizing: border-box;top: 0;bottom: 0;left: 50%;z-index: -1;}#sk-container-id-4 div.sk-parallel-item {display: flex;flex-direction: column;z-index: 1;position: relative;background-color: white;}#sk-container-id-4 div.sk-parallel-item:first-child::after {align-self: flex-end;width: 50%;}#sk-container-id-4 div.sk-parallel-item:last-child::after {align-self: flex-start;width: 50%;}#sk-container-id-4 div.sk-parallel-item:only-child::after {width: 0;}#sk-container-id-4 div.sk-dashed-wrapped {border: 1px dashed gray;margin: 0 0.4em 0.5em 0.4em;box-sizing: border-box;padding-bottom: 0.4em;background-color: white;}#sk-container-id-4 div.sk-label label {font-family: monospace;font-weight: bold;display: inline-block;line-height: 1.2em;}#sk-container-id-4 div.sk-label-container {text-align: center;}#sk-container-id-4 div.sk-container {/* jupyter's `normalize.less` sets `[hidden] { display: none; }` but bootstrap.min.css set `[hidden] { display: none !important; }` so we also need the `!important` here to be able to override the default hidden behavior on the sphinx rendered scikit-learn.org. See: https://github.com/scikit-learn/scikit-learn/issues/21755 */display: inline-block !important;position: relative;}#sk-container-id-4 div.sk-text-repr-fallback {display: none;}</style><div id="sk-container-id-4" class="sk-top-container"><div class="sk-text-repr-fallback"><pre>GridSearchCV(cv=5,
+             estimator=Pipeline(steps=[(&#x27;individual_model&#x27;,
+                                        LogisticRegression(max_iter=5000,
+                                                           random_state=88888888,
+                                                           solver=&#x27;saga&#x27;))]),
+             n_jobs=-1,
+             param_grid={&#x27;individual_model__class_weight&#x27;: [&#x27;balanced&#x27;],
+                         &#x27;individual_model__penalty&#x27;: [&#x27;l1&#x27;, &#x27;l2&#x27;, None]},
+             scoring=&#x27;f1&#x27;, verbose=1)</pre><b>In a Jupyter environment, please rerun this cell to show the HTML representation or trust the notebook. <br />On GitHub, the HTML representation is unable to render, please try loading this page with nbviewer.org.</b></div><div class="sk-container" hidden><div class="sk-item sk-dashed-wrapped"><div class="sk-label-container"><div class="sk-label sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually" id="sk-estimator-id-14" type="checkbox" ><label for="sk-estimator-id-14" class="sk-toggleable__label sk-toggleable__label-arrow">GridSearchCV</label><div class="sk-toggleable__content"><pre>GridSearchCV(cv=5,
+             estimator=Pipeline(steps=[(&#x27;individual_model&#x27;,
+                                        LogisticRegression(max_iter=5000,
+                                                           random_state=88888888,
+                                                           solver=&#x27;saga&#x27;))]),
+             n_jobs=-1,
+             param_grid={&#x27;individual_model__class_weight&#x27;: [&#x27;balanced&#x27;],
+                         &#x27;individual_model__penalty&#x27;: [&#x27;l1&#x27;, &#x27;l2&#x27;, None]},
+             scoring=&#x27;f1&#x27;, verbose=1)</pre></div></div></div><div class="sk-parallel"><div class="sk-parallel-item"><div class="sk-item"><div class="sk-label-container"><div class="sk-label sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually" id="sk-estimator-id-15" type="checkbox" ><label for="sk-estimator-id-15" class="sk-toggleable__label sk-toggleable__label-arrow">estimator: Pipeline</label><div class="sk-toggleable__content"><pre>Pipeline(steps=[(&#x27;individual_model&#x27;,
+                 LogisticRegression(max_iter=5000, random_state=88888888,
+                                    solver=&#x27;saga&#x27;))])</pre></div></div></div><div class="sk-serial"><div class="sk-item"><div class="sk-serial"><div class="sk-item"><div class="sk-estimator sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually" id="sk-estimator-id-16" type="checkbox" ><label for="sk-estimator-id-16" class="sk-toggleable__label sk-toggleable__label-arrow">LogisticRegression</label><div class="sk-toggleable__content"><pre>LogisticRegression(max_iter=5000, random_state=88888888, solver=&#x27;saga&#x27;)</pre></div></div></div></div></div></div></div></div></div></div></div></div>
+
+
+
+
+```python
+##################################
+# Identifying the best model
+##################################
+individual_unbalanced_class_best_model_downsampled = individual_unbalanced_class_grid_search.best_estimator_
+```
+
+
+```python
+##################################
+# Evaluating the F1 scores
+# on the training, cross-validation, and validation data
+##################################
+individual_unbalanced_class_best_model_downsampled_f1_cv = individual_unbalanced_class_grid_search.best_score_
+individual_unbalanced_class_best_model_downsampled_f1_train_cnn = f1_score(y_train_cnn, individual_unbalanced_class_best_model_downsampled.predict(X_train_cnn))
+individual_unbalanced_class_best_model_downsampled_f1_validation = f1_score(y_validation, individual_unbalanced_class_best_model_downsampled.predict(X_validation))
+```
+
+
+```python
+##################################
+# Identifying the optimal model
+##################################
+print('Best Individual Model using the Original Train Data: ')
+print(f"Best Individual Model Parameters: {individual_unbalanced_class_grid_search.best_params_}")
+```
+
+    Best Individual Model using the Original Train Data: 
+    Best Individual Model Parameters: {'individual_model__class_weight': 'balanced', 'individual_model__penalty': 'l2'}
+    
+
+
+```python
+##################################
+# Summarizing the F1 score results
+# on the training and cross-validated data
+# to assess overfitting optimism
+##################################
+print(f"F1 Score on Cross-Validated Data: {individual_unbalanced_class_best_model_downsampled_f1_cv:.4f}")
+print(f"F1 Score on Training Data: {individual_unbalanced_class_best_model_downsampled_f1_train_cnn:.4f}")
+print("\nClassification Report on Training Data:\n", classification_report(y_train_cnn, individual_unbalanced_class_best_model_downsampled.predict(X_train_cnn)))
+```
+
+    F1 Score on Cross-Validated Data: 0.7729
+    F1 Score on Training Data: 0.8378
+    
+    Classification Report on Training Data:
+                   precision    recall  f1-score   support
+    
+               0       0.74      0.80      0.77        25
+               1       0.86      0.82      0.84        38
+    
+        accuracy                           0.81        63
+       macro avg       0.80      0.81      0.80        63
+    weighted avg       0.81      0.81      0.81        63
+    
+    
+
+
+```python
+##################################
+# Formulating the raw and normalized
+# confusion matrices
+# from the training data
+##################################
+cm_raw = confusion_matrix(y_train_cnn, individual_unbalanced_class_best_model_downsampled.predict(X_train_cnn))
+cm_normalized = confusion_matrix(y_train_cnn, individual_unbalanced_class_best_model_downsampled.predict(X_train_cnn), normalize='true')
+fig, ax = plt.subplots(1, 2, figsize=(17, 8))
+sns.heatmap(cm_raw, annot=True, fmt='d', cmap='Blues', ax=ax[0])
+ax[0].set_title('Confusion Matrix (Raw Count): Best Individual Model on Training Data')
+ax[0].set_xlabel('Predicted')
+ax[0].set_ylabel('Actual')
+sns.heatmap(cm_normalized, annot=True, fmt='.2f', cmap='Blues', ax=ax[1])
+ax[1].set_title('Confusion Matrix (Normalized): Best Individual Model on Training Data')
+ax[1].set_xlabel('Predicted')
+ax[1].set_ylabel('Actual')
+plt.tight_layout()
+plt.show()
+```
+
+
+    
+![png](output_181_0.png)
+    
+
+
+
+```python
+##################################
+# Summarizing the F1 score results
+# and classification metrics
+# on the validation data
+##################################
+print(f"F1 Score on Validation Data: {individual_unbalanced_class_best_model_downsampled_f1_validation:.4f}")
+print("\nClassification Report on Validation Data:\n", classification_report(y_validation, individual_unbalanced_class_best_model_downsampled.predict(X_validation)))
+```
+
+    F1 Score on Validation Data: 0.9302
+    
+    Classification Report on Validation Data:
+                   precision    recall  f1-score   support
+    
+               0       0.50      0.67      0.57         6
+               1       0.95      0.91      0.93        44
+    
+        accuracy                           0.88        50
+       macro avg       0.73      0.79      0.75        50
+    weighted avg       0.90      0.88      0.89        50
+    
+    
+
+
+```python
+##################################
+# Formulating the raw and normalized
+# confusion matrices
+# from the validation data
+##################################
+cm_raw = confusion_matrix(y_validation, individual_unbalanced_class_best_model_downsampled.predict(X_validation))
+cm_normalized = confusion_matrix(y_validation, individual_unbalanced_class_best_model_downsampled.predict(X_validation), normalize='true')
+fig, ax = plt.subplots(1, 2, figsize=(17, 8))
+sns.heatmap(cm_raw, annot=True, fmt='d', cmap='Blues', ax=ax[0])
+ax[0].set_title('Confusion Matrix (Raw Count): Best Individual Model on Validation Data')
+ax[0].set_xlabel('Predicted')
+ax[0].set_ylabel('Actual')
+sns.heatmap(cm_normalized, annot=True, fmt='.2f', cmap='Blues', ax=ax[1])
+ax[1].set_title('Confusion Matrix (Normalized): Best Individual Model on Validation Data')
+ax[1].set_xlabel('Predicted')
+ax[1].set_ylabel('Actual')
+plt.tight_layout()
+plt.show()
+```
+
+
+    
+![png](output_183_0.png)
+    
+
+
+
+```python
+##################################
+# Obtaining the logit values (log-odds)
+# from the decision function for training data
+##################################
+individual_unbalanced_class_best_model_downsampled_logit_values = individual_unbalanced_class_best_model_downsampled.decision_function(X_train_cnn)
+```
+
+
+```python
+##################################
+# Obtaining the estimated probabilities 
+# for the positive class (LUNG_CANCER=YES) for training data
+##################################
+individual_unbalanced_class_best_model_downsampled_probabilities = individual_unbalanced_class_best_model_downsampled.predict_proba(X_train_cnn)[:, 1]
+```
+
+
+```python
+##################################
+# Sorting the values to generate
+# a smoother curve
+##################################
+individual_unbalanced_class_best_model_downsampled_sorted_indices = np.argsort(individual_unbalanced_class_best_model_downsampled_logit_values)
+individual_unbalanced_class_best_model_downsampled_logit_values_sorted = individual_unbalanced_class_best_model_downsampled_logit_values[individual_unbalanced_class_best_model_downsampled_sorted_indices]
+individual_unbalanced_class_best_model_downsampled_probabilities_sorted = individual_unbalanced_class_best_model_downsampled_probabilities[individual_unbalanced_class_best_model_downsampled_sorted_indices]
+```
+
+
+```python
+##################################
+# Plotting the estimated logistic curve
+# using the logit values
+# and estimated probabilities
+# obtained from the training data
+##################################
+plt.figure(figsize=(17, 8))
+plt.plot(individual_unbalanced_class_best_model_downsampled_logit_values_sorted, 
+         individual_unbalanced_class_best_model_downsampled_probabilities_sorted, label='Logistic Curve', color='black')
+plt.ylim(-0.05, 1.05)
+plt.xlim(-6.00, 6.00)
+target_0_indices = y_train_cnn == 0
+target_1_indices = y_train_cnn == 1
+plt.scatter(individual_unbalanced_class_best_model_downsampled_logit_values[target_0_indices], 
+            individual_unbalanced_class_best_model_downsampled_probabilities[target_0_indices], 
+            color='blue', alpha=0.40, s=100, marker= 'o', edgecolor='k', label='LUNG_CANCER=NO')
+plt.scatter(individual_unbalanced_class_best_model_downsampled_logit_values[target_1_indices], 
+            individual_unbalanced_class_best_model_downsampled_probabilities[target_1_indices], 
+            color='red', alpha=0.40, s=100, marker='o', edgecolor='k', label='LUNG_CANCER=YES')
+plt.axhline(0.5, color='green', linestyle='--', label='Classification Threshold (50%)')
+plt.title('Logistic Curve (Downsampled training Data): Individual Model')
+plt.xlabel('Logit (Log-Odds)')
+plt.ylabel('Estimated Lung Cancer Probability')
+plt.grid(True)
+plt.legend(loc='upper left')
+plt.show()
+```
+
+
+    
+![png](output_187_0.png)
+    
+
+
+
+```python
+##################################
+# Saving the best individual model
+# developed from the downsampled training data
+################################## 
+joblib.dump(individual_unbalanced_class_best_model_downsampled, 
+            os.path.join("..", MODELS_PATH, "individual_unbalanced_class_best_model_downsampled.pkl"))
+```
+
+
+
+
+    ['..\\models\\individual_unbalanced_class_best_model_downsampled.pkl']
+
+
 
 #### 1.6.6.2 Stacked Classifier <a class="anchor" id="1.6.6.2"></a>
 
