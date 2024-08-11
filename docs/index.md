@@ -4652,7 +4652,7 @@ plt.scatter(stacked_balanced_class_best_model_upsampled_logit_values[target_1_in
             stacked_balanced_class_best_model_upsampled_probabilities[target_1_indices], 
             color='red', alpha=0.40, s=100, marker='o', edgecolor='k', label='LUNG_CANCER=YES')
 plt.axhline(0.5, color='green', linestyle='--', label='Classification Threshold (50%)')
-plt.title('Logistic Curve (Upsampled training Data): Stacked Model')
+plt.title('Logistic Curve (Upsampled Training Data): Stacked Model')
 plt.xlabel('Logit (Log-Odds)')
 plt.ylabel('Estimated Lung Cancer Probability')
 plt.grid(True)
@@ -4915,7 +4915,7 @@ plt.scatter(individual_unbalanced_class_best_model_downsampled_logit_values[targ
             individual_unbalanced_class_best_model_downsampled_probabilities[target_1_indices], 
             color='red', alpha=0.40, s=100, marker='o', edgecolor='k', label='LUNG_CANCER=YES')
 plt.axhline(0.5, color='green', linestyle='--', label='Classification Threshold (50%)')
-plt.title('Logistic Curve (Downsampled training Data): Individual Model')
+plt.title('Logistic Curve (Downsampled Training Data): Individual Model')
 plt.xlabel('Logit (Log-Odds)')
 plt.ylabel('Estimated Lung Cancer Probability')
 plt.grid(True)
@@ -5225,7 +5225,7 @@ plt.scatter(stacked_unbalanced_class_best_model_downsampled_logit_values[target_
             stacked_unbalanced_class_best_model_downsampled_probabilities[target_1_indices], 
             color='red', alpha=0.40, s=100, marker='o', edgecolor='k', label='LUNG_CANCER=YES')
 plt.axhline(0.5, color='green', linestyle='--', label='Classification Threshold (50%)')
-plt.title('Logistic Curve (Downsampled training Data): Stacked Model')
+plt.title('Logistic Curve (Downsampled Training Data): Stacked Model')
 plt.xlabel('Logit (Log-Odds)')
 plt.ylabel('Estimated Lung Cancer Probability')
 plt.grid(True)
@@ -5258,6 +5258,118 @@ joblib.dump(stacked_unbalanced_class_best_model_downsampled,
 
 ### 1.6.7 Model Selection <a class="anchor" id="1.6.7"></a>
 
+
+```python
+##################################
+# Gathering the F1 scores from 
+# training, cross-validation and validation
+##################################
+set_labels = ['Train','Cross-Validation','Validation']
+f1_plot = pd.DataFrame({'INDIVIDUAL_ORIGINAL_TRAIN': list([individual_unbalanced_class_best_model_original_f1_train,
+                                                           individual_unbalanced_class_best_model_original_f1_cv,
+                                                           individual_unbalanced_class_best_model_original_f1_validation]),
+                        'STACKED_ORIGINAL_TRAIN': list([stacked_unbalanced_class_best_model_original_f1_train,
+                                                        stacked_unbalanced_class_best_model_original_f1_cv,
+                                                        stacked_unbalanced_class_best_model_original_f1_validation]),
+                        'INDIVIDUAL_UPSAMPLED_TRAIN': list([individual_balanced_class_best_model_upsampled_f1_train_smote,
+                                                           individual_balanced_class_best_model_upsampled_f1_cv,
+                                                           individual_balanced_class_best_model_upsampled_f1_validation]),
+                        'STACKED_UPSAMPLED_TRAIN': list([stacked_balanced_class_best_model_upsampled_f1_train_smote,
+                                                        stacked_balanced_class_best_model_upsampled_f1_cv,
+                                                        stacked_balanced_class_best_model_upsampled_f1_validation]),
+                        'INDIVIDUAL_DOWNSAMPLED_TRAIN': list([individual_unbalanced_class_best_model_downsampled_f1_train_cnn,
+                                                              individual_unbalanced_class_best_model_downsampled_f1_cv,
+                                                              individual_unbalanced_class_best_model_downsampled_f1_validation]),
+                        'STACKED_DOWNSAMPLED_TRAIN': list([stacked_unbalanced_class_best_model_downsampled_f1_train_cnn,
+                                                           stacked_unbalanced_class_best_model_downsampled_f1_cv,
+                                                           stacked_unbalanced_class_best_model_downsampled_f1_validation])},
+                       index = set_labels)
+display(f1_plot)
+```
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>INDIVIDUAL_ORIGINAL_TRAIN</th>
+      <th>STACKED_ORIGINAL_TRAIN</th>
+      <th>INDIVIDUAL_UPSAMPLED_TRAIN</th>
+      <th>STACKED_UPSAMPLED_TRAIN</th>
+      <th>INDIVIDUAL_DOWNSAMPLED_TRAIN</th>
+      <th>STACKED_DOWNSAMPLED_TRAIN</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>Train</th>
+      <td>0.930556</td>
+      <td>0.934256</td>
+      <td>0.949495</td>
+      <td>0.960265</td>
+      <td>0.853333</td>
+      <td>0.891892</td>
+    </tr>
+    <tr>
+      <th>Cross-Validation</th>
+      <td>0.911574</td>
+      <td>0.908472</td>
+      <td>0.947396</td>
+      <td>0.952151</td>
+      <td>0.753711</td>
+      <td>0.778272</td>
+    </tr>
+    <tr>
+      <th>Validation</th>
+      <td>0.949495</td>
+      <td>0.970297</td>
+      <td>0.961538</td>
+      <td>0.970874</td>
+      <td>0.970874</td>
+      <td>0.950495</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+```python
+##################################
+# Plotting all the F1 scores
+# for all models
+##################################
+f1_plot = f1_plot.plot.barh(figsize=(10, 6), width=0.90)
+f1_plot.set_xlim(0.00,1.00)
+f1_plot.set_title("Classification Model Comparison by F1 Score")
+f1_plot.set_xlabel("F1 Score")
+f1_plot.set_ylabel("Data Set")
+f1_plot.grid(False)
+f1_plot.legend(loc='center left', bbox_to_anchor=(1.0, 0.5))
+for container in f1_plot.containers:
+    f1_plot.bar_label(container, fmt='%.5f', padding=-50, color='white', fontweight='bold')
+```
+
+
+    
+![png](output_224_0.png)
+    
+
+
 ### 1.6.8 Model Testing <a class="anchor" id="1.6.8"></a>
 
 
@@ -5267,18 +5379,139 @@ joblib.dump(stacked_unbalanced_class_best_model_downsampled,
 # on the test data
 ##################################
 individual_unbalanced_class_best_model_original_f1_test = f1_score(y_test, individual_unbalanced_class_best_model_original.predict(X_test))
+stacked_unbalanced_class_best_model_original_f1_test = f1_score(y_test, stacked_unbalanced_class_best_model_original.predict(X_test))
+individual_balanced_class_best_model_upsampled_f1_test = f1_score(y_test, individual_balanced_class_best_model_upsampled.predict(X_test))
+stacked_balanced_class_best_model_upsampled_f1_test = f1_score(y_test, stacked_balanced_class_best_model_upsampled.predict(X_test))
+individual_unbalanced_class_best_model_downsampled_f1_test = f1_score(y_test, individual_unbalanced_class_best_model_downsampled.predict(X_test))
+stacked_unbalanced_class_best_model_downsampled_f1_test = f1_score(y_test, stacked_unbalanced_class_best_model_downsampled.predict(X_test))
 ```
 
 
 ```python
 ##################################
-# Summarizing the F1 score results
+# Adding the the F1 score estimated
+# from the test data
 ##################################
-print(f"F1 Score of the Best Model (with Original Train Data) on Test Data: {individual_unbalanced_class_best_model_original_f1_test:.4f}")
+set_labels = ['Train','Cross-Validation','Validation','Test']
+updated_f1_plot = pd.DataFrame({'INDIVIDUAL_ORIGINAL_TRAIN': list([individual_unbalanced_class_best_model_original_f1_train,
+                                                                   individual_unbalanced_class_best_model_original_f1_cv,
+                                                                   individual_unbalanced_class_best_model_original_f1_validation,
+                                                                   individual_unbalanced_class_best_model_original_f1_test]),
+                                'STACKED_ORIGINAL_TRAIN': list([stacked_unbalanced_class_best_model_original_f1_train,
+                                                                stacked_unbalanced_class_best_model_original_f1_cv,
+                                                                stacked_unbalanced_class_best_model_original_f1_validation,
+                                                               stacked_unbalanced_class_best_model_original_f1_test]),
+                                'INDIVIDUAL_UPSAMPLED_TRAIN': list([individual_balanced_class_best_model_upsampled_f1_train_smote,
+                                                                    individual_balanced_class_best_model_upsampled_f1_cv,
+                                                                    individual_balanced_class_best_model_upsampled_f1_validation,
+                                                                   individual_balanced_class_best_model_upsampled_f1_test]),
+                                'STACKED_UPSAMPLED_TRAIN': list([stacked_balanced_class_best_model_upsampled_f1_train_smote,
+                                                                 stacked_balanced_class_best_model_upsampled_f1_cv,
+                                                                 stacked_balanced_class_best_model_upsampled_f1_validation,
+                                                                stacked_balanced_class_best_model_upsampled_f1_test]),
+                                'INDIVIDUAL_DOWNSAMPLED_TRAIN': list([individual_unbalanced_class_best_model_downsampled_f1_train_cnn,
+                                                                      individual_unbalanced_class_best_model_downsampled_f1_cv,
+                                                                      individual_unbalanced_class_best_model_downsampled_f1_validation,
+                                                                      individual_unbalanced_class_best_model_downsampled_f1_test]),
+                                'STACKED_DOWNSAMPLED_TRAIN': list([stacked_unbalanced_class_best_model_downsampled_f1_train_cnn,
+                                                                   stacked_unbalanced_class_best_model_downsampled_f1_cv,
+                                                                   stacked_unbalanced_class_best_model_downsampled_f1_validation,
+                                                                  stacked_unbalanced_class_best_model_downsampled_f1_test])},
+                               index = set_labels)
+display(updated_f1_plot)
 ```
 
-    F1 Score of the Best Model (with Original Train Data) on Test Data: 0.9048
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>INDIVIDUAL_ORIGINAL_TRAIN</th>
+      <th>STACKED_ORIGINAL_TRAIN</th>
+      <th>INDIVIDUAL_UPSAMPLED_TRAIN</th>
+      <th>STACKED_UPSAMPLED_TRAIN</th>
+      <th>INDIVIDUAL_DOWNSAMPLED_TRAIN</th>
+      <th>STACKED_DOWNSAMPLED_TRAIN</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>Train</th>
+      <td>0.930556</td>
+      <td>0.934256</td>
+      <td>0.949495</td>
+      <td>0.960265</td>
+      <td>0.853333</td>
+      <td>0.891892</td>
+    </tr>
+    <tr>
+      <th>Cross-Validation</th>
+      <td>0.911574</td>
+      <td>0.908472</td>
+      <td>0.947396</td>
+      <td>0.952151</td>
+      <td>0.753711</td>
+      <td>0.778272</td>
+    </tr>
+    <tr>
+      <th>Validation</th>
+      <td>0.949495</td>
+      <td>0.970297</td>
+      <td>0.961538</td>
+      <td>0.970874</td>
+      <td>0.970874</td>
+      <td>0.950495</td>
+    </tr>
+    <tr>
+      <th>Test</th>
+      <td>0.904762</td>
+      <td>0.923077</td>
+      <td>0.932331</td>
+      <td>0.942029</td>
+      <td>0.939394</td>
+      <td>0.909091</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+```python
+##################################
+# Plotting all the F1 scores
+# for all models
+##################################
+updated_f1_plot = updated_f1_plot.plot.barh(figsize=(10, 8), width=0.90)
+updated_f1_plot.set_xlim(0.00,1.00)
+updated_f1_plot.set_title("Classification Model Comparison by F1 Score")
+updated_f1_plot.set_xlabel("F1 Score")
+updated_f1_plot.set_ylabel("Data Set")
+updated_f1_plot.grid(False)
+updated_f1_plot.legend(loc='center left', bbox_to_anchor=(1.0, 0.5))
+for container in updated_f1_plot.containers:
+    updated_f1_plot.bar_label(container, fmt='%.5f', padding=-50, color='white', fontweight='bold')
+```
+
+
     
+![png](output_228_0.png)
+    
+
 
 ### 1.6.9 Model Inference | Interpretation <a class="anchor" id="1.6.7"></a>
 
