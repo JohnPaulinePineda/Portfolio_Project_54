@@ -30,7 +30,7 @@
             * [1.6.6.2 Stacked Classifier](#1.6.6.2)
         * [1.6.7 Model Selection](#1.6.7)
         * [1.6.8 Model Testing](#1.6.8)
-        * [1.6.9 Model Inference | Interpretation](#1.6.9)
+        * [1.6.9 Model Inference](#1.6.9)
     * [1.7 Consolidated Findings](#1.7)
 * [**2. Summary**](#Summary)   
 * [**3. References**](#References)
@@ -2884,7 +2884,201 @@ lung_cancer_transformed.to_csv(os.path.join("..", DATASETS_PREPROCESSED_PATH, "l
 ##################################
 lung_cancer_filtered = lung_cancer_transformed.drop(['GENDER','CHRONIC DISEASE', 'SHORTNESS OF BREATH', 'SMOKING', 'AGE'], axis=1)
 lung_cancer_filtered.to_csv(os.path.join("..", DATASETS_FINAL_PATH, "lung_cancer_final.csv"), index=False)
+display(lung_cancer_filtered)
 ```
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>YELLOW_FINGERS</th>
+      <th>ANXIETY</th>
+      <th>PEER_PRESSURE</th>
+      <th>FATIGUE</th>
+      <th>ALLERGY</th>
+      <th>WHEEZING</th>
+      <th>ALCOHOL CONSUMING</th>
+      <th>COUGHING</th>
+      <th>SWALLOWING DIFFICULTY</th>
+      <th>CHEST PAIN</th>
+      <th>LUNG_CANCER</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>1</td>
+      <td>1</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>1</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>1</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>1</td>
+      <td>1</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>304</th>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+      <td>0</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>305</th>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+      <td>0</td>
+      <td>1</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>306</th>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+      <td>0</td>
+      <td>1</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>307</th>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>1</td>
+      <td>1</td>
+      <td>0</td>
+      <td>1</td>
+      <td>1</td>
+      <td>0</td>
+      <td>1</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>308</th>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>1</td>
+    </tr>
+  </tbody>
+</table>
+<p>309 rows × 11 columns</p>
+</div>
+
 
 ### 1.6.2 Data Splitting <a class="anchor" id="1.6.2"></a>
 
@@ -3368,7 +3562,8 @@ stacked_unbalanced_class_base_learners = [('dt', DecisionTreeClassifier(class_we
                                                                          min_samples_leaf=3,
                                                                          random_state=88888888)),
                                            ('svm', SVC(class_weight='balanced',
-                                                       C=1.0,
+                                                       probability=True,
+                                                       kernel='linear',
                                                        random_state=88888888))]
 ```
 
@@ -3414,7 +3609,7 @@ stacked_unbalanced_class_pipeline = Pipeline([('stacked_model', stacked_unbalanc
 ##################################
 stacked_unbalanced_class_hyperparameter_grid = {'stacked_model__dt__max_depth': [3, 5],
                                                 'stacked_model__rf__max_depth': [3, 5],
-                                                'stacked_model__svm__kernel': ['linear', 'poly', 'rbf'],
+                                                'stacked_model__svm__C': [0.50, 1.00],
                                                 'stacked_model__final_estimator__penalty': ['l1', 'l2', None],
                                                 'stacked_model__final_estimator__class_weight': ['balanced']}
 ```
@@ -3451,7 +3646,8 @@ stacked_balanced_class_base_learners = [('dt', DecisionTreeClassifier(class_weig
                                                                          min_samples_leaf=3,
                                                                          random_state=88888888)),
                                            ('svm', SVC(class_weight=None,
-                                                       C=1.0,
+                                                       probability=True,
+                                                       kernel='linear',
                                                        random_state=88888888))]
 ```
 
@@ -3497,7 +3693,7 @@ stacked_balanced_class_pipeline = Pipeline([('stacked_model', stacked_balanced_c
 ##################################
 stacked_balanced_class_hyperparameter_grid = {'stacked_model__dt__max_depth': [3, 5],
                                                 'stacked_model__rf__max_depth': [3, 5],
-                                                'stacked_model__svm__kernel': ['linear', 'poly', 'rbf'],
+                                                'stacked_model__svm__C': [0.50, 1.00],
                                                 'stacked_model__final_estimator__penalty': ['l1', 'l2', None],
                                                 'stacked_model__final_estimator__class_weight': [None]}
 ```
@@ -3790,7 +3986,7 @@ joblib.dump(individual_unbalanced_class_best_model_original,
 stacked_unbalanced_class_grid_search.fit(X_train, y_train)
 ```
 
-    Fitting 5 folds for each of 36 candidates, totalling 180 fits
+    Fitting 5 folds for each of 24 candidates, totalling 120 fits
     
 
 
@@ -3819,8 +4015,7 @@ stacked_unbalanced_class_grid_search.fit(X_train, y_train)
                          &#x27;stacked_model__final_estimator__penalty&#x27;: [&#x27;l1&#x27;, &#x27;l2&#x27;,
                                                                      None],
                          &#x27;stacked_model__rf__max_depth&#x27;: [3, 5],
-                         &#x27;stacked_model__svm__kernel&#x27;: [&#x27;linear&#x27;, &#x27;poly&#x27;,
-                                                        &#x27;rbf&#x27;]},
+                         &#x27;stacked_model__svm__C&#x27;: [0.5, 1.0]},
              scoring=&#x27;f1&#x27;, verbose=1)</pre><b>In a Jupyter environment, please rerun this cell to show the HTML representation or trust the notebook. <br />On GitHub, the HTML representation is unable to render, please try loading this page with nbviewer.org.</b></div><div class="sk-container" hidden><div class="sk-item sk-dashed-wrapped"><div class="sk-label-container"><div class="sk-label sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually" id="sk-estimator-id-4" type="checkbox" ><label for="sk-estimator-id-4" class="sk-toggleable__label sk-toggleable__label-arrow">GridSearchCV</label><div class="sk-toggleable__content"><pre>GridSearchCV(cv=5,
              estimator=Pipeline(steps=[(&#x27;stacked_model&#x27;,
                                         StackingClassifier(estimators=[(&#x27;dt&#x27;,
@@ -3844,8 +4039,7 @@ stacked_unbalanced_class_grid_search.fit(X_train, y_train)
                          &#x27;stacked_model__final_estimator__penalty&#x27;: [&#x27;l1&#x27;, &#x27;l2&#x27;,
                                                                      None],
                          &#x27;stacked_model__rf__max_depth&#x27;: [3, 5],
-                         &#x27;stacked_model__svm__kernel&#x27;: [&#x27;linear&#x27;, &#x27;poly&#x27;,
-                                                        &#x27;rbf&#x27;]},
+                         &#x27;stacked_model__svm__C&#x27;: [0.5, 1.0]},
              scoring=&#x27;f1&#x27;, verbose=1)</pre></div></div></div><div class="sk-parallel"><div class="sk-parallel-item"><div class="sk-item"><div class="sk-label-container"><div class="sk-label sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually" id="sk-estimator-id-5" type="checkbox" ><label for="sk-estimator-id-5" class="sk-toggleable__label sk-toggleable__label-arrow">estimator: Pipeline</label><div class="sk-toggleable__content"><pre>Pipeline(steps=[(&#x27;stacked_model&#x27;,
                  StackingClassifier(estimators=[(&#x27;dt&#x27;,
                                                  DecisionTreeClassifier(class_weight=&#x27;balanced&#x27;,
@@ -3859,6 +4053,8 @@ stacked_unbalanced_class_grid_search.fit(X_train, y_train)
                                                                         random_state=88888888)),
                                                 (&#x27;svm&#x27;,
                                                  SVC(class_weight=&#x27;balanced&#x27;,
+                                                     kernel=&#x27;linear&#x27;,
+                                                     probability=True,
                                                      random_state=88888888))],
                                     final_estimator=LogisticRegression(max_iter=5000,
                                                                        random_state=88888888,
@@ -3873,13 +4069,14 @@ stacked_unbalanced_class_grid_search.fit(X_train, y_train)
                                                        min_samples_leaf=3,
                                                        random_state=88888888)),
                                (&#x27;svm&#x27;,
-                                SVC(class_weight=&#x27;balanced&#x27;,
-                                    random_state=88888888))],
+                                SVC(class_weight=&#x27;balanced&#x27;, kernel=&#x27;linear&#x27;,
+                                    probability=True, random_state=88888888))],
                    final_estimator=LogisticRegression(max_iter=5000,
                                                       random_state=88888888,
                                                       solver=&#x27;saga&#x27;))</pre></div></div></div><div class="sk-serial"><div class="sk-item"><div class="sk-parallel"><div class="sk-parallel-item"><div class="sk-item"><div class="sk-label-container"><div class="sk-label sk-toggleable"><label>dt</label></div></div><div class="sk-serial"><div class="sk-item"><div class="sk-estimator sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually" id="sk-estimator-id-7" type="checkbox" ><label for="sk-estimator-id-7" class="sk-toggleable__label sk-toggleable__label-arrow">DecisionTreeClassifier</label><div class="sk-toggleable__content"><pre>DecisionTreeClassifier(class_weight=&#x27;balanced&#x27;, criterion=&#x27;entropy&#x27;,
                        min_samples_leaf=3, random_state=88888888)</pre></div></div></div></div></div></div><div class="sk-parallel-item"><div class="sk-item"><div class="sk-label-container"><div class="sk-label sk-toggleable"><label>rf</label></div></div><div class="sk-serial"><div class="sk-item"><div class="sk-estimator sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually" id="sk-estimator-id-8" type="checkbox" ><label for="sk-estimator-id-8" class="sk-toggleable__label sk-toggleable__label-arrow">RandomForestClassifier</label><div class="sk-toggleable__content"><pre>RandomForestClassifier(class_weight=&#x27;balanced&#x27;, criterion=&#x27;entropy&#x27;,
-                       min_samples_leaf=3, random_state=88888888)</pre></div></div></div></div></div></div><div class="sk-parallel-item"><div class="sk-item"><div class="sk-label-container"><div class="sk-label sk-toggleable"><label>svm</label></div></div><div class="sk-serial"><div class="sk-item"><div class="sk-estimator sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually" id="sk-estimator-id-9" type="checkbox" ><label for="sk-estimator-id-9" class="sk-toggleable__label sk-toggleable__label-arrow">SVC</label><div class="sk-toggleable__content"><pre>SVC(class_weight=&#x27;balanced&#x27;, random_state=88888888)</pre></div></div></div></div></div></div></div></div><div class="sk-item"><div class="sk-parallel"><div class="sk-parallel-item"><div class="sk-item"><div class="sk-label-container"><div class="sk-label sk-toggleable"><label>final_estimator</label></div></div><div class="sk-serial"><div class="sk-item"><div class="sk-estimator sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually" id="sk-estimator-id-10" type="checkbox" ><label for="sk-estimator-id-10" class="sk-toggleable__label sk-toggleable__label-arrow">LogisticRegression</label><div class="sk-toggleable__content"><pre>LogisticRegression(max_iter=5000, random_state=88888888, solver=&#x27;saga&#x27;)</pre></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div>
+                       min_samples_leaf=3, random_state=88888888)</pre></div></div></div></div></div></div><div class="sk-parallel-item"><div class="sk-item"><div class="sk-label-container"><div class="sk-label sk-toggleable"><label>svm</label></div></div><div class="sk-serial"><div class="sk-item"><div class="sk-estimator sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually" id="sk-estimator-id-9" type="checkbox" ><label for="sk-estimator-id-9" class="sk-toggleable__label sk-toggleable__label-arrow">SVC</label><div class="sk-toggleable__content"><pre>SVC(class_weight=&#x27;balanced&#x27;, kernel=&#x27;linear&#x27;, probability=True,
+    random_state=88888888)</pre></div></div></div></div></div></div></div></div><div class="sk-item"><div class="sk-parallel"><div class="sk-parallel-item"><div class="sk-item"><div class="sk-label-container"><div class="sk-label sk-toggleable"><label>final_estimator</label></div></div><div class="sk-serial"><div class="sk-item"><div class="sk-estimator sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually" id="sk-estimator-id-10" type="checkbox" ><label for="sk-estimator-id-10" class="sk-toggleable__label sk-toggleable__label-arrow">LogisticRegression</label><div class="sk-toggleable__content"><pre>LogisticRegression(max_iter=5000, random_state=88888888, solver=&#x27;saga&#x27;)</pre></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div>
 
 
 
@@ -3912,7 +4109,7 @@ print(f"Best Stacked Model Parameters: {stacked_unbalanced_class_grid_search.bes
 ```
 
     Best Stacked Model using the Original Train Data: 
-    Best Stacked Model Parameters: {'stacked_model__dt__max_depth': 5, 'stacked_model__final_estimator__class_weight': 'balanced', 'stacked_model__final_estimator__penalty': None, 'stacked_model__rf__max_depth': 5, 'stacked_model__svm__kernel': 'rbf'}
+    Best Stacked Model Parameters: {'stacked_model__dt__max_depth': 3, 'stacked_model__final_estimator__class_weight': 'balanced', 'stacked_model__final_estimator__penalty': 'l1', 'stacked_model__rf__max_depth': 5, 'stacked_model__svm__C': 0.5}
     
 
 
@@ -3927,18 +4124,18 @@ print(f"F1 Score on Training Data: {stacked_unbalanced_class_best_model_original
 print("\nClassification Report on Training Data:\n", classification_report(y_train, stacked_unbalanced_class_best_model_original.predict(X_train)))
 ```
 
-    F1 Score on Cross-Validated Data: 0.9085
-    F1 Score on Training Data: 0.9343
+    F1 Score on Cross-Validated Data: 0.9125
+    F1 Score on Training Data: 0.9404
     
     Classification Report on Training Data:
                    precision    recall  f1-score   support
     
-               0       0.54      0.86      0.67        22
-               1       0.98      0.89      0.93       151
+               0       0.56      1.00      0.72        22
+               1       1.00      0.89      0.94       151
     
-        accuracy                           0.89       173
-       macro avg       0.76      0.88      0.80       173
-    weighted avg       0.92      0.89      0.90       173
+        accuracy                           0.90       173
+       macro avg       0.78      0.94      0.83       173
+    weighted avg       0.94      0.90      0.91       173
     
     
 
@@ -3981,17 +4178,17 @@ print(f"F1 Score on Validation Data: {stacked_unbalanced_class_best_model_origin
 print("\nClassification Report on Validation Data:\n", classification_report(y_validation, stacked_unbalanced_class_best_model_original.predict(X_validation)))
 ```
 
-    F1 Score on Validation Data: 0.9703
+    F1 Score on Validation Data: 0.9149
     
     Classification Report on Validation Data:
                    precision    recall  f1-score   support
     
-               0       0.75      0.86      0.80         7
-               1       0.98      0.96      0.97        51
+               0       0.47      1.00      0.64         7
+               1       1.00      0.84      0.91        51
     
-        accuracy                           0.95        58
-       macro avg       0.86      0.91      0.89        58
-    weighted avg       0.95      0.95      0.95        58
+        accuracy                           0.86        58
+       macro avg       0.73      0.92      0.78        58
+    weighted avg       0.94      0.86      0.88        58
     
     
 
@@ -4379,7 +4576,7 @@ joblib.dump(individual_balanced_class_best_model_upsampled,
 stacked_balanced_class_grid_search.fit(X_train_smote, y_train_smote)
 ```
 
-    Fitting 5 folds for each of 36 candidates, totalling 180 fits
+    Fitting 5 folds for each of 24 candidates, totalling 120 fits
     
 
 
@@ -4396,7 +4593,9 @@ stacked_balanced_class_grid_search.fit(X_train_smote, y_train_smote)
                                                                                                min_samples_leaf=3,
                                                                                                random_state=88888888)),
                                                                        (&#x27;svm&#x27;,
-                                                                        SVC(random_state=88888888))],
+                                                                        SVC(kernel=&#x27;linear&#x27;,
+                                                                            probability=True,
+                                                                            random_state=88888888))],
                                                            final_estimator=LogisticRegression(max_iter=5000,
                                                                                               random_state=88888888,
                                                                                               solver=&#x27;saga&#x27;)))]),
@@ -4406,8 +4605,7 @@ stacked_balanced_class_grid_search.fit(X_train_smote, y_train_smote)
                          &#x27;stacked_model__final_estimator__penalty&#x27;: [&#x27;l1&#x27;, &#x27;l2&#x27;,
                                                                      None],
                          &#x27;stacked_model__rf__max_depth&#x27;: [3, 5],
-                         &#x27;stacked_model__svm__kernel&#x27;: [&#x27;linear&#x27;, &#x27;poly&#x27;,
-                                                        &#x27;rbf&#x27;]},
+                         &#x27;stacked_model__svm__C&#x27;: [0.5, 1.0]},
              scoring=&#x27;f1&#x27;, verbose=1)</pre><b>In a Jupyter environment, please rerun this cell to show the HTML representation or trust the notebook. <br />On GitHub, the HTML representation is unable to render, please try loading this page with nbviewer.org.</b></div><div class="sk-container" hidden><div class="sk-item sk-dashed-wrapped"><div class="sk-label-container"><div class="sk-label sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually" id="sk-estimator-id-14" type="checkbox" ><label for="sk-estimator-id-14" class="sk-toggleable__label sk-toggleable__label-arrow">GridSearchCV</label><div class="sk-toggleable__content"><pre>GridSearchCV(cv=5,
              estimator=Pipeline(steps=[(&#x27;stacked_model&#x27;,
                                         StackingClassifier(estimators=[(&#x27;dt&#x27;,
@@ -4419,7 +4617,9 @@ stacked_balanced_class_grid_search.fit(X_train_smote, y_train_smote)
                                                                                                min_samples_leaf=3,
                                                                                                random_state=88888888)),
                                                                        (&#x27;svm&#x27;,
-                                                                        SVC(random_state=88888888))],
+                                                                        SVC(kernel=&#x27;linear&#x27;,
+                                                                            probability=True,
+                                                                            random_state=88888888))],
                                                            final_estimator=LogisticRegression(max_iter=5000,
                                                                                               random_state=88888888,
                                                                                               solver=&#x27;saga&#x27;)))]),
@@ -4429,8 +4629,7 @@ stacked_balanced_class_grid_search.fit(X_train_smote, y_train_smote)
                          &#x27;stacked_model__final_estimator__penalty&#x27;: [&#x27;l1&#x27;, &#x27;l2&#x27;,
                                                                      None],
                          &#x27;stacked_model__rf__max_depth&#x27;: [3, 5],
-                         &#x27;stacked_model__svm__kernel&#x27;: [&#x27;linear&#x27;, &#x27;poly&#x27;,
-                                                        &#x27;rbf&#x27;]},
+                         &#x27;stacked_model__svm__C&#x27;: [0.5, 1.0]},
              scoring=&#x27;f1&#x27;, verbose=1)</pre></div></div></div><div class="sk-parallel"><div class="sk-parallel-item"><div class="sk-item"><div class="sk-label-container"><div class="sk-label sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually" id="sk-estimator-id-15" type="checkbox" ><label for="sk-estimator-id-15" class="sk-toggleable__label sk-toggleable__label-arrow">estimator: Pipeline</label><div class="sk-toggleable__content"><pre>Pipeline(steps=[(&#x27;stacked_model&#x27;,
                  StackingClassifier(estimators=[(&#x27;dt&#x27;,
                                                  DecisionTreeClassifier(criterion=&#x27;entropy&#x27;,
@@ -4441,7 +4640,9 @@ stacked_balanced_class_grid_search.fit(X_train_smote, y_train_smote)
                                                                         min_samples_leaf=3,
                                                                         random_state=88888888)),
                                                 (&#x27;svm&#x27;,
-                                                 SVC(random_state=88888888))],
+                                                 SVC(kernel=&#x27;linear&#x27;,
+                                                     probability=True,
+                                                     random_state=88888888))],
                                     final_estimator=LogisticRegression(max_iter=5000,
                                                                        random_state=88888888,
                                                                        solver=&#x27;saga&#x27;)))])</pre></div></div></div><div class="sk-serial"><div class="sk-item"><div class="sk-serial"><div class="sk-item"><div class="sk-label-container"><div class="sk-label sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually" id="sk-estimator-id-16" type="checkbox" ><label for="sk-estimator-id-16" class="sk-toggleable__label sk-toggleable__label-arrow">stacked_model: StackingClassifier</label><div class="sk-toggleable__content"><pre>StackingClassifier(estimators=[(&#x27;dt&#x27;,
@@ -4452,12 +4653,14 @@ stacked_balanced_class_grid_search.fit(X_train_smote, y_train_smote)
                                 RandomForestClassifier(criterion=&#x27;entropy&#x27;,
                                                        min_samples_leaf=3,
                                                        random_state=88888888)),
-                               (&#x27;svm&#x27;, SVC(random_state=88888888))],
+                               (&#x27;svm&#x27;,
+                                SVC(kernel=&#x27;linear&#x27;, probability=True,
+                                    random_state=88888888))],
                    final_estimator=LogisticRegression(max_iter=5000,
                                                       random_state=88888888,
                                                       solver=&#x27;saga&#x27;))</pre></div></div></div><div class="sk-serial"><div class="sk-item"><div class="sk-parallel"><div class="sk-parallel-item"><div class="sk-item"><div class="sk-label-container"><div class="sk-label sk-toggleable"><label>dt</label></div></div><div class="sk-serial"><div class="sk-item"><div class="sk-estimator sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually" id="sk-estimator-id-17" type="checkbox" ><label for="sk-estimator-id-17" class="sk-toggleable__label sk-toggleable__label-arrow">DecisionTreeClassifier</label><div class="sk-toggleable__content"><pre>DecisionTreeClassifier(criterion=&#x27;entropy&#x27;, min_samples_leaf=3,
                        random_state=88888888)</pre></div></div></div></div></div></div><div class="sk-parallel-item"><div class="sk-item"><div class="sk-label-container"><div class="sk-label sk-toggleable"><label>rf</label></div></div><div class="sk-serial"><div class="sk-item"><div class="sk-estimator sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually" id="sk-estimator-id-18" type="checkbox" ><label for="sk-estimator-id-18" class="sk-toggleable__label sk-toggleable__label-arrow">RandomForestClassifier</label><div class="sk-toggleable__content"><pre>RandomForestClassifier(criterion=&#x27;entropy&#x27;, min_samples_leaf=3,
-                       random_state=88888888)</pre></div></div></div></div></div></div><div class="sk-parallel-item"><div class="sk-item"><div class="sk-label-container"><div class="sk-label sk-toggleable"><label>svm</label></div></div><div class="sk-serial"><div class="sk-item"><div class="sk-estimator sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually" id="sk-estimator-id-19" type="checkbox" ><label for="sk-estimator-id-19" class="sk-toggleable__label sk-toggleable__label-arrow">SVC</label><div class="sk-toggleable__content"><pre>SVC(random_state=88888888)</pre></div></div></div></div></div></div></div></div><div class="sk-item"><div class="sk-parallel"><div class="sk-parallel-item"><div class="sk-item"><div class="sk-label-container"><div class="sk-label sk-toggleable"><label>final_estimator</label></div></div><div class="sk-serial"><div class="sk-item"><div class="sk-estimator sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually" id="sk-estimator-id-20" type="checkbox" ><label for="sk-estimator-id-20" class="sk-toggleable__label sk-toggleable__label-arrow">LogisticRegression</label><div class="sk-toggleable__content"><pre>LogisticRegression(max_iter=5000, random_state=88888888, solver=&#x27;saga&#x27;)</pre></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div>
+                       random_state=88888888)</pre></div></div></div></div></div></div><div class="sk-parallel-item"><div class="sk-item"><div class="sk-label-container"><div class="sk-label sk-toggleable"><label>svm</label></div></div><div class="sk-serial"><div class="sk-item"><div class="sk-estimator sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually" id="sk-estimator-id-19" type="checkbox" ><label for="sk-estimator-id-19" class="sk-toggleable__label sk-toggleable__label-arrow">SVC</label><div class="sk-toggleable__content"><pre>SVC(kernel=&#x27;linear&#x27;, probability=True, random_state=88888888)</pre></div></div></div></div></div></div></div></div><div class="sk-item"><div class="sk-parallel"><div class="sk-parallel-item"><div class="sk-item"><div class="sk-label-container"><div class="sk-label sk-toggleable"><label>final_estimator</label></div></div><div class="sk-serial"><div class="sk-item"><div class="sk-estimator sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually" id="sk-estimator-id-20" type="checkbox" ><label for="sk-estimator-id-20" class="sk-toggleable__label sk-toggleable__label-arrow">LogisticRegression</label><div class="sk-toggleable__content"><pre>LogisticRegression(max_iter=5000, random_state=88888888, solver=&#x27;saga&#x27;)</pre></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div>
 
 
 
@@ -4490,7 +4693,7 @@ print(f"Best Stacked Model Parameters: {stacked_balanced_class_grid_search.best_
 ```
 
     Best Stacked Model using the Upsampled Train Data: 
-    Best Stacked Model Parameters: {'stacked_model__dt__max_depth': 3, 'stacked_model__final_estimator__class_weight': None, 'stacked_model__final_estimator__penalty': None, 'stacked_model__rf__max_depth': 3, 'stacked_model__svm__kernel': 'rbf'}
+    Best Stacked Model Parameters: {'stacked_model__dt__max_depth': 5, 'stacked_model__final_estimator__class_weight': None, 'stacked_model__final_estimator__penalty': None, 'stacked_model__rf__max_depth': 5, 'stacked_model__svm__C': 0.5}
     
 
 
@@ -4505,14 +4708,14 @@ print(f"F1 Score on Training Data: {stacked_balanced_class_best_model_upsampled_
 print("\nClassification Report on Training Data:\n", classification_report(y_train_smote, stacked_balanced_class_best_model_upsampled.predict(X_train_smote)))
 ```
 
-    F1 Score on Cross-Validated Data: 0.9522
-    F1 Score on Training Data: 0.9603
+    F1 Score on Cross-Validated Data: 0.9584
+    F1 Score on Training Data: 0.9571
     
     Classification Report on Training Data:
                    precision    recall  f1-score   support
     
-               0       0.96      0.96      0.96       151
-               1       0.96      0.96      0.96       151
+               0       0.96      0.95      0.96       151
+               1       0.95      0.96      0.96       151
     
         accuracy                           0.96       302
        macro avg       0.96      0.96      0.96       302
@@ -4957,7 +5160,7 @@ joblib.dump(individual_unbalanced_class_best_model_downsampled,
 stacked_unbalanced_class_grid_search.fit(X_train_cnn, y_train_cnn)
 ```
 
-    Fitting 5 folds for each of 36 candidates, totalling 180 fits
+    Fitting 5 folds for each of 24 candidates, totalling 120 fits
     
 
 
@@ -4986,8 +5189,7 @@ stacked_unbalanced_class_grid_search.fit(X_train_cnn, y_train_cnn)
                          &#x27;stacked_model__final_estimator__penalty&#x27;: [&#x27;l1&#x27;, &#x27;l2&#x27;,
                                                                      None],
                          &#x27;stacked_model__rf__max_depth&#x27;: [3, 5],
-                         &#x27;stacked_model__svm__kernel&#x27;: [&#x27;linear&#x27;, &#x27;poly&#x27;,
-                                                        &#x27;rbf&#x27;]},
+                         &#x27;stacked_model__svm__C&#x27;: [0.5, 1.0]},
              scoring=&#x27;f1&#x27;, verbose=1)</pre><b>In a Jupyter environment, please rerun this cell to show the HTML representation or trust the notebook. <br />On GitHub, the HTML representation is unable to render, please try loading this page with nbviewer.org.</b></div><div class="sk-container" hidden><div class="sk-item sk-dashed-wrapped"><div class="sk-label-container"><div class="sk-label sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually" id="sk-estimator-id-24" type="checkbox" ><label for="sk-estimator-id-24" class="sk-toggleable__label sk-toggleable__label-arrow">GridSearchCV</label><div class="sk-toggleable__content"><pre>GridSearchCV(cv=5,
              estimator=Pipeline(steps=[(&#x27;stacked_model&#x27;,
                                         StackingClassifier(estimators=[(&#x27;dt&#x27;,
@@ -5011,8 +5213,7 @@ stacked_unbalanced_class_grid_search.fit(X_train_cnn, y_train_cnn)
                          &#x27;stacked_model__final_estimator__penalty&#x27;: [&#x27;l1&#x27;, &#x27;l2&#x27;,
                                                                      None],
                          &#x27;stacked_model__rf__max_depth&#x27;: [3, 5],
-                         &#x27;stacked_model__svm__kernel&#x27;: [&#x27;linear&#x27;, &#x27;poly&#x27;,
-                                                        &#x27;rbf&#x27;]},
+                         &#x27;stacked_model__svm__C&#x27;: [0.5, 1.0]},
              scoring=&#x27;f1&#x27;, verbose=1)</pre></div></div></div><div class="sk-parallel"><div class="sk-parallel-item"><div class="sk-item"><div class="sk-label-container"><div class="sk-label sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually" id="sk-estimator-id-25" type="checkbox" ><label for="sk-estimator-id-25" class="sk-toggleable__label sk-toggleable__label-arrow">estimator: Pipeline</label><div class="sk-toggleable__content"><pre>Pipeline(steps=[(&#x27;stacked_model&#x27;,
                  StackingClassifier(estimators=[(&#x27;dt&#x27;,
                                                  DecisionTreeClassifier(class_weight=&#x27;balanced&#x27;,
@@ -5026,6 +5227,8 @@ stacked_unbalanced_class_grid_search.fit(X_train_cnn, y_train_cnn)
                                                                         random_state=88888888)),
                                                 (&#x27;svm&#x27;,
                                                  SVC(class_weight=&#x27;balanced&#x27;,
+                                                     kernel=&#x27;linear&#x27;,
+                                                     probability=True,
                                                      random_state=88888888))],
                                     final_estimator=LogisticRegression(max_iter=5000,
                                                                        random_state=88888888,
@@ -5040,13 +5243,14 @@ stacked_unbalanced_class_grid_search.fit(X_train_cnn, y_train_cnn)
                                                        min_samples_leaf=3,
                                                        random_state=88888888)),
                                (&#x27;svm&#x27;,
-                                SVC(class_weight=&#x27;balanced&#x27;,
-                                    random_state=88888888))],
+                                SVC(class_weight=&#x27;balanced&#x27;, kernel=&#x27;linear&#x27;,
+                                    probability=True, random_state=88888888))],
                    final_estimator=LogisticRegression(max_iter=5000,
                                                       random_state=88888888,
                                                       solver=&#x27;saga&#x27;))</pre></div></div></div><div class="sk-serial"><div class="sk-item"><div class="sk-parallel"><div class="sk-parallel-item"><div class="sk-item"><div class="sk-label-container"><div class="sk-label sk-toggleable"><label>dt</label></div></div><div class="sk-serial"><div class="sk-item"><div class="sk-estimator sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually" id="sk-estimator-id-27" type="checkbox" ><label for="sk-estimator-id-27" class="sk-toggleable__label sk-toggleable__label-arrow">DecisionTreeClassifier</label><div class="sk-toggleable__content"><pre>DecisionTreeClassifier(class_weight=&#x27;balanced&#x27;, criterion=&#x27;entropy&#x27;,
                        min_samples_leaf=3, random_state=88888888)</pre></div></div></div></div></div></div><div class="sk-parallel-item"><div class="sk-item"><div class="sk-label-container"><div class="sk-label sk-toggleable"><label>rf</label></div></div><div class="sk-serial"><div class="sk-item"><div class="sk-estimator sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually" id="sk-estimator-id-28" type="checkbox" ><label for="sk-estimator-id-28" class="sk-toggleable__label sk-toggleable__label-arrow">RandomForestClassifier</label><div class="sk-toggleable__content"><pre>RandomForestClassifier(class_weight=&#x27;balanced&#x27;, criterion=&#x27;entropy&#x27;,
-                       min_samples_leaf=3, random_state=88888888)</pre></div></div></div></div></div></div><div class="sk-parallel-item"><div class="sk-item"><div class="sk-label-container"><div class="sk-label sk-toggleable"><label>svm</label></div></div><div class="sk-serial"><div class="sk-item"><div class="sk-estimator sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually" id="sk-estimator-id-29" type="checkbox" ><label for="sk-estimator-id-29" class="sk-toggleable__label sk-toggleable__label-arrow">SVC</label><div class="sk-toggleable__content"><pre>SVC(class_weight=&#x27;balanced&#x27;, random_state=88888888)</pre></div></div></div></div></div></div></div></div><div class="sk-item"><div class="sk-parallel"><div class="sk-parallel-item"><div class="sk-item"><div class="sk-label-container"><div class="sk-label sk-toggleable"><label>final_estimator</label></div></div><div class="sk-serial"><div class="sk-item"><div class="sk-estimator sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually" id="sk-estimator-id-30" type="checkbox" ><label for="sk-estimator-id-30" class="sk-toggleable__label sk-toggleable__label-arrow">LogisticRegression</label><div class="sk-toggleable__content"><pre>LogisticRegression(max_iter=5000, random_state=88888888, solver=&#x27;saga&#x27;)</pre></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div>
+                       min_samples_leaf=3, random_state=88888888)</pre></div></div></div></div></div></div><div class="sk-parallel-item"><div class="sk-item"><div class="sk-label-container"><div class="sk-label sk-toggleable"><label>svm</label></div></div><div class="sk-serial"><div class="sk-item"><div class="sk-estimator sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually" id="sk-estimator-id-29" type="checkbox" ><label for="sk-estimator-id-29" class="sk-toggleable__label sk-toggleable__label-arrow">SVC</label><div class="sk-toggleable__content"><pre>SVC(class_weight=&#x27;balanced&#x27;, kernel=&#x27;linear&#x27;, probability=True,
+    random_state=88888888)</pre></div></div></div></div></div></div></div></div><div class="sk-item"><div class="sk-parallel"><div class="sk-parallel-item"><div class="sk-item"><div class="sk-label-container"><div class="sk-label sk-toggleable"><label>final_estimator</label></div></div><div class="sk-serial"><div class="sk-item"><div class="sk-estimator sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually" id="sk-estimator-id-30" type="checkbox" ><label for="sk-estimator-id-30" class="sk-toggleable__label sk-toggleable__label-arrow">LogisticRegression</label><div class="sk-toggleable__content"><pre>LogisticRegression(max_iter=5000, random_state=88888888, solver=&#x27;saga&#x27;)</pre></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div>
 
 
 
@@ -5090,7 +5294,7 @@ print(f"Best Stacked Model Parameters: {stacked_unbalanced_class_grid_search.bes
 ```
 
     Best Stacked Model using the Downsampled Train Data: 
-    Best Stacked Model Parameters: {'stacked_model__dt__max_depth': 3, 'stacked_model__final_estimator__class_weight': 'balanced', 'stacked_model__final_estimator__penalty': 'l1', 'stacked_model__rf__max_depth': 3, 'stacked_model__svm__kernel': 'rbf'}
+    Best Stacked Model Parameters: {'stacked_model__dt__max_depth': 3, 'stacked_model__final_estimator__class_weight': 'balanced', 'stacked_model__final_estimator__penalty': None, 'stacked_model__rf__max_depth': 3, 'stacked_model__svm__C': 1.0}
     
 
 
@@ -5132,17 +5336,17 @@ print(f"F1 Score on Validation Data: {stacked_unbalanced_class_best_model_downsa
 print("\nClassification Report on Validation Data:\n", classification_report(y_validation, stacked_unbalanced_class_best_model_downsampled.predict(X_validation)))
 ```
 
-    F1 Score on Validation Data: 0.9505
+    F1 Score on Validation Data: 0.9524
     
     Classification Report on Validation Data:
                    precision    recall  f1-score   support
     
-               0       0.62      0.71      0.67         7
-               1       0.96      0.94      0.95        51
+               0       0.75      0.43      0.55         7
+               1       0.93      0.98      0.95        51
     
         accuracy                           0.91        58
-       macro avg       0.79      0.83      0.81        58
-    weighted avg       0.92      0.91      0.92        58
+       macro avg       0.84      0.70      0.75        58
+    weighted avg       0.90      0.91      0.90        58
     
     
 
@@ -5318,29 +5522,29 @@ display(f1_plot)
     <tr>
       <th>Train</th>
       <td>0.930556</td>
-      <td>0.934256</td>
+      <td>0.940351</td>
       <td>0.949495</td>
-      <td>0.960265</td>
+      <td>0.957096</td>
       <td>0.853333</td>
-      <td>0.891892</td>
+      <td>0.821918</td>
     </tr>
     <tr>
       <th>Cross-Validation</th>
       <td>0.911574</td>
-      <td>0.908472</td>
+      <td>0.912498</td>
       <td>0.947396</td>
-      <td>0.952151</td>
+      <td>0.958415</td>
       <td>0.753711</td>
-      <td>0.778272</td>
+      <td>0.753114</td>
     </tr>
     <tr>
       <th>Validation</th>
       <td>0.949495</td>
-      <td>0.970297</td>
+      <td>0.914894</td>
       <td>0.961538</td>
       <td>0.970874</td>
       <td>0.970874</td>
-      <td>0.950495</td>
+      <td>0.952381</td>
     </tr>
   </tbody>
 </table>
@@ -5452,38 +5656,38 @@ display(updated_f1_plot)
     <tr>
       <th>Train</th>
       <td>0.930556</td>
-      <td>0.934256</td>
+      <td>0.940351</td>
       <td>0.949495</td>
-      <td>0.960265</td>
+      <td>0.957096</td>
       <td>0.853333</td>
-      <td>0.891892</td>
+      <td>0.821918</td>
     </tr>
     <tr>
       <th>Cross-Validation</th>
       <td>0.911574</td>
-      <td>0.908472</td>
+      <td>0.912498</td>
       <td>0.947396</td>
-      <td>0.952151</td>
+      <td>0.958415</td>
       <td>0.753711</td>
-      <td>0.778272</td>
+      <td>0.753114</td>
     </tr>
     <tr>
       <th>Validation</th>
       <td>0.949495</td>
-      <td>0.970297</td>
+      <td>0.914894</td>
       <td>0.961538</td>
       <td>0.970874</td>
       <td>0.970874</td>
-      <td>0.950495</td>
+      <td>0.952381</td>
     </tr>
     <tr>
       <th>Test</th>
       <td>0.904762</td>
-      <td>0.923077</td>
+      <td>0.878049</td>
       <td>0.932331</td>
-      <td>0.942029</td>
+      <td>0.935252</td>
       <td>0.939394</td>
-      <td>0.909091</td>
+      <td>0.916031</td>
     </tr>
   </tbody>
 </table>
@@ -5513,7 +5717,119 @@ for container in updated_f1_plot.containers:
     
 
 
-### 1.6.9 Model Inference | Interpretation <a class="anchor" id="1.6.7"></a>
+### 1.6.9 Model Inference <a class="anchor" id="1.6.7"></a>
+
+
+```python
+##################################
+# Assigning as the final model
+# the candidate model which 
+# demonstrated the best performance
+# on the test set
+##################################
+final_model = stacked_balanced_class_best_model_upsampled.named_steps['stacked_model']
+final_model_base_learner = ['Stacked Model Base Learner: Decision Trees',
+                            'Stacked Model Base Learner: Random Forest',
+                            'Stacked Model Base Learner: Support Vector Machine']
+```
+
+
+```python
+##################################
+# Defining a function to compute and plot 
+# the feature importance for a defined model
+##################################
+def plot_feature_importance(importance, feature_names, model_name):
+    indices = np.argsort(importance)
+    plt.figure(figsize=(17, 8))
+    plt.title(f"Feature Importance - {model_name}")
+    plt.barh(range(len(importance)), importance[indices], align="center")
+    plt.yticks(range(len(importance)), [feature_names[i] for i in indices])
+    plt.tight_layout()
+    plt.show()
+```
+
+
+```python
+##################################
+# Defining the predictor names
+##################################
+feature_names = X_test.columns
+```
+
+
+```python
+##################################
+# Ranking the predictors based on model importance
+# for each base learner using feature importance
+# for tree-based models like DecisionTree and Random Forest
+# and coefficients for linear models like SVC with linear kernel
+##################################
+for index, (name, model) in enumerate(final_model.named_estimators_.items()):
+    if hasattr(model, 'feature_importances_'):  # For tree-based models like DecisionTree and RandomForest
+        plot_feature_importance(model.feature_importances_, feature_names, model_name=final_model_base_learner[index])
+    elif hasattr(model, 'coef_'):  # For linear models like SVC with linear kernel
+        importance = np.abs(model.coef_).flatten()
+        plot_feature_importance(importance, feature_names, model_name=final_model_base_learner[index])
+```
+
+
+    
+![png](output_233_0.png)
+    
+
+
+
+    
+![png](output_233_1.png)
+    
+
+
+
+    
+![png](output_233_2.png)
+    
+
+
+
+```python
+##################################
+# Generating predictions from the 
+# base learners to be used as input
+# to the logistic regression meta-learner
+##################################
+base_learners_predictions = []
+for name, model in final_model.named_estimators_.items():
+    base_learners_predictions.append(model.predict_proba(X_test)[:, 1])
+```
+
+
+```python
+##################################
+# Stacking the base learners' predictions
+##################################
+meta_input = np.column_stack(base_learners_predictions)
+
+##################################
+# Defining the base learner model names
+##################################
+meta_feature_names = [f'Model Prediction - {x}' for x in final_model_base_learner]
+
+##################################
+# Ranking the predictors based on model importance
+# for each meta-learner using coefficients
+# for linear models like logistic regression
+##################################
+if hasattr(final_model.final_estimator_, 'coef_'):
+    importance = np.abs(final_model.final_estimator_.coef_).flatten()
+    plot_feature_importance(importance, meta_feature_names, model_name='Stacked Model Meta-Learner: Logistic Regression')
+```
+
+
+    
+![png](output_235_0.png)
+    
+
 
 # 3. References <a class="anchor" id="References"></a>
 
