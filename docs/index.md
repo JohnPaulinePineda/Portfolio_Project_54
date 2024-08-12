@@ -1,5 +1,5 @@
 ***
-# Model Deployment : Estimating Lung Cancer Probabilities From Demographic Factors And Behavioral Indicators
+# Model Deployment : Estimating Lung Cancer Probabilities From Demographic Factors, Clinical Symptoms And Behavioral Indicators
 
 ***
 ### John Pauline Pineda <br> <br> *August 17, 2024*
@@ -134,6 +134,35 @@ display(lung_cancer.shape)
 
     (309, 16)
 
+
+
+```python
+##################################
+# Verifying the column names
+##################################
+print('Column Names: ')
+display(lung_cancer.columns)
+```
+
+    Column Names: 
+    
+
+
+    Index(['GENDER', 'AGE', 'SMOKING', 'YELLOW_FINGERS', 'ANXIETY',
+           'PEER_PRESSURE', 'CHRONIC DISEASE', 'FATIGUE ', 'ALLERGY ', 'WHEEZING',
+           'ALCOHOL CONSUMING', 'COUGHING', 'SHORTNESS OF BREATH',
+           'SWALLOWING DIFFICULTY', 'CHEST PAIN', 'LUNG_CANCER'],
+          dtype='object')
+
+
+
+```python
+##################################
+# Removing training white spaces
+# in column names
+##################################
+lung_cancer.columns = [x.strip() for x in lung_cancer.columns]
+```
 
 
 ```python
@@ -1987,7 +2016,7 @@ for column in lung_cancer_numeric:
 
 
     
-![png](output_78_0.png)
+![png](output_80_0.png)
     
 
 
@@ -2285,7 +2314,7 @@ plt.show()
 
 
     
-![png](output_82_0.png)
+![png](output_84_0.png)
     
 
 
@@ -2331,7 +2360,7 @@ plt.show()
 
 
     
-![png](output_87_0.png)
+![png](output_89_0.png)
     
 
 
@@ -2392,7 +2421,7 @@ plt.show()
 
 
     
-![png](output_89_0.png)
+![png](output_91_0.png)
     
 
 
@@ -3836,7 +3865,7 @@ plt.show()
 
 
     
-![png](output_142_0.png)
+![png](output_144_0.png)
     
 
 
@@ -3889,7 +3918,7 @@ plt.show()
 
 
     
-![png](output_144_0.png)
+![png](output_146_0.png)
     
 
 
@@ -3932,7 +3961,7 @@ individual_unbalanced_class_best_model_original_probabilities_sorted = individua
 ##################################
 plt.figure(figsize=(17, 8))
 plt.plot(individual_unbalanced_class_best_model_original_logit_values_sorted, 
-         individual_unbalanced_class_best_model_original_probabilities_sorted, label='Logistic Curve', color='black')
+         individual_unbalanced_class_best_model_original_probabilities_sorted, label='Classification Model Logistic Curve', color='black')
 plt.ylim(-0.05, 1.05)
 plt.xlim(-8.00, 8.00)
 target_0_indices = y_train == 0
@@ -3943,7 +3972,7 @@ plt.scatter(individual_unbalanced_class_best_model_original_logit_values[target_
 plt.scatter(individual_unbalanced_class_best_model_original_logit_values[target_1_indices], 
             individual_unbalanced_class_best_model_original_probabilities[target_1_indices], 
             color='red', alpha=0.40, s=100, marker='o', edgecolor='k', label='LUNG_CANCER=YES')
-plt.axhline(0.5, color='green', linestyle='--', label='Classification Threshold (50%)')
+plt.axhline(0.5, color='green', linestyle='--', label='Classification Model Threshold')
 plt.title('Logistic Curve (Original Training Data): Individual Model')
 plt.xlabel('Logit (Log-Odds)')
 plt.ylabel('Estimated Lung Cancer Probability')
@@ -3954,7 +3983,7 @@ plt.show()
 
 
     
-![png](output_148_0.png)
+![png](output_150_0.png)
     
 
 
@@ -4163,7 +4192,7 @@ plt.show()
 
 
     
-![png](output_156_0.png)
+![png](output_158_0.png)
     
 
 
@@ -4216,7 +4245,7 @@ plt.show()
 
 
     
-![png](output_158_0.png)
+![png](output_160_0.png)
     
 
 
@@ -4259,7 +4288,7 @@ stacked_unbalanced_class_best_model_original_probabilities_sorted = stacked_unba
 ##################################
 plt.figure(figsize=(17, 8))
 plt.plot(stacked_unbalanced_class_best_model_original_logit_values_sorted, 
-         stacked_unbalanced_class_best_model_original_probabilities_sorted, label='Logistic Curve', color='black')
+         stacked_unbalanced_class_best_model_original_probabilities_sorted, label='Classification Model Logistic Curve', color='black')
 plt.ylim(-0.05, 1.05)
 plt.xlim(-8.00, 8.00)
 target_0_indices = y_train == 0
@@ -4270,7 +4299,7 @@ plt.scatter(stacked_unbalanced_class_best_model_original_logit_values[target_0_i
 plt.scatter(stacked_unbalanced_class_best_model_original_logit_values[target_1_indices], 
             stacked_unbalanced_class_best_model_original_probabilities[target_1_indices], 
             color='red', alpha=0.40, s=100, marker='o', edgecolor='k', label='LUNG_CANCER=YES')
-plt.axhline(0.5, color='green', linestyle='--', label='Classification Threshold (50%)')
+plt.axhline(0.5, color='green', linestyle='--', label='Classification Model Threshold')
 plt.title('Logistic Curve (Original Training Data): Stacked Model')
 plt.xlabel('Logit (Log-Odds)')
 plt.ylabel('Estimated Lung Cancer Probability')
@@ -4281,7 +4310,7 @@ plt.show()
 
 
     
-![png](output_162_0.png)
+![png](output_164_0.png)
     
 
 
@@ -4426,7 +4455,7 @@ plt.show()
 
 
     
-![png](output_171_0.png)
+![png](output_173_0.png)
     
 
 
@@ -4479,7 +4508,7 @@ plt.show()
 
 
     
-![png](output_173_0.png)
+![png](output_175_0.png)
     
 
 
@@ -4522,7 +4551,7 @@ individual_balanced_class_best_model_upsampled_probabilities_sorted = individual
 ##################################
 plt.figure(figsize=(17, 8))
 plt.plot(individual_balanced_class_best_model_upsampled_logit_values_sorted, 
-         individual_balanced_class_best_model_upsampled_probabilities_sorted, label='Logistic Curve', color='black')
+         individual_balanced_class_best_model_upsampled_probabilities_sorted, label='Classification Model Logistic Curve', color='black')
 plt.ylim(-0.05, 1.05)
 plt.xlim(-8.00, 8.00)
 target_0_indices = y_train_smote == 0
@@ -4533,7 +4562,7 @@ plt.scatter(individual_balanced_class_best_model_upsampled_logit_values[target_0
 plt.scatter(individual_balanced_class_best_model_upsampled_logit_values[target_1_indices], 
             individual_balanced_class_best_model_upsampled_probabilities[target_1_indices], 
             color='red', alpha=0.40, s=100, marker='o', edgecolor='k', label='LUNG_CANCER=YES')
-plt.axhline(0.5, color='green', linestyle='--', label='Classification Threshold (50%)')
+plt.axhline(0.5, color='green', linestyle='--', label='Classification Model Threshold')
 plt.title('Logistic Curve (Upsampled Training Data): Individual Model')
 plt.xlabel('Logit (Log-Odds)')
 plt.ylabel('Estimated Lung Cancer Probability')
@@ -4544,7 +4573,7 @@ plt.show()
 
 
     
-![png](output_177_0.png)
+![png](output_179_0.png)
     
 
 
@@ -4747,7 +4776,7 @@ plt.show()
 
 
     
-![png](output_185_0.png)
+![png](output_187_0.png)
     
 
 
@@ -4800,7 +4829,7 @@ plt.show()
 
 
     
-![png](output_187_0.png)
+![png](output_189_0.png)
     
 
 
@@ -4843,7 +4872,7 @@ stacked_balanced_class_best_model_upsampled_probabilities_sorted = stacked_balan
 ##################################
 plt.figure(figsize=(17, 8))
 plt.plot(stacked_balanced_class_best_model_upsampled_logit_values_sorted, 
-         stacked_balanced_class_best_model_upsampled_probabilities_sorted, label='Logistic Curve', color='black')
+         stacked_balanced_class_best_model_upsampled_probabilities_sorted, label='Classification Model Logistic Curve', color='black')
 plt.ylim(-0.05, 1.05)
 plt.xlim(-8.00, 8.00)
 target_0_indices = y_train_smote == 0
@@ -4854,7 +4883,7 @@ plt.scatter(stacked_balanced_class_best_model_upsampled_logit_values[target_0_in
 plt.scatter(stacked_balanced_class_best_model_upsampled_logit_values[target_1_indices], 
             stacked_balanced_class_best_model_upsampled_probabilities[target_1_indices], 
             color='red', alpha=0.40, s=100, marker='o', edgecolor='k', label='LUNG_CANCER=YES')
-plt.axhline(0.5, color='green', linestyle='--', label='Classification Threshold (50%)')
+plt.axhline(0.5, color='green', linestyle='--', label='Classification Model Threshold')
 plt.title('Logistic Curve (Upsampled Training Data): Stacked Model')
 plt.xlabel('Logit (Log-Odds)')
 plt.ylabel('Estimated Lung Cancer Probability')
@@ -4865,7 +4894,7 @@ plt.show()
 
 
     
-![png](output_191_0.png)
+![png](output_193_0.png)
     
 
 
@@ -5010,7 +5039,7 @@ plt.show()
 
 
     
-![png](output_200_0.png)
+![png](output_202_0.png)
     
 
 
@@ -5063,7 +5092,7 @@ plt.show()
 
 
     
-![png](output_202_0.png)
+![png](output_204_0.png)
     
 
 
@@ -5106,7 +5135,7 @@ individual_unbalanced_class_best_model_downsampled_probabilities_sorted = indivi
 ##################################
 plt.figure(figsize=(17, 8))
 plt.plot(individual_unbalanced_class_best_model_downsampled_logit_values_sorted, 
-         individual_unbalanced_class_best_model_downsampled_probabilities_sorted, label='Logistic Curve', color='black')
+         individual_unbalanced_class_best_model_downsampled_probabilities_sorted, label='Classification Model Logistic Curve', color='black')
 plt.ylim(-0.05, 1.05)
 plt.xlim(-8.00, 8.00)
 target_0_indices = y_train_cnn == 0
@@ -5117,7 +5146,7 @@ plt.scatter(individual_unbalanced_class_best_model_downsampled_logit_values[targ
 plt.scatter(individual_unbalanced_class_best_model_downsampled_logit_values[target_1_indices], 
             individual_unbalanced_class_best_model_downsampled_probabilities[target_1_indices], 
             color='red', alpha=0.40, s=100, marker='o', edgecolor='k', label='LUNG_CANCER=YES')
-plt.axhline(0.5, color='green', linestyle='--', label='Classification Threshold (50%)')
+plt.axhline(0.5, color='green', linestyle='--', label='Classification Model Threshold')
 plt.title('Logistic Curve (Downsampled Training Data): Individual Model')
 plt.xlabel('Logit (Log-Odds)')
 plt.ylabel('Estimated Lung Cancer Probability')
@@ -5128,7 +5157,7 @@ plt.show()
 
 
     
-![png](output_206_0.png)
+![png](output_208_0.png)
     
 
 
@@ -5321,7 +5350,7 @@ plt.show()
 
 
     
-![png](output_214_0.png)
+![png](output_216_0.png)
     
 
 
@@ -5374,7 +5403,7 @@ plt.show()
 
 
     
-![png](output_216_0.png)
+![png](output_218_0.png)
     
 
 
@@ -5417,7 +5446,7 @@ stacked_unbalanced_class_best_model_downsampled_probabilities_sorted = stacked_u
 ##################################
 plt.figure(figsize=(17, 8))
 plt.plot(stacked_unbalanced_class_best_model_downsampled_logit_values_sorted, 
-         stacked_unbalanced_class_best_model_downsampled_probabilities_sorted, label='Logistic Curve', color='black')
+         stacked_unbalanced_class_best_model_downsampled_probabilities_sorted, label='Classification Model Logistic Curve', color='black')
 plt.ylim(-0.05, 1.05)
 plt.xlim(-8.00, 8.00)
 target_0_indices = y_train_cnn == 0
@@ -5428,7 +5457,7 @@ plt.scatter(stacked_unbalanced_class_best_model_downsampled_logit_values[target_
 plt.scatter(stacked_unbalanced_class_best_model_downsampled_logit_values[target_1_indices], 
             stacked_unbalanced_class_best_model_downsampled_probabilities[target_1_indices], 
             color='red', alpha=0.40, s=100, marker='o', edgecolor='k', label='LUNG_CANCER=YES')
-plt.axhline(0.5, color='green', linestyle='--', label='Classification Threshold (50%)')
+plt.axhline(0.5, color='green', linestyle='--', label='Classification Model Threshold')
 plt.title('Logistic Curve (Downsampled Training Data): Stacked Model')
 plt.xlabel('Logit (Log-Odds)')
 plt.ylabel('Estimated Lung Cancer Probability')
@@ -5439,7 +5468,7 @@ plt.show()
 
 
     
-![png](output_220_0.png)
+![png](output_222_0.png)
     
 
 
@@ -5570,7 +5599,7 @@ for container in f1_plot.containers:
 
 
     
-![png](output_224_0.png)
+![png](output_226_0.png)
     
 
 
@@ -5713,7 +5742,7 @@ for container in updated_f1_plot.containers:
 
 
     
-![png](output_228_0.png)
+![png](output_230_0.png)
     
 
 
@@ -5775,19 +5804,19 @@ for index, (name, model) in enumerate(final_model.named_estimators_.items()):
 
 
     
-![png](output_233_0.png)
+![png](output_235_0.png)
     
 
 
 
     
-![png](output_233_1.png)
+![png](output_235_1.png)
     
 
 
 
     
-![png](output_233_2.png)
+![png](output_235_2.png)
     
 
 
@@ -5827,7 +5856,835 @@ if hasattr(final_model.final_estimator_, 'coef_'):
 
 
     
-![png](output_235_0.png)
+![png](output_237_0.png)
+    
+
+
+
+```python
+##################################
+# Plotting the estimated logistic curve
+# of the final classification model
+# involving a stacked model with
+# a logistic regression meta-learner
+# and random forest, SVC and decision tree
+# base learners
+##################################
+plt.figure(figsize=(17, 8))
+plt.plot(stacked_balanced_class_best_model_upsampled_logit_values_sorted, 
+         stacked_balanced_class_best_model_upsampled_probabilities_sorted, label='Classification Model Logistic Curve', color='black')
+plt.ylim(-0.05, 1.05)
+plt.xlim(-6.00, 6.00)
+target_0_indices = y_train_smote == 0
+target_1_indices = y_train_smote == 1
+plt.scatter(stacked_balanced_class_best_model_upsampled_logit_values[target_0_indices], 
+            stacked_balanced_class_best_model_upsampled_probabilities[target_0_indices], 
+            color='blue', alpha=0.40, s=100, marker= 'o', edgecolor='k', label='LUNG_CANCER=NO')
+plt.scatter(stacked_balanced_class_best_model_upsampled_logit_values[target_1_indices], 
+            stacked_balanced_class_best_model_upsampled_probabilities[target_1_indices], 
+            color='red', alpha=0.40, s=100, marker='o', edgecolor='k', label='LUNG_CANCER=YES')
+plt.axhline(0.5, color='green', linestyle='--', label='Classification Model Threshold')
+plt.title('Final Classification Model: Stacked Model (Meta-Learner = Logistic Regression, Base Learners: Random Forest, Support Vector Classifier, Decision Tree)')
+plt.xlabel('Logit (Log-Odds)')
+plt.ylabel('Estimated Lung Cancer Probability')
+plt.grid(True)
+plt.legend(loc='upper left')
+plt.show()
+```
+
+
+    
+![png](output_238_0.png)
+    
+
+
+
+```python
+##################################
+# Rebuilding the upsampled training data
+# for plotting categorical distributions
+##################################
+lung_cancer_train_smote = pd.concat([X_train_smote, y_train_smote], axis=1)
+lung_cancer_train_smote.iloc[:,0:10] = lung_cancer_train_smote.iloc[:,0:10].replace({0: 'Absent', 1: 'Present'})
+lung_cancer_train_smote['LUNG_CANCER'] = lung_cancer_train_smote['LUNG_CANCER'].replace({0: 'No', 1: 'Yes'})
+lung_cancer_train_smote[lung_cancer_train_smote.columns[0:11]] = lung_cancer_train_smote[lung_cancer_train_smote.columns[0:11]].astype('category')
+lung_cancer_train_smote.head()
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>YELLOW_FINGERS</th>
+      <th>ANXIETY</th>
+      <th>PEER_PRESSURE</th>
+      <th>FATIGUE</th>
+      <th>ALLERGY</th>
+      <th>WHEEZING</th>
+      <th>ALCOHOL CONSUMING</th>
+      <th>COUGHING</th>
+      <th>SWALLOWING DIFFICULTY</th>
+      <th>CHEST PAIN</th>
+      <th>LUNG_CANCER</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>Absent</td>
+      <td>Absent</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Absent</td>
+      <td>Present</td>
+      <td>Absent</td>
+      <td>Yes</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Absent</td>
+      <td>Absent</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Yes</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Absent</td>
+      <td>Present</td>
+      <td>Absent</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Absent</td>
+      <td>Yes</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>Absent</td>
+      <td>Absent</td>
+      <td>Absent</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Absent</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Yes</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Absent</td>
+      <td>Absent</td>
+      <td>Absent</td>
+      <td>Absent</td>
+      <td>Present</td>
+      <td>Absent</td>
+      <td>Yes</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+
+```python
+##################################
+# Describing the details of a 
+# low-risk test case
+##################################
+X_sample = {"YELLOW_FINGERS":1,
+            "ANXIETY":0,
+            "PEER_PRESSURE":0,
+            "FATIGUE":0,
+            "ALLERGY":0,
+            "WHEEZING":1,
+            "ALCOHOL CONSUMING":0,
+            "COUGHING":0,
+            "SWALLOWING DIFFICULTY":1,
+            "CHEST PAIN":1}
+X_test_sample = pd.DataFrame([X_sample])
+X_test_sample.head()
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>YELLOW_FINGERS</th>
+      <th>ANXIETY</th>
+      <th>PEER_PRESSURE</th>
+      <th>FATIGUE</th>
+      <th>ALLERGY</th>
+      <th>WHEEZING</th>
+      <th>ALCOHOL CONSUMING</th>
+      <th>COUGHING</th>
+      <th>SWALLOWING DIFFICULTY</th>
+      <th>CHEST PAIN</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>1</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+
+```python
+##################################
+# Rebuilding the low-risk test case data
+# for plotting categorical distributions
+##################################
+X_test_sample_category = X_test_sample.copy()
+X_test_sample_category.iloc[:,0:10] = X_test_sample_category.iloc[:,0:10].replace({0: 'Absent', 1: 'Present'})
+X_test_sample_category[X_test_sample_category.columns[0:11]] = X_test_sample_category[X_test_sample_category.columns[0:11]].astype('category')
+X_test_sample_category.head()
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>YELLOW_FINGERS</th>
+      <th>ANXIETY</th>
+      <th>PEER_PRESSURE</th>
+      <th>FATIGUE</th>
+      <th>ALLERGY</th>
+      <th>WHEEZING</th>
+      <th>ALCOHOL CONSUMING</th>
+      <th>COUGHING</th>
+      <th>SWALLOWING DIFFICULTY</th>
+      <th>CHEST PAIN</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>Present</td>
+      <td>Absent</td>
+      <td>Absent</td>
+      <td>Absent</td>
+      <td>Absent</td>
+      <td>Present</td>
+      <td>Absent</td>
+      <td>Absent</td>
+      <td>Present</td>
+      <td>Present</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+
+```python
+##################################
+# Plotting the categorical distributions
+# for a low-risk test case
+##################################
+fig, axs = plt.subplots(2, 5, figsize=(17, 8))
+
+colors = ['blue','red']
+level_order = ['Absent','Present']
+
+sns.countplot(x='YELLOW_FINGERS', hue='LUNG_CANCER', data=lung_cancer_train_smote, ax=axs[0, 0], order=level_order, palette=colors)
+axs[0, 0].axvline(level_order.index(X_test_sample_category['YELLOW_FINGERS'].iloc[0]), color='black', linestyle='--', linewidth=3)
+axs[0, 0].set_title('YELLOW_FINGERS')
+axs[0, 0].set_ylabel('Classification Model Training Case Count')
+axs[0, 0].set_xlabel(None)
+axs[0, 0].set_ylim(0, 200)
+axs[0, 0].legend(title='LUNG_CANCER', loc='upper center')
+for patch, color in zip(axs[0, 0].patches, ['blue','blue','red','red'] ):
+    patch.set_facecolor(color)
+    patch.set_alpha(0.2)
+
+sns.countplot(x='ANXIETY', hue='LUNG_CANCER', data=lung_cancer_train_smote, ax=axs[0, 1], order=level_order, palette=colors)
+axs[0, 1].axvline(level_order.index(X_test_sample_category['ANXIETY'].iloc[0]), color='black', linestyle='--', linewidth=3)
+axs[0, 1].set_title('ANXIETY')
+axs[0, 1].set_ylabel('Classification Model Training Case Count')
+axs[0, 1].set_xlabel(None)
+axs[0, 1].set_ylim(0, 200)
+axs[0, 1].legend(title='LUNG_CANCER', loc='upper center')
+for patch, color in zip(axs[0, 1].patches, ['blue','blue','red','red'] ):
+    patch.set_facecolor(color)
+    patch.set_alpha(0.2)
+
+sns.countplot(x='PEER_PRESSURE', hue='LUNG_CANCER', data=lung_cancer_train_smote, ax=axs[0, 2], order=level_order, palette=colors)
+axs[0, 2].axvline(level_order.index(X_test_sample_category['PEER_PRESSURE'].iloc[0]), color='black', linestyle='--', linewidth=3)
+axs[0, 2].set_title('PEER_PRESSURE')
+axs[0, 2].set_ylabel('Classification Model Training Case Count')
+axs[0, 2].set_xlabel(None)
+axs[0, 2].set_ylim(0, 200)
+axs[0, 2].legend(title='LUNG_CANCER', loc='upper center')
+for patch, color in zip(axs[0, 2].patches, ['blue','blue','red','red'] ):
+    patch.set_facecolor(color)
+    patch.set_alpha(0.2)
+
+sns.countplot(x='FATIGUE', hue='LUNG_CANCER', data=lung_cancer_train_smote, ax=axs[0, 3], order=level_order, palette=colors)
+axs[0, 3].axvline(level_order.index(X_test_sample_category['FATIGUE'].iloc[0]), color='black', linestyle='--', linewidth=3)
+axs[0, 3].set_title('FATIGUE')
+axs[0, 3].set_ylabel('Classification Model Training Case Count')
+axs[0, 3].set_xlabel(None)
+axs[0, 3].set_ylim(0, 200)
+axs[0, 3].legend(title='LUNG_CANCER', loc='upper center')
+for patch, color in zip(axs[0, 3].patches, ['blue','blue','red','red'] ):
+    patch.set_facecolor(color)
+    patch.set_alpha(0.2)
+
+sns.countplot(x='ALLERGY', hue='LUNG_CANCER', data=lung_cancer_train_smote, ax=axs[0, 4], order=level_order, palette=colors)
+axs[0, 4].axvline(level_order.index(X_test_sample_category['ALLERGY'].iloc[0]), color='black', linestyle='--', linewidth=3)
+axs[0, 4].set_title('ALLERGY')
+axs[0, 4].set_ylabel('Classification Model Training Case Count')
+axs[0, 4].set_xlabel(None)
+axs[0, 4].set_ylim(0, 200)
+axs[0, 4].legend(title='LUNG_CANCER', loc='upper center')
+for patch, color in zip(axs[0, 4].patches, ['blue','blue','red','red'] ):
+    patch.set_facecolor(color)
+    patch.set_alpha(0.2)
+
+sns.countplot(x='WHEEZING', hue='LUNG_CANCER', data=lung_cancer_train_smote, ax=axs[1, 0], order=level_order, palette=colors)
+axs[1, 0].axvline(level_order.index(X_test_sample_category['WHEEZING'].iloc[0]), color='black', linestyle='--', linewidth=3)
+axs[1, 0].set_title('WHEEZING')
+axs[1, 0].set_ylabel('Classification Model Training Case Count')
+axs[1, 0].set_xlabel(None)
+axs[1, 0].set_ylim(0, 200)
+axs[1, 0].legend(title='LUNG_CANCER', loc='upper center')
+for patch, color in zip(axs[1, 0].patches, ['blue','blue','red','red'] ):
+    patch.set_facecolor(color)
+    patch.set_alpha(0.2)
+
+sns.countplot(x='ALCOHOL CONSUMING', hue='LUNG_CANCER', data=lung_cancer_train_smote, ax=axs[1, 1], order=level_order, palette=colors)
+axs[1, 1].axvline(level_order.index(X_test_sample_category['ALCOHOL CONSUMING'].iloc[0]), color='black', linestyle='--', linewidth=3)
+axs[1, 1].set_title('ALCOHOL CONSUMING')
+axs[1, 1].set_ylabel('Classification Model Training Case Count')
+axs[1, 1].set_xlabel(None)
+axs[1, 1].set_ylim(0, 200)
+axs[1, 1].legend(title='LUNG_CANCER', loc='upper center')
+for patch, color in zip(axs[1, 1].patches, ['blue','blue','red','red'] ):
+    patch.set_facecolor(color)
+    patch.set_alpha(0.2)
+
+sns.countplot(x='COUGHING', hue='LUNG_CANCER', data=lung_cancer_train_smote, ax=axs[1, 2], order=level_order, palette=colors)
+axs[1, 2].axvline(level_order.index(X_test_sample_category['COUGHING'].iloc[0]), color='black', linestyle='--', linewidth=3)
+axs[1, 2].set_title('COUGHING')
+axs[1, 2].set_ylabel('Classification Model Training Case Count')
+axs[1, 2].set_xlabel(None)
+axs[1, 2].set_ylim(0, 200)
+axs[1, 2].legend(title='LUNG_CANCER', loc='upper center')
+for patch, color in zip(axs[1, 2].patches, ['blue','blue','red','red'] ):
+    patch.set_facecolor(color)
+    patch.set_alpha(0.2)
+
+sns.countplot(x='SWALLOWING DIFFICULTY', hue='LUNG_CANCER', data=lung_cancer_train_smote, ax=axs[1, 3], order=level_order, palette=colors)
+axs[1, 3].axvline(level_order.index(X_test_sample_category['SWALLOWING DIFFICULTY'].iloc[0]), color='black', linestyle='--', linewidth=3)
+axs[1, 3].set_title('SWALLOWING DIFFICULTY')
+axs[1, 3].set_ylabel('Classification Model Training Case Count')
+axs[1, 3].set_xlabel(None)
+axs[1, 3].set_ylim(0, 200)
+axs[1, 3].legend(title='LUNG_CANCER', loc='upper center')
+for patch, color in zip(axs[1, 3].patches, ['blue','blue','red','red'] ):
+    patch.set_facecolor(color)
+    patch.set_alpha(0.2)
+
+sns.countplot(x='CHEST PAIN', hue='LUNG_CANCER', data=lung_cancer_train_smote, ax=axs[1, 4], order=level_order, palette=colors)
+axs[1, 4].axvline(level_order.index(X_test_sample_category['CHEST PAIN'].iloc[0]), color='black', linestyle='--', linewidth=3)
+axs[1, 4].set_title('CHEST PAIN')
+axs[1, 4].set_ylabel('Classification Model Training Case Count')
+axs[1, 4].set_xlabel(None)
+axs[1, 4].set_ylim(0, 200)
+axs[1, 4].legend(title='LUNG_CANCER', loc='upper center')
+for patch, color in zip(axs[1, 4].patches, ['blue','blue','red','red'] ):
+    patch.set_facecolor(color)
+    patch.set_alpha(0.2)
+
+plt.tight_layout()
+plt.show()
+```
+
+
+    
+![png](output_242_0.png)
+    
+
+
+
+```python
+##################################
+# Computing the logit and estimated probability
+# for the test case
+##################################
+X_sample_logit = stacked_balanced_class_best_model_upsampled.decision_function(X_test_sample)[0]
+X_sample_probability = stacked_balanced_class_best_model_upsampled.predict_proba(X_test_sample)[0, 1]
+X_sample_class = "Low-Risk" if X_sample_probability < 0.50 else "High-Risk"
+print(f"Test Case Logit Value: {X_sample_logit}")
+print(f"Test Case Probability: {X_sample_probability}")
+print(f"Test Case Class: {X_sample_class}")
+```
+
+    Test Case Logit Value: -0.3863877455601523
+    Test Case Probability: 0.4045871790163868
+    Test Case Class: Low-Risk
+    
+
+
+```python
+##################################
+# Plotting the logit and estimated probability
+# for the low-risk test case 
+# in the estimated logistic curve
+# of the final classification model
+##################################
+plt.figure(figsize=(17, 8))
+plt.plot(stacked_balanced_class_best_model_upsampled_logit_values_sorted, 
+         stacked_balanced_class_best_model_upsampled_probabilities_sorted, label='Classification Model Logistic Curve', color='black')
+plt.ylim(-0.05, 1.05)
+plt.xlim(-6.00, 6.00)
+target_0_indices = y_train_smote == 0
+target_1_indices = y_train_smote == 1
+plt.axhline(0.5, color='green', linestyle='--', label='Classification Model Threshold')
+plt.scatter(stacked_balanced_class_best_model_upsampled_logit_values[target_0_indices], 
+            stacked_balanced_class_best_model_upsampled_probabilities[target_0_indices], 
+            color='blue', alpha=0.20, s=100, marker= 'o', edgecolor='k', label='Classification Model Training Cases: LUNG_CANCER = No')
+plt.scatter(stacked_balanced_class_best_model_upsampled_logit_values[target_1_indices], 
+            stacked_balanced_class_best_model_upsampled_probabilities[target_1_indices], 
+            color='red', alpha=0.20, s=100, marker='o', edgecolor='k', label='Classification Model Training Cases: LUNG_CANCER = Yes')
+if X_sample_class == "Low-Risk":
+    plt.scatter(X_sample_logit, X_sample_probability, color='blue', s=125, edgecolor='k', label='Test Case (Low-Risk)', marker= 's', zorder=5)
+    plt.axvline(X_sample_logit, color='black', linestyle='--', linewidth=3)
+    plt.axhline(X_sample_probability, color='black', linestyle='--', linewidth=3)
+if X_sample_class == "High-Risk":
+    plt.scatter(X_sample_logit, X_sample_probability, color='red', s=125, edgecolor='k', label='Test Case (High-Risk)', marker= 's', zorder=5)
+    plt.axvline(X_sample_logit, color='black', linestyle='--', linewidth=3)
+    plt.axhline(X_sample_probability, color='black', linestyle='--', linewidth=3)
+plt.title('Final Classification Model: Stacked Model (Meta-Learner = Logistic Regression, Base Learners = Random Forest, Support Vector Classifier, Decision Tree)')
+plt.xlabel('Logit (Log-Odds)')
+plt.ylabel('Estimated Lung Cancer Probability')
+plt.grid(False)
+plt.legend(facecolor='white', framealpha=1, loc='upper center', bbox_to_anchor=(0.5, -0.10), ncol=3)
+plt.tight_layout(rect=[0, 0, 1.00, 0.95])
+plt.show()
+```
+
+
+    
+![png](output_244_0.png)
+    
+
+
+
+```python
+##################################
+# Describing the details of a 
+# high-risk test case
+##################################
+X_sample = {"YELLOW_FINGERS":1,
+            "ANXIETY":0,
+            "PEER_PRESSURE":1,
+            "FATIGUE":0,
+            "ALLERGY":1,
+            "WHEEZING":1,
+            "ALCOHOL CONSUMING":0,
+            "COUGHING":1,
+            "SWALLOWING DIFFICULTY":1,
+            "CHEST PAIN":1}
+X_test_sample = pd.DataFrame([X_sample])
+X_test_sample.head()
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>YELLOW_FINGERS</th>
+      <th>ANXIETY</th>
+      <th>PEER_PRESSURE</th>
+      <th>FATIGUE</th>
+      <th>ALLERGY</th>
+      <th>WHEEZING</th>
+      <th>ALCOHOL CONSUMING</th>
+      <th>COUGHING</th>
+      <th>SWALLOWING DIFFICULTY</th>
+      <th>CHEST PAIN</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>1</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>1</td>
+      <td>1</td>
+      <td>0</td>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+
+```python
+##################################
+# Rebuilding the high-risk test case data
+# for plotting categorical distributions
+##################################
+X_test_sample_category = X_test_sample.copy()
+X_test_sample_category.iloc[:,0:10] = X_test_sample_category.iloc[:,0:10].replace({0: 'Absent', 1: 'Present'})
+X_test_sample_category[X_test_sample_category.columns[0:11]] = X_test_sample_category[X_test_sample_category.columns[0:11]].astype('category')
+X_test_sample_category.head()
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>YELLOW_FINGERS</th>
+      <th>ANXIETY</th>
+      <th>PEER_PRESSURE</th>
+      <th>FATIGUE</th>
+      <th>ALLERGY</th>
+      <th>WHEEZING</th>
+      <th>ALCOHOL CONSUMING</th>
+      <th>COUGHING</th>
+      <th>SWALLOWING DIFFICULTY</th>
+      <th>CHEST PAIN</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>Present</td>
+      <td>Absent</td>
+      <td>Present</td>
+      <td>Absent</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Absent</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Present</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+
+```python
+##################################
+# Plotting the categorical distributions
+# for a low-risk test case
+##################################
+fig, axs = plt.subplots(2, 5, figsize=(17, 8))
+
+colors = ['blue','red']
+level_order = ['Absent','Present']
+
+sns.countplot(x='YELLOW_FINGERS', hue='LUNG_CANCER', data=lung_cancer_train_smote, ax=axs[0, 0], order=level_order, palette=colors)
+axs[0, 0].axvline(level_order.index(X_test_sample_category['YELLOW_FINGERS'].iloc[0]), color='black', linestyle='--', linewidth=3)
+axs[0, 0].set_title('YELLOW_FINGERS')
+axs[0, 0].set_ylabel('Classification Model Training Case Count')
+axs[0, 0].set_xlabel(None)
+axs[0, 0].set_ylim(0, 200)
+axs[0, 0].legend(title='LUNG_CANCER', loc='upper center')
+for patch, color in zip(axs[0, 0].patches, ['blue','blue','red','red'] ):
+    patch.set_facecolor(color)
+    patch.set_alpha(0.2)
+
+sns.countplot(x='ANXIETY', hue='LUNG_CANCER', data=lung_cancer_train_smote, ax=axs[0, 1], order=level_order, palette=colors)
+axs[0, 1].axvline(level_order.index(X_test_sample_category['ANXIETY'].iloc[0]), color='black', linestyle='--', linewidth=3)
+axs[0, 1].set_title('ANXIETY')
+axs[0, 1].set_ylabel('Classification Model Training Case Count')
+axs[0, 1].set_xlabel(None)
+axs[0, 1].set_ylim(0, 200)
+axs[0, 1].legend(title='LUNG_CANCER', loc='upper center')
+for patch, color in zip(axs[0, 1].patches, ['blue','blue','red','red'] ):
+    patch.set_facecolor(color)
+    patch.set_alpha(0.2)
+
+sns.countplot(x='PEER_PRESSURE', hue='LUNG_CANCER', data=lung_cancer_train_smote, ax=axs[0, 2], order=level_order, palette=colors)
+axs[0, 2].axvline(level_order.index(X_test_sample_category['PEER_PRESSURE'].iloc[0]), color='black', linestyle='--', linewidth=3)
+axs[0, 2].set_title('PEER_PRESSURE')
+axs[0, 2].set_ylabel('Classification Model Training Case Count')
+axs[0, 2].set_xlabel(None)
+axs[0, 2].set_ylim(0, 200)
+axs[0, 2].legend(title='LUNG_CANCER', loc='upper center')
+for patch, color in zip(axs[0, 2].patches, ['blue','blue','red','red'] ):
+    patch.set_facecolor(color)
+    patch.set_alpha(0.2)
+
+sns.countplot(x='FATIGUE', hue='LUNG_CANCER', data=lung_cancer_train_smote, ax=axs[0, 3], order=level_order, palette=colors)
+axs[0, 3].axvline(level_order.index(X_test_sample_category['FATIGUE'].iloc[0]), color='black', linestyle='--', linewidth=3)
+axs[0, 3].set_title('FATIGUE')
+axs[0, 3].set_ylabel('Classification Model Training Case Count')
+axs[0, 3].set_xlabel(None)
+axs[0, 3].set_ylim(0, 200)
+axs[0, 3].legend(title='LUNG_CANCER', loc='upper center')
+for patch, color in zip(axs[0, 3].patches, ['blue','blue','red','red'] ):
+    patch.set_facecolor(color)
+    patch.set_alpha(0.2)
+
+sns.countplot(x='ALLERGY', hue='LUNG_CANCER', data=lung_cancer_train_smote, ax=axs[0, 4], order=level_order, palette=colors)
+axs[0, 4].axvline(level_order.index(X_test_sample_category['ALLERGY'].iloc[0]), color='black', linestyle='--', linewidth=3)
+axs[0, 4].set_title('ALLERGY')
+axs[0, 4].set_ylabel('Classification Model Training Case Count')
+axs[0, 4].set_xlabel(None)
+axs[0, 4].set_ylim(0, 200)
+axs[0, 4].legend(title='LUNG_CANCER', loc='upper center')
+for patch, color in zip(axs[0, 4].patches, ['blue','blue','red','red'] ):
+    patch.set_facecolor(color)
+    patch.set_alpha(0.2)
+
+sns.countplot(x='WHEEZING', hue='LUNG_CANCER', data=lung_cancer_train_smote, ax=axs[1, 0], order=level_order, palette=colors)
+axs[1, 0].axvline(level_order.index(X_test_sample_category['WHEEZING'].iloc[0]), color='black', linestyle='--', linewidth=3)
+axs[1, 0].set_title('WHEEZING')
+axs[1, 0].set_ylabel('Classification Model Training Case Count')
+axs[1, 0].set_xlabel(None)
+axs[1, 0].set_ylim(0, 200)
+axs[1, 0].legend(title='LUNG_CANCER', loc='upper center')
+for patch, color in zip(axs[1, 0].patches, ['blue','blue','red','red'] ):
+    patch.set_facecolor(color)
+    patch.set_alpha(0.2)
+
+sns.countplot(x='ALCOHOL CONSUMING', hue='LUNG_CANCER', data=lung_cancer_train_smote, ax=axs[1, 1], order=level_order, palette=colors)
+axs[1, 1].axvline(level_order.index(X_test_sample_category['ALCOHOL CONSUMING'].iloc[0]), color='black', linestyle='--', linewidth=3)
+axs[1, 1].set_title('ALCOHOL CONSUMING')
+axs[1, 1].set_ylabel('Classification Model Training Case Count')
+axs[1, 1].set_xlabel(None)
+axs[1, 1].set_ylim(0, 200)
+axs[1, 1].legend(title='LUNG_CANCER', loc='upper center')
+for patch, color in zip(axs[1, 1].patches, ['blue','blue','red','red'] ):
+    patch.set_facecolor(color)
+    patch.set_alpha(0.2)
+
+sns.countplot(x='COUGHING', hue='LUNG_CANCER', data=lung_cancer_train_smote, ax=axs[1, 2], order=level_order, palette=colors)
+axs[1, 2].axvline(level_order.index(X_test_sample_category['COUGHING'].iloc[0]), color='black', linestyle='--', linewidth=3)
+axs[1, 2].set_title('COUGHING')
+axs[1, 2].set_ylabel('Classification Model Training Case Count')
+axs[1, 2].set_xlabel(None)
+axs[1, 2].set_ylim(0, 200)
+axs[1, 2].legend(title='LUNG_CANCER', loc='upper center')
+for patch, color in zip(axs[1, 2].patches, ['blue','blue','red','red'] ):
+    patch.set_facecolor(color)
+    patch.set_alpha(0.2)
+
+sns.countplot(x='SWALLOWING DIFFICULTY', hue='LUNG_CANCER', data=lung_cancer_train_smote, ax=axs[1, 3], order=level_order, palette=colors)
+axs[1, 3].axvline(level_order.index(X_test_sample_category['SWALLOWING DIFFICULTY'].iloc[0]), color='black', linestyle='--', linewidth=3)
+axs[1, 3].set_title('SWALLOWING DIFFICULTY')
+axs[1, 3].set_ylabel('Classification Model Training Case Count')
+axs[1, 3].set_xlabel(None)
+axs[1, 3].set_ylim(0, 200)
+axs[1, 3].legend(title='LUNG_CANCER', loc='upper center')
+for patch, color in zip(axs[1, 3].patches, ['blue','blue','red','red'] ):
+    patch.set_facecolor(color)
+    patch.set_alpha(0.2)
+
+sns.countplot(x='CHEST PAIN', hue='LUNG_CANCER', data=lung_cancer_train_smote, ax=axs[1, 4], order=level_order, palette=colors)
+axs[1, 4].axvline(level_order.index(X_test_sample_category['CHEST PAIN'].iloc[0]), color='black', linestyle='--', linewidth=3)
+axs[1, 4].set_title('CHEST PAIN')
+axs[1, 4].set_ylabel('Classification Model Training Case Count')
+axs[1, 4].set_xlabel(None)
+axs[1, 4].set_ylim(0, 200)
+axs[1, 4].legend(title='LUNG_CANCER', loc='upper center')
+for patch, color in zip(axs[1, 4].patches, ['blue','blue','red','red'] ):
+    patch.set_facecolor(color)
+    patch.set_alpha(0.2)
+
+plt.tight_layout()
+plt.show()
+```
+
+
+    
+![png](output_247_0.png)
+    
+
+
+
+```python
+##################################
+# Computing the logit and estimated probability
+# for a high-risk test case
+##################################
+X_sample_logit = stacked_balanced_class_best_model_upsampled.decision_function(X_test_sample)[0]
+X_sample_probability = stacked_balanced_class_best_model_upsampled.predict_proba(X_test_sample)[0, 1]
+X_sample_class = "Low-Risk" if X_sample_probability < 0.50 else "High-Risk"
+print(f"Test Case Logit Value: {X_sample_logit}")
+print(f"Test Case Probability: {X_sample_probability}")
+print(f"Test Case Class: {X_sample_class}")
+```
+
+    Test Case Logit Value: 2.6153097148460773
+    Test Case Probability: 0.931840411014508
+    Test Case Class: High-Risk
+    
+
+
+```python
+##################################
+# Plotting the logit and estimated probability
+# for the high-risk test case 
+# in the estimated logistic curve
+# of the final classification model
+##################################
+plt.figure(figsize=(17, 8))
+plt.plot(stacked_balanced_class_best_model_upsampled_logit_values_sorted, 
+         stacked_balanced_class_best_model_upsampled_probabilities_sorted, label='Classification Model Logistic Curve', color='black')
+plt.ylim(-0.05, 1.05)
+plt.xlim(-6.00, 6.00)
+target_0_indices = y_train_smote == 0
+target_1_indices = y_train_smote == 1
+plt.axhline(0.5, color='green', linestyle='--', label='Classification Model Threshold')
+plt.scatter(stacked_balanced_class_best_model_upsampled_logit_values[target_0_indices], 
+            stacked_balanced_class_best_model_upsampled_probabilities[target_0_indices], 
+            color='blue', alpha=0.20, s=100, marker= 'o', edgecolor='k', label='Classification Model Training Cases: LUNG_CANCER = No')
+plt.scatter(stacked_balanced_class_best_model_upsampled_logit_values[target_1_indices], 
+            stacked_balanced_class_best_model_upsampled_probabilities[target_1_indices], 
+            color='red', alpha=0.20, s=100, marker='o', edgecolor='k', label='Classification Model Training Cases: LUNG_CANCER = Yes')
+if X_sample_class == "Low-Risk":
+    plt.scatter(X_sample_logit, X_sample_probability, color='blue', s=125, edgecolor='k', label='Test Case (Low-Risk)', marker= 's', zorder=5)
+    plt.axvline(X_sample_logit, color='black', linestyle='--', linewidth=3)
+    plt.axhline(X_sample_probability, color='black', linestyle='--', linewidth=3)
+if X_sample_class == "High-Risk":
+    plt.scatter(X_sample_logit, X_sample_probability, color='red', s=125, edgecolor='k', label='Test Case (High-Risk)', marker= 's', zorder=5)
+    plt.axvline(X_sample_logit, color='black', linestyle='--', linewidth=3)
+    plt.axhline(X_sample_probability, color='black', linestyle='--', linewidth=3)
+plt.title('Final Classification Model: Stacked Model (Meta-Learner = Logistic Regression, Base Learners = Random Forest, Support Vector Classifier, Decision Tree)')
+plt.xlabel('Logit (Log-Odds)')
+plt.ylabel('Estimated Lung Cancer Probability')
+plt.grid(False)
+plt.legend(facecolor='white', framealpha=1, loc='upper center', bbox_to_anchor=(0.5, -0.10), ncol=3)
+plt.tight_layout(rect=[0, 0, 1.00, 0.95])
+plt.show()
+```
+
+
+    
+![png](output_249_0.png)
     
 
 
