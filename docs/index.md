@@ -79,6 +79,29 @@ The predictor variables for the study are:
 
 ## 1.2. Data Description <a class="anchor" id="1.2"></a>
 
+1. The dataset is comprised of:
+    * **309 rows** (observations)
+    * **16 columns** (variables)
+        * **1/16 target** (object | numeric)
+             * <span style="color: #FF0000">LUNG_CANCER</span>
+        * **1/16 predictor** (numeric)
+             * <span style="color: #FF0000">AGE</span>
+        * **14/16 predictor** (categorical)
+             * <span style="color: #FF0000">GENDER</span>
+             * <span style="color: #FF0000">SMOKING</span>
+             * <span style="color: #FF0000">YELLOW_FINGERS</span>
+             * <span style="color: #FF0000">ANXIETY</span>
+             * <span style="color: #FF0000">PEER_PRESSURE</span>
+             * <span style="color: #FF0000">CHRONIC_DISEASE</span>
+             * <span style="color: #FF0000">FATIGUE</span>
+             * <span style="color: #FF0000">ALLERGY</span>
+             * <span style="color: #FF0000">WHEEZING</span>
+             * <span style="color: #FF0000">ALCOHOL CONSUMING </span>
+             * <span style="color: #FF0000">COUGHING</span>
+             * <span style="color: #FF0000">SHORTNESS OF BREATH</span>
+             * <span style="color: #FF0000">SWALLOWING DIFFICULTY</span>
+             * <span style="color: #FF0000">CHEST PAIN</span>
+
 
 ```python
 ##################################
@@ -804,6 +827,15 @@ display(lung_cancer.describe(include=['category','object']).transpose())
 
 ## 1.3. Data Quality Assessment <a class="anchor" id="1.3"></a>
 
+Data quality findings based on assessment are as follows:
+1. 33 duplicated rows observed. These cases were not removed considering that most variables are dichotomous categorical where duplicate values might be possible.
+2. No missing data noted for any variable with Null.Count>0 and Fill.Rate<1.0.
+3. No low variance observed for the numeric predictor with First.Second.Mode.Ratio>5.
+4. No low variance observed for the numeric and categorical predictors with Unique.Count.Ratio>5.
+5. Low variance observed for the target variable with Unique.Count.Ratio>5 indicating **class imbalance** that needs to be addressed for the downstream modelling process.
+    * <span style="color: #FF0000">LUNG_CANCER</span>: Unique.Count.Ratio = +6.923
+6. No high skewness observed for the numeric predictor with Skewness>3 or Skewness<(-3).
+
 
 ```python
 ##################################
@@ -816,6 +848,687 @@ lung_cancer.duplicated().sum()
 
 
     33
+
+
+
+
+```python
+##################################
+# Displaying the duplicated rows
+##################################
+lung_cancer[lung_cancer.duplicated()]
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>GENDER</th>
+      <th>AGE</th>
+      <th>SMOKING</th>
+      <th>YELLOW_FINGERS</th>
+      <th>ANXIETY</th>
+      <th>PEER_PRESSURE</th>
+      <th>CHRONIC DISEASE</th>
+      <th>FATIGUE</th>
+      <th>ALLERGY</th>
+      <th>WHEEZING</th>
+      <th>ALCOHOL CONSUMING</th>
+      <th>COUGHING</th>
+      <th>SHORTNESS OF BREATH</th>
+      <th>SWALLOWING DIFFICULTY</th>
+      <th>CHEST PAIN</th>
+      <th>LUNG_CANCER</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>99</th>
+      <td>M</td>
+      <td>56</td>
+      <td>Present</td>
+      <td>Absent</td>
+      <td>Absent</td>
+      <td>Absent</td>
+      <td>Absent</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Absent</td>
+      <td>Present</td>
+      <td>YES</td>
+    </tr>
+    <tr>
+      <th>100</th>
+      <td>M</td>
+      <td>58</td>
+      <td>Present</td>
+      <td>Absent</td>
+      <td>Absent</td>
+      <td>Absent</td>
+      <td>Absent</td>
+      <td>Absent</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Absent</td>
+      <td>Absent</td>
+      <td>Absent</td>
+      <td>YES</td>
+    </tr>
+    <tr>
+      <th>117</th>
+      <td>F</td>
+      <td>51</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Absent</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Absent</td>
+      <td>Absent</td>
+      <td>Absent</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Absent</td>
+      <td>YES</td>
+    </tr>
+    <tr>
+      <th>199</th>
+      <td>F</td>
+      <td>55</td>
+      <td>Present</td>
+      <td>Absent</td>
+      <td>Absent</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Absent</td>
+      <td>Absent</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>YES</td>
+    </tr>
+    <tr>
+      <th>212</th>
+      <td>M</td>
+      <td>58</td>
+      <td>Present</td>
+      <td>Absent</td>
+      <td>Absent</td>
+      <td>Absent</td>
+      <td>Absent</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Absent</td>
+      <td>Present</td>
+      <td>YES</td>
+    </tr>
+    <tr>
+      <th>223</th>
+      <td>M</td>
+      <td>63</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Absent</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Absent</td>
+      <td>Absent</td>
+      <td>Present</td>
+      <td>Absent</td>
+      <td>Absent</td>
+      <td>YES</td>
+    </tr>
+    <tr>
+      <th>256</th>
+      <td>M</td>
+      <td>60</td>
+      <td>Present</td>
+      <td>Absent</td>
+      <td>Absent</td>
+      <td>Absent</td>
+      <td>Absent</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Absent</td>
+      <td>Present</td>
+      <td>YES</td>
+    </tr>
+    <tr>
+      <th>275</th>
+      <td>M</td>
+      <td>64</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Absent</td>
+      <td>Absent</td>
+      <td>Absent</td>
+      <td>Present</td>
+      <td>Absent</td>
+      <td>Absent</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>YES</td>
+    </tr>
+    <tr>
+      <th>284</th>
+      <td>M</td>
+      <td>58</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Absent</td>
+      <td>Absent</td>
+      <td>Absent</td>
+      <td>Present</td>
+      <td>Absent</td>
+      <td>Absent</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>YES</td>
+    </tr>
+    <tr>
+      <th>285</th>
+      <td>F</td>
+      <td>58</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Absent</td>
+      <td>Present</td>
+      <td>Absent</td>
+      <td>Absent</td>
+      <td>Absent</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Absent</td>
+      <td>YES</td>
+    </tr>
+    <tr>
+      <th>286</th>
+      <td>F</td>
+      <td>63</td>
+      <td>Absent</td>
+      <td>Absent</td>
+      <td>Absent</td>
+      <td>Absent</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Absent</td>
+      <td>Absent</td>
+      <td>Absent</td>
+      <td>Absent</td>
+      <td>Present</td>
+      <td>Absent</td>
+      <td>Absent</td>
+      <td>NO</td>
+    </tr>
+    <tr>
+      <th>287</th>
+      <td>F</td>
+      <td>51</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Absent</td>
+      <td>Present</td>
+      <td>Absent</td>
+      <td>Absent</td>
+      <td>Absent</td>
+      <td>Absent</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Absent</td>
+      <td>YES</td>
+    </tr>
+    <tr>
+      <th>288</th>
+      <td>F</td>
+      <td>61</td>
+      <td>Absent</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Absent</td>
+      <td>Absent</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Absent</td>
+      <td>Present</td>
+      <td>Absent</td>
+      <td>Present</td>
+      <td>Absent</td>
+      <td>YES</td>
+    </tr>
+    <tr>
+      <th>289</th>
+      <td>F</td>
+      <td>61</td>
+      <td>Present</td>
+      <td>Absent</td>
+      <td>Absent</td>
+      <td>Absent</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Absent</td>
+      <td>Absent</td>
+      <td>Absent</td>
+      <td>Present</td>
+      <td>Absent</td>
+      <td>Absent</td>
+      <td>YES</td>
+    </tr>
+    <tr>
+      <th>290</th>
+      <td>M</td>
+      <td>76</td>
+      <td>Present</td>
+      <td>Absent</td>
+      <td>Absent</td>
+      <td>Absent</td>
+      <td>Absent</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Absent</td>
+      <td>Present</td>
+      <td>YES</td>
+    </tr>
+    <tr>
+      <th>291</th>
+      <td>M</td>
+      <td>71</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Absent</td>
+      <td>Present</td>
+      <td>Absent</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Absent</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>YES</td>
+    </tr>
+    <tr>
+      <th>292</th>
+      <td>M</td>
+      <td>69</td>
+      <td>Absent</td>
+      <td>Absent</td>
+      <td>Present</td>
+      <td>Absent</td>
+      <td>Absent</td>
+      <td>Present</td>
+      <td>Absent</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Absent</td>
+      <td>YES</td>
+    </tr>
+    <tr>
+      <th>293</th>
+      <td>F</td>
+      <td>56</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Absent</td>
+      <td>Absent</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Absent</td>
+      <td>Absent</td>
+      <td>Absent</td>
+      <td>Present</td>
+      <td>Absent</td>
+      <td>Present</td>
+      <td>YES</td>
+    </tr>
+    <tr>
+      <th>294</th>
+      <td>M</td>
+      <td>67</td>
+      <td>Absent</td>
+      <td>Absent</td>
+      <td>Absent</td>
+      <td>Present</td>
+      <td>Absent</td>
+      <td>Present</td>
+      <td>Absent</td>
+      <td>Present</td>
+      <td>Absent</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Absent</td>
+      <td>Present</td>
+      <td>YES</td>
+    </tr>
+    <tr>
+      <th>295</th>
+      <td>F</td>
+      <td>54</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Absent</td>
+      <td>Present</td>
+      <td>Absent</td>
+      <td>Absent</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Absent</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>YES</td>
+    </tr>
+    <tr>
+      <th>296</th>
+      <td>M</td>
+      <td>63</td>
+      <td>Absent</td>
+      <td>Present</td>
+      <td>Absent</td>
+      <td>Absent</td>
+      <td>Absent</td>
+      <td>Present</td>
+      <td>Absent</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Absent</td>
+      <td>Absent</td>
+      <td>YES</td>
+    </tr>
+    <tr>
+      <th>297</th>
+      <td>F</td>
+      <td>47</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Absent</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Absent</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Absent</td>
+      <td>Absent</td>
+      <td>YES</td>
+    </tr>
+    <tr>
+      <th>298</th>
+      <td>M</td>
+      <td>62</td>
+      <td>Present</td>
+      <td>Absent</td>
+      <td>Present</td>
+      <td>Absent</td>
+      <td>Absent</td>
+      <td>Present</td>
+      <td>Absent</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Absent</td>
+      <td>Present</td>
+      <td>YES</td>
+    </tr>
+    <tr>
+      <th>299</th>
+      <td>M</td>
+      <td>65</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Absent</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Absent</td>
+      <td>Absent</td>
+      <td>Absent</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Absent</td>
+      <td>YES</td>
+    </tr>
+    <tr>
+      <th>300</th>
+      <td>F</td>
+      <td>63</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Absent</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>YES</td>
+    </tr>
+    <tr>
+      <th>301</th>
+      <td>M</td>
+      <td>64</td>
+      <td>Absent</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Absent</td>
+      <td>Absent</td>
+      <td>Present</td>
+      <td>Absent</td>
+      <td>Present</td>
+      <td>Absent</td>
+      <td>Absent</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>YES</td>
+    </tr>
+    <tr>
+      <th>302</th>
+      <td>F</td>
+      <td>65</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Absent</td>
+      <td>Present</td>
+      <td>Absent</td>
+      <td>Present</td>
+      <td>Absent</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Absent</td>
+      <td>YES</td>
+    </tr>
+    <tr>
+      <th>303</th>
+      <td>M</td>
+      <td>51</td>
+      <td>Absent</td>
+      <td>Present</td>
+      <td>Absent</td>
+      <td>Absent</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Absent</td>
+      <td>Present</td>
+      <td>YES</td>
+    </tr>
+    <tr>
+      <th>304</th>
+      <td>F</td>
+      <td>56</td>
+      <td>Absent</td>
+      <td>Absent</td>
+      <td>Absent</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Absent</td>
+      <td>Absent</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Absent</td>
+      <td>YES</td>
+    </tr>
+    <tr>
+      <th>305</th>
+      <td>M</td>
+      <td>70</td>
+      <td>Present</td>
+      <td>Absent</td>
+      <td>Absent</td>
+      <td>Absent</td>
+      <td>Absent</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Absent</td>
+      <td>Present</td>
+      <td>YES</td>
+    </tr>
+    <tr>
+      <th>306</th>
+      <td>M</td>
+      <td>58</td>
+      <td>Present</td>
+      <td>Absent</td>
+      <td>Absent</td>
+      <td>Absent</td>
+      <td>Absent</td>
+      <td>Absent</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Absent</td>
+      <td>Absent</td>
+      <td>Present</td>
+      <td>YES</td>
+    </tr>
+    <tr>
+      <th>307</th>
+      <td>M</td>
+      <td>67</td>
+      <td>Present</td>
+      <td>Absent</td>
+      <td>Present</td>
+      <td>Absent</td>
+      <td>Absent</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Absent</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Absent</td>
+      <td>Present</td>
+      <td>YES</td>
+    </tr>
+    <tr>
+      <th>308</th>
+      <td>M</td>
+      <td>62</td>
+      <td>Absent</td>
+      <td>Absent</td>
+      <td>Absent</td>
+      <td>Present</td>
+      <td>Absent</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Present</td>
+      <td>Absent</td>
+      <td>Absent</td>
+      <td>Present</td>
+      <td>Absent</td>
+      <td>YES</td>
+    </tr>
+  </tbody>
+</table>
+</div>
 
 
 
@@ -1939,6 +2652,19 @@ len(categorical_column_quality_summary[(categorical_column_quality_summary['Uniq
 
 ## 1.4. Data Preprocessing <a class="anchor" id="1.4"></a>
 
+1. No data transformation and scaling applied to the numeric predictor due to the minimal number of outliers and normal skewness values.
+2. All dichotomous categorical predictors were one-hot encoded for the downstream modelling process.
+3. All variables were retained since majority reported sufficiently moderate correlation with no excessive multicollinearity.
+    * All variables Minimal correlation observed between the predictors using the point-biserial coefficient for evaluating numeric and dichotomous categorical variable.
+    * Minimal correlation observed between the predictors using the phi coefficient for evaluating both dichotomous categorical variables.
+4. Among pairwise combinations of variables in the training subset, the highest correlation values were noted for:
+    * <span style="color: #FF0000">ANXIETY</span> and <span style="color: #FF0000">YELLOW_FINGERS</span>: Phi.Coefficient = +0.570
+    * <span style="color: #FF0000">ANXIETY</span> and <span style="color: #FF0000">SWALLOWING DIFFICULTY</span>: Phi.Coefficient = +0.490
+    * <span style="color: #FF0000">SHORTNESS OF BREATH</span> and <span style="color: #FF0000">FATIGUE</span>: Phi.Coefficient = +0.440
+    * <span style="color: #FF0000">COUGHING</span> and <span style="color: #FF0000">WHEEZING</span>: Phi.Coefficient = +0.370
+    * <span style="color: #FF0000">SWALLOWING DIFFICULTY</span> and <span style="color: #FF0000">PEER_PRESSURE</span>: Phi.Coefficient = +0.370
+
+
 
 ```python
 ##################################
@@ -2072,7 +2798,7 @@ for column in lung_cancer_numeric:
 
 
     
-![png](output_81_0.png)
+![png](output_82_0.png)
     
 
 
@@ -2370,7 +3096,7 @@ plt.show()
 
 
     
-![png](output_85_0.png)
+![png](output_86_0.png)
     
 
 
@@ -2416,7 +3142,7 @@ plt.show()
 
 
     
-![png](output_90_0.png)
+![png](output_91_0.png)
     
 
 
@@ -2477,7 +3203,7 @@ plt.show()
 
 
     
-![png](output_92_0.png)
+![png](output_93_0.png)
     
 
 
@@ -3945,7 +4671,7 @@ plt.show()
 
 
     
-![png](output_145_0.png)
+![png](output_146_0.png)
     
 
 
@@ -3998,7 +4724,7 @@ plt.show()
 
 
     
-![png](output_147_0.png)
+![png](output_148_0.png)
     
 
 
@@ -4063,7 +4789,7 @@ plt.show()
 
 
     
-![png](output_151_0.png)
+![png](output_152_0.png)
     
 
 
@@ -4286,7 +5012,7 @@ plt.show()
 
 
     
-![png](output_159_0.png)
+![png](output_160_0.png)
     
 
 
@@ -4339,7 +5065,7 @@ plt.show()
 
 
     
-![png](output_161_0.png)
+![png](output_162_0.png)
     
 
 
@@ -4404,7 +5130,7 @@ plt.show()
 
 
     
-![png](output_165_0.png)
+![png](output_166_0.png)
     
 
 
@@ -4555,7 +5281,7 @@ plt.show()
 
 
     
-![png](output_174_0.png)
+![png](output_175_0.png)
     
 
 
@@ -4608,7 +5334,7 @@ plt.show()
 
 
     
-![png](output_176_0.png)
+![png](output_177_0.png)
     
 
 
@@ -4673,7 +5399,7 @@ plt.show()
 
 
     
-![png](output_180_0.png)
+![png](output_181_0.png)
     
 
 
@@ -4890,7 +5616,7 @@ plt.show()
 
 
     
-![png](output_188_0.png)
+![png](output_189_0.png)
     
 
 
@@ -4943,7 +5669,7 @@ plt.show()
 
 
     
-![png](output_190_0.png)
+![png](output_191_0.png)
     
 
 
@@ -5008,7 +5734,7 @@ plt.show()
 
 
     
-![png](output_194_0.png)
+![png](output_195_0.png)
     
 
 
@@ -5161,7 +5887,7 @@ plt.show()
 
 
     
-![png](output_203_0.png)
+![png](output_204_0.png)
     
 
 
@@ -5214,7 +5940,7 @@ plt.show()
 
 
     
-![png](output_205_0.png)
+![png](output_206_0.png)
     
 
 
@@ -5279,7 +6005,7 @@ plt.show()
 
 
     
-![png](output_209_0.png)
+![png](output_210_0.png)
     
 
 
@@ -5488,7 +6214,7 @@ plt.show()
 
 
     
-![png](output_217_0.png)
+![png](output_218_0.png)
     
 
 
@@ -5541,7 +6267,7 @@ plt.show()
 
 
     
-![png](output_219_0.png)
+![png](output_220_0.png)
     
 
 
@@ -5606,7 +6332,7 @@ plt.show()
 
 
     
-![png](output_223_0.png)
+![png](output_224_0.png)
     
 
 
@@ -5737,7 +6463,7 @@ for container in f1_plot.containers:
 
 
     
-![png](output_227_0.png)
+![png](output_228_0.png)
     
 
 
@@ -5880,7 +6606,7 @@ for container in updated_f1_plot.containers:
 
 
     
-![png](output_231_0.png)
+![png](output_232_0.png)
     
 
 
@@ -5942,19 +6668,19 @@ for index, (name, model) in enumerate(final_model.named_estimators_.items()):
 
 
     
-![png](output_236_0.png)
+![png](output_237_0.png)
     
 
 
 
     
-![png](output_236_1.png)
+![png](output_237_1.png)
     
 
 
 
     
-![png](output_236_2.png)
+![png](output_237_2.png)
     
 
 
@@ -5994,7 +6720,7 @@ if hasattr(final_model.final_estimator_, 'coef_'):
 
 
     
-![png](output_238_0.png)
+![png](output_239_0.png)
     
 
 
@@ -6032,7 +6758,7 @@ plt.show()
 
 
     
-![png](output_239_0.png)
+![png](output_240_0.png)
     
 
 
@@ -6425,7 +7151,7 @@ plt.show()
 
 
     
-![png](output_243_0.png)
+![png](output_244_0.png)
     
 
 
@@ -6489,7 +7215,7 @@ plt.show()
 
 
     
-![png](output_245_0.png)
+![png](output_246_0.png)
     
 
 
@@ -6758,7 +7484,7 @@ plt.show()
 
 
     
-![png](output_248_0.png)
+![png](output_249_0.png)
     
 
 
@@ -6822,7 +7548,7 @@ plt.show()
 
 
     
-![png](output_250_0.png)
+![png](output_251_0.png)
     
 
 
