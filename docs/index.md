@@ -2,7 +2,7 @@
 # Model Deployment : Estimating Lung Cancer Probabilities From Demographic Factors, Clinical Symptoms And Behavioral Indicators
 
 ***
-### John Pauline Pineda <br> <br> *August 17, 2024*
+### John Pauline Pineda <br> <br> *August 19, 2024*
 ***
 
 * [**1. Table of Contents**](#TOC)
@@ -86,7 +86,7 @@ The predictor variables for the study are:
              * <span style="color: #FF0000">LUNG_CANCER</span>
         * **1/16 predictor** (numeric)
              * <span style="color: #FF0000">AGE</span>
-        * **14/16 predictor** (categorical)
+        * **14/16 predictors** (categorical)
              * <span style="color: #FF0000">GENDER</span>
              * <span style="color: #FF0000">SMOKING</span>
              * <span style="color: #FF0000">YELLOW_FINGERS</span>
@@ -3104,6 +3104,39 @@ plt.show()
 
 ### 1.5.1 Exploratory Data Analysis <a class="anchor" id="1.5.1"></a>
 
+1. The lung cancer prevalence estimated for the overall dataset is 87.38%.
+2. Higher counts for the following categorical predictors are associated with better differentiation between <span style="color: #FF0000">LUNG_CANCER=YES</span> and <span style="color: #FF0000">LUNG_CANCER=YES</span>: 
+    * <span style="color: #FF0000">YELLOW_FINGERS</span>
+    * <span style="color: #FF0000">ANXIETY</span>
+    * <span style="color: #FF0000">PEER_PRESSURE</span>
+    * <span style="color: #FF0000">CHRONIC_DISEASE</span>
+    * <span style="color: #FF0000">FATIGUE</span>
+    * <span style="color: #FF0000">ALLERGY</span>
+    * <span style="color: #FF0000">WHEEZING</span>
+    * <span style="color: #FF0000">ALCOHOL CONSUMING </span>
+    * <span style="color: #FF0000">COUGHING</span>
+    * <span style="color: #FF0000">SWALLOWING DIFFICULTY</span>
+    * <span style="color: #FF0000">CHEST PAIN</span> 
+        
+
+
+```python
+##################################
+# Estimating the lung cancer prevalence
+##################################
+print('Lung Cancer Prevalence: ')
+display(lung_cancer['LUNG_CANCER'].value_counts(normalize = True))
+```
+
+    Lung Cancer Prevalence: 
+    
+
+
+    YES    0.873786
+    NO     0.126214
+    Name: LUNG_CANCER, dtype: float64
+
+
 
 ```python
 ##################################
@@ -3142,7 +3175,7 @@ plt.show()
 
 
     
-![png](output_91_0.png)
+![png](output_92_0.png)
     
 
 
@@ -3203,11 +3236,36 @@ plt.show()
 
 
     
-![png](output_93_0.png)
+![png](output_94_0.png)
     
 
 
-### 1.5.2 Exploratory Data Analysis <a class="anchor" id="1.5.2"></a>
+### 1.5.2 Hypothesis Testing <a class="anchor" id="1.5.2"></a>
+
+1. The relationship between the numeric predictor to the <span style="color: #FF0000">LUNG_CANCER</span> target variable was statistically evaluated using the following hypotheses:
+    * **Null**: Difference in the means between groups Yes and No is equal to zero  
+    * **Alternative**: Difference in the means between groups Yes and No is not equal to zero   
+2. There is no sufficient evidence to conclude of a statistically significant difference between the means of the numeric measurements obtained from the <span style="color: #FF0000">LUNG_CANCER</span> groups in 1 numeric predictor given its low t-test statistic value with reported high p-value above the significance level of 0.05.
+    * <span style="color: #FF0000">AGE</span>: T.Test.Statistic=-1.574, Correlation.PValue=0.116
+3. The relationship between the categorical predictors to the <span style="color: #FF0000">LUNG_CANCER</span> target variable was statistically evaluated using the following hypotheses:
+    * **Null**: The categorical predictor is independent of the target variable 
+    * **Alternative**: The categorical predictor is dependent on the target variable   
+4. There is sufficient evidence to conclude of a statistically significant relationship between the individual categories and the <span style="color: #FF0000">LUNG_CANCER</span> groups in 9 categorical predictors given their high chisquare statistic values with reported low p-values less than the significance level of 0.05.
+    * <span style="color: #FF0000">ALLERGY</span>: ChiSquare.Test.Statistic=31.238, ChiSquare.Test.PValue=0.000
+    * <span style="color: #FF0000">ALCOHOL CONSUMING</span>: ChiSquare.Test.Statistic=24.005, ChiSquare.Test.PValue=0.000   
+    * <span style="color: #FF0000">SWALLOWING DIFFICULTY</span>: ChiSquare.Test.Statistic=19.307, ChiSquare.Test.PValue=0.000 
+    * <span style="color: #FF0000">WHEEZING</span>: ChiSquare.Test.Statistic=17.723, ChiSquare.Test.PValue=0.000
+    * <span style="color: #FF0000">COUGHING</span>: ChiSquare.Test.Statistic=17.606, ChiSquare.Test.PValue=0.000
+    * <span style="color: #FF0000">CHEST PAIN</span>: ChiSquare.Test.Statistic=10.083, ChiSquare.Test.PValue=0.001   
+    * <span style="color: #FF0000">PEER_PRESSURE</span>: ChiSquare.Test.Statistic=9.641, ChiSquare.Test.PValue=0.001 
+    * <span style="color: #FF0000">YELLOW_FINGERS</span>: ChiSquare.Test.Statistic=9.088, ChiSquare.Test.PValue=0.002
+    * <span style="color: #FF0000">FATIGUE</span>: ChiSquare.Test.Statistic=6.081, ChiSquare.Test.PValue=0.013 
+    * <span style="color: #FF0000">ANXIETY</span>: ChiSquare.Test.Statistic=5.648, ChiSquare.Test.PValue=0.017 
+5. There is no sufficient evidence to conclude of a statistically significant relationship between the individual categories and the <span style="color: #FF0000">LUNG_CANCER</span> groups in 4 categorical predictors given their low chisquare statistic values with reported high p-values greater than the significance level of 0.05.    
+    * <span style="color: #FF0000">CHRONIC DISEASE</span>: ChiSquare.Test.Statistic=3.161, ChiSquare.Test.PValue=0.075
+    * <span style="color: #FF0000">GENDER</span>: ChiSquare.Test.Statistic=1.021, ChiSquare.Test.PValue=0.312
+    * <span style="color: #FF0000">SHORTNESS OF BREATH</span>: ChiSquare.Test.Statistic=0.790, ChiSquare.Test.PValue=0.373   
+    * <span style="color: #FF0000">SMOKING</span>: ChiSquare.Test.Statistic=0.722, ChiSquare.Test.PValue=0.395
 
 
 ```python
@@ -4671,7 +4729,7 @@ plt.show()
 
 
     
-![png](output_146_0.png)
+![png](output_147_0.png)
     
 
 
@@ -4724,7 +4782,7 @@ plt.show()
 
 
     
-![png](output_148_0.png)
+![png](output_149_0.png)
     
 
 
@@ -4789,7 +4847,7 @@ plt.show()
 
 
     
-![png](output_152_0.png)
+![png](output_153_0.png)
     
 
 
@@ -5012,7 +5070,7 @@ plt.show()
 
 
     
-![png](output_160_0.png)
+![png](output_161_0.png)
     
 
 
@@ -5065,7 +5123,7 @@ plt.show()
 
 
     
-![png](output_162_0.png)
+![png](output_163_0.png)
     
 
 
@@ -5130,7 +5188,7 @@ plt.show()
 
 
     
-![png](output_166_0.png)
+![png](output_167_0.png)
     
 
 
@@ -5281,7 +5339,7 @@ plt.show()
 
 
     
-![png](output_175_0.png)
+![png](output_176_0.png)
     
 
 
@@ -5334,7 +5392,7 @@ plt.show()
 
 
     
-![png](output_177_0.png)
+![png](output_178_0.png)
     
 
 
@@ -5399,7 +5457,7 @@ plt.show()
 
 
     
-![png](output_181_0.png)
+![png](output_182_0.png)
     
 
 
@@ -5616,7 +5674,7 @@ plt.show()
 
 
     
-![png](output_189_0.png)
+![png](output_190_0.png)
     
 
 
@@ -5669,7 +5727,7 @@ plt.show()
 
 
     
-![png](output_191_0.png)
+![png](output_192_0.png)
     
 
 
@@ -5734,7 +5792,7 @@ plt.show()
 
 
     
-![png](output_195_0.png)
+![png](output_196_0.png)
     
 
 
@@ -5887,7 +5945,7 @@ plt.show()
 
 
     
-![png](output_204_0.png)
+![png](output_205_0.png)
     
 
 
@@ -5940,7 +5998,7 @@ plt.show()
 
 
     
-![png](output_206_0.png)
+![png](output_207_0.png)
     
 
 
@@ -6005,7 +6063,7 @@ plt.show()
 
 
     
-![png](output_210_0.png)
+![png](output_211_0.png)
     
 
 
@@ -6214,7 +6272,7 @@ plt.show()
 
 
     
-![png](output_218_0.png)
+![png](output_219_0.png)
     
 
 
@@ -6267,7 +6325,7 @@ plt.show()
 
 
     
-![png](output_220_0.png)
+![png](output_221_0.png)
     
 
 
@@ -6332,7 +6390,7 @@ plt.show()
 
 
     
-![png](output_224_0.png)
+![png](output_225_0.png)
     
 
 
@@ -6463,7 +6521,7 @@ for container in f1_plot.containers:
 
 
     
-![png](output_228_0.png)
+![png](output_229_0.png)
     
 
 
@@ -6606,7 +6664,7 @@ for container in updated_f1_plot.containers:
 
 
     
-![png](output_232_0.png)
+![png](output_233_0.png)
     
 
 
@@ -6668,19 +6726,19 @@ for index, (name, model) in enumerate(final_model.named_estimators_.items()):
 
 
     
-![png](output_237_0.png)
+![png](output_238_0.png)
     
 
 
 
     
-![png](output_237_1.png)
+![png](output_238_1.png)
     
 
 
 
     
-![png](output_237_2.png)
+![png](output_238_2.png)
     
 
 
@@ -6720,7 +6778,7 @@ if hasattr(final_model.final_estimator_, 'coef_'):
 
 
     
-![png](output_239_0.png)
+![png](output_240_0.png)
     
 
 
@@ -6758,7 +6816,7 @@ plt.show()
 
 
     
-![png](output_240_0.png)
+![png](output_241_0.png)
     
 
 
@@ -7151,7 +7209,7 @@ plt.show()
 
 
     
-![png](output_244_0.png)
+![png](output_245_0.png)
     
 
 
@@ -7215,7 +7273,7 @@ plt.show()
 
 
     
-![png](output_246_0.png)
+![png](output_247_0.png)
     
 
 
@@ -7484,7 +7542,7 @@ plt.show()
 
 
     
-![png](output_249_0.png)
+![png](output_250_0.png)
     
 
 
@@ -7548,7 +7606,7 @@ plt.show()
 
 
     
-![png](output_251_0.png)
+![png](output_252_0.png)
     
 
 
