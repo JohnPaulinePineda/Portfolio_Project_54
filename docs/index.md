@@ -2,7 +2,7 @@
 # Model Deployment : Estimating Lung Cancer Probabilities From Demographic Factors, Clinical Symptoms And Behavioral Indicators
 
 ***
-### John Pauline Pineda <br> <br> *August 19, 2024*
+### John Pauline Pineda <br> <br> *August 24, 2024*
 ***
 
 * [**1. Table of Contents**](#TOC)
@@ -31,7 +31,10 @@
         * [1.6.7 Model Selection](#1.6.7)
         * [1.6.8 Model Testing](#1.6.8)
         * [1.6.9 Model Inference](#1.6.9)
-    * [1.7 Consolidated Findings](#1.7)
+    * [1.7 Predictive Model Deployment](#1.7)
+        * [1.7.1 API Development](#1.7.1)
+        * [1.7.2 UI Development](#1.7.2)
+        * [1.7.3 Model Serving](#1.7.2)
 * [**2. Summary**](#Summary)   
 * [**3. References**](#References)
 
@@ -82,7 +85,7 @@ The predictor variables for the study are:
 1. The dataset is comprised of:
     * **309 rows** (observations)
     * **16 columns** (variables)
-        * **1/16 target** (object | numeric)
+        * **1/16 target** (categorical)
              * <span style="color: #FF0000">LUNG_CANCER</span>
         * **1/16 predictor** (numeric)
              * <span style="color: #FF0000">AGE</span>
@@ -108,10 +111,10 @@ The predictor variables for the study are:
 # Setting up compatibility issues
 # between the scikit-learn and imblearn packages
 ##################################
-# !pip uninstall scikit-learn --yes
-# !pip uninstall imblearn --yes
-# !pip install scikit-learn==1.2.2
-# !pip install imblearn
+#!pip uninstall scikit-learn --yes
+#!pip uninstall imblearn --yes
+#!pip install scikit-learn==1.2.2
+#!pip install imblearn
 ```
 
 
@@ -2653,7 +2656,7 @@ len(categorical_column_quality_summary[(categorical_column_quality_summary['Uniq
 ## 1.4. Data Preprocessing <a class="anchor" id="1.4"></a>
 
 1. No data transformation and scaling applied to the numeric predictor due to the minimal number of outliers and normal skewness values.
-2. All dichotomous categorical predictors were one-hot encoded for the downstream modelling process.
+2. All dichotomous categorical predictors were one-hot encoded for the correlation analysis process.
 3. All variables were retained since majority reported sufficiently moderate correlation with no excessive multicollinearity.
     * All variables Minimal correlation observed between the predictors using the point-biserial coefficient for evaluating numeric and dichotomous categorical variable.
     * Minimal correlation observed between the predictors using the phi coefficient for evaluating both dichotomous categorical variables.
@@ -3105,7 +3108,7 @@ plt.show()
 ### 1.5.1 Exploratory Data Analysis <a class="anchor" id="1.5.1"></a>
 
 1. The lung cancer prevalence estimated for the overall dataset is 87.38%.
-2. Higher counts for the following categorical predictors are associated with better differentiation between <span style="color: #FF0000">LUNG_CANCER=YES</span> and <span style="color: #FF0000">LUNG_CANCER=YES</span>: 
+2. Higher counts for the following categorical predictors are associated with better differentiation between <span style="color: #FF0000">LUNG_CANCER=Yes</span> and <span style="color: #FF0000">LUNG_CANCER=No</span>: 
     * <span style="color: #FF0000">YELLOW_FINGERS</span>
     * <span style="color: #FF0000">ANXIETY</span>
     * <span style="color: #FF0000">PEER_PRESSURE</span>
@@ -3246,7 +3249,7 @@ plt.show()
     * **Null**: Difference in the means between groups Yes and No is equal to zero  
     * **Alternative**: Difference in the means between groups Yes and No is not equal to zero   
 2. There is no sufficient evidence to conclude of a statistically significant difference between the means of the numeric measurements obtained from the <span style="color: #FF0000">LUNG_CANCER</span> groups in 1 numeric predictor given its low t-test statistic value with reported high p-value above the significance level of 0.05.
-    * <span style="color: #FF0000">AGE</span>: T.Test.Statistic=-1.574, Correlation.PValue=0.116
+    * <span style="color: #FF0000">AGE</span>: T.Test.Statistic=-1.574, T.Test.PValue=0.116
 3. The relationship between the categorical predictors to the <span style="color: #FF0000">LUNG_CANCER</span> target variable was statistically evaluated using the following hypotheses:
     * **Null**: The categorical predictor is independent of the target variable 
     * **Alternative**: The categorical predictor is dependent on the target variable   
@@ -3465,6 +3468,14 @@ display(lung_cancer_categorical_summary.sort_values(by=['ChiSquare.Test.PValue']
 ## 1.6. Predictive Model Development <a class="anchor" id="1.6"></a>
 
 ### 1.6.1 Pre-Modelling Data Preparation <a class="anchor" id="1.6.1"></a>
+
+1. All dichotomous categorical predictors and the target variable were one-hot encoded for the downstream modelling process. 
+2. Predictors determined with insufficient association with the <span style="color: #FF0000">LUNG_CANCER</span> target variables were exlucded for the subsequent modelling steps.
+    * <span style="color: #FF0000">AGE</span>: T.Test.Statistic=-1.574, T.Test.PValue=0.116
+    * <span style="color: #FF0000">CHRONIC DISEASE</span>: ChiSquare.Test.Statistic=3.161, ChiSquare.Test.PValue=0.075
+    * <span style="color: #FF0000">GENDER</span>: ChiSquare.Test.Statistic=1.021, ChiSquare.Test.PValue=0.312
+    * <span style="color: #FF0000">SHORTNESS OF BREATH</span>: ChiSquare.Test.Statistic=0.790, ChiSquare.Test.PValue=0.373   
+    * <span style="color: #FF0000">SMOKING</span>: ChiSquare.Test.Statistic=0.722, ChiSquare.Test.PValue=0.395
 
 
 ```python
@@ -3951,6 +3962,53 @@ display(lung_cancer_filtered)
 
 ### 1.6.2 Data Splitting <a class="anchor" id="1.6.2"></a>
 
+1. The preprocessed dataset was divided into three subsets using a fixed random seed:
+    * **test data**: 25% of the original data with class stratification applied
+    * **train data (initial)**: 75% of the original data with class stratification applied
+        * **train data (final)**: 75% of the **train (initial)** data with class stratification applied
+        * **validation data**: 25% of the **train (initial)** data with class stratification applied
+2. Models will be developed from the **train data (final)**. Using the same dataset, a subset of models with optimal hyperparameters will be selected, based on cross-validation.
+3. Among candidate models with optimal hyperparameters, the final model will be selected based on performance on the **validation data**. 
+4. Performance of the selected final model (and other candidate models for post-model selection comparison) will be evaluated using the **test data**. 
+5. The preprocessed data is comprised of:
+    * **309 rows** (observations)
+        * **270 LUNG_CANCER=Yes**: 87.38%
+        * **39 LUNG_CANCER=No**: 12.82%
+    * **11 columns** (variables)
+        * **1/11 target** (categorical)
+             * <span style="color: #FF0000">LUNG_CANCER</span>
+        * **10/11 predictors** (categorical)
+             * <span style="color: #FF0000">YELLOW_FINGERS</span>
+             * <span style="color: #FF0000">ANXIETY</span>
+             * <span style="color: #FF0000">PEER_PRESSURE</span>
+             * <span style="color: #FF0000">FATIGUE</span>
+             * <span style="color: #FF0000">ALLERGY</span>
+             * <span style="color: #FF0000">WHEEZING</span>
+             * <span style="color: #FF0000">ALCOHOL CONSUMING </span>
+             * <span style="color: #FF0000">COUGHING</span>
+             * <span style="color: #FF0000">SWALLOWING DIFFICULTY</span>
+             * <span style="color: #FF0000">CHEST PAIN</span>
+6. The **train data (final)** subset is comprised of:
+    * **173 rows** (observations)
+        * **151 LUNG_CANCER=Yes**: 87.28%
+        * **22 LUNG_CANCER=No**: 12.72%
+    * **11 columns** (variables)
+7. The **validation data** subset is comprised of:
+    * **58 rows** (observations)
+        * **51 LUNG_CANCER=Yes**: 87.93%
+        * **7 LUNG_CANCER=No**: 12.07%
+    * **11 columns** (variables)
+8. The **train data (final)** subset with **SMOTE-upsampled** minority class(**LUNG_CANCER=No**) is comprised of:
+    * **302 rows** (observations)
+        * **151 LUNG_CANCER=Yes**: 50.00%
+        * **151 LUNG_CANCER=No**: 50.00%
+    * **11 columns** (variables)
+9. The **train data (final)** subset with **CNN-downsampled** minority class(**LUNG_CANCER=Yes**) is comprised of:
+    * **173 rows** (observations)
+        * **39 LUNG_CANCER=Yes**: 63.93%
+        * **22 LUNG_CANCER=No**: 36.07%
+    * **11 columns** (variables)
+
 
 ```python
 ##################################
@@ -4136,16 +4194,16 @@ lung_cancer_train, lung_cancer_validation = train_test_split(lung_cancer_train_i
 ##################################
 X_train = lung_cancer_train.drop('LUNG_CANCER', axis = 1)
 y_train = lung_cancer_train['LUNG_CANCER']
-print('Original Training Dataset Dimensions: ')
+print('Final Training Dataset Dimensions: ')
 display(X_train.shape)
 display(y_train.shape)
-print('Original Training Target Variable Breakdown: ')
+print('Final Training Target Variable Breakdown: ')
 display(y_train.value_counts())
-print('Original Training Target Variable Proportion: ')
+print('Final Training Target Variable Proportion: ')
 display(y_train.value_counts(normalize = True))
 ```
 
-    Original Training Dataset Dimensions: 
+    Final Training Dataset Dimensions: 
     
 
 
@@ -4156,7 +4214,7 @@ display(y_train.value_counts(normalize = True))
     (173,)
 
 
-    Original Training Target Variable Breakdown: 
+    Final Training Target Variable Breakdown: 
     
 
 
@@ -4165,7 +4223,7 @@ display(y_train.value_counts(normalize = True))
     Name: LUNG_CANCER, dtype: int64
 
 
-    Original Training Target Variable Proportion: 
+    Final Training Target Variable Proportion: 
     
 
 
@@ -4186,6 +4244,8 @@ print('Validation Dataset Dimensions: ')
 display(X_validation.shape)
 display(y_validation.shape)
 print('Validation Target Variable Breakdown: ')
+display(y_validation.value_counts())
+print('Validation Target Variable Proportion: ')
 display(y_validation.value_counts(normalize = True))
 ```
 
@@ -4204,6 +4264,15 @@ display(y_validation.value_counts(normalize = True))
     
 
 
+    1    51
+    0     7
+    Name: LUNG_CANCER, dtype: int64
+
+
+    Validation Target Variable Proportion: 
+    
+
+
     1    0.87931
     0    0.12069
     Name: LUNG_CANCER, dtype: float64
@@ -4218,16 +4287,16 @@ display(y_validation.value_counts(normalize = True))
 ##################################
 smote = SMOTE(random_state = 88888888)
 X_train_smote, y_train_smote = smote.fit_resample(X_train,y_train)
-print('Upsampled Training Dataset Dimensions: ')
+print('SMOTE-Upsampled Training Dataset Dimensions: ')
 display(X_train_smote.shape)
 display(y_train_smote.shape)
-print('Upsampled Training Target Variable Breakdown: ')
+print('SMOTE-Upsampled Training Target Variable Breakdown: ')
 display(y_train_smote.value_counts())
-print('Upsampled Training Target Variable Proportion: ')
+print('SMOTE-Upsampled Training Target Variable Proportion: ')
 display(y_train_smote.value_counts(normalize = True))
 ```
 
-    Upsampled Training Dataset Dimensions: 
+    SMOTE-Upsampled Training Dataset Dimensions: 
     
 
 
@@ -4238,7 +4307,7 @@ display(y_train_smote.value_counts(normalize = True))
     (302,)
 
 
-    Upsampled Training Target Variable Breakdown: 
+    SMOTE-Upsampled Training Target Variable Breakdown: 
     
 
 
@@ -4247,7 +4316,7 @@ display(y_train_smote.value_counts(normalize = True))
     Name: LUNG_CANCER, dtype: int64
 
 
-    Upsampled Training Target Variable Proportion: 
+    SMOTE-Upsampled Training Target Variable Proportion: 
     
 
 
@@ -4354,7 +4423,16 @@ y_test.to_csv(os.path.join("..", DATASETS_FINAL_TEST_TARGET_PATH, "y_test.csv"),
 
 [Class Weights](https://link.springer.com/book/10.1007/978-1-4614-6849-3?page=1) are used to assign different levels of importance to different classes when the distribution of instances across different classes in a classification problem is not equal. By assigning higher weights to the minority class, the model is encouraged to give more attention to correctly predicting instances from the minority class. Class weights are incorporated into the loss function during training. The loss for each instance is multiplied by its corresponding class weight. This means that misclassifying an instance from the minority class will have a greater impact on the overall loss than misclassifying an instance from the majority class. The use of class weights helps balance the influence of each class during training, mitigating the impact of class imbalance. It provides a way to focus the learning process on the classes that are underrepresented in the training data.
 
-[Hyperparameter Tuning](https://link.springer.com/book/10.1007/978-1-4614-6849-3?page=1) is an iterative process that involves experimenting with different hyperparameter combinations, evaluating the model's performance, and refining the hyperparameter values to achieve the best possible performance on new, unseen data - aimed at building effective and well-generalizing machine learning models. A model's performance depends not only on the learned parameters (weights) during training but also on hyperparameters, which are external configuration settings that cannot be learned from the data. 
+[Hyperparameter Tuning](https://link.springer.com/book/10.1007/978-1-4614-6849-3?page=1) is an iterative process that involves experimenting with different hyperparameter combinations, evaluating the model's performance, and refining the hyperparameter values to achieve the best possible performance on new, unseen data - aimed at building effective and well-generalizing machine learning models. A model's performance depends not only on the learned parameters (weights) during training but also on hyperparameters, which are external configuration settings that cannot be learned from the data.
+
+1. A modelling pipeline using an individual classifier was implemented.
+    * [Logistic regression model](https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LogisticRegression.html) from the <mark style="background-color: #CCECFF"><b>sklearn.linear_model</b></mark> Python library API with 5 hyperparameters:
+        * <span style="color: #FF0000">penalty</span> = penalty norm made to vary between L1, L2 and none
+        * <span style="color: #FF0000">class_weight</span> = weights associated with classes held constant at a value  equal to balanced or none, as applicable
+        * <span style="color: #FF0000">solver</span> = algorithm used in the optimization problem held constant at a value equal to saga
+        * <span style="color: #FF0000">max_iter</span> = maximum number of iterations taken for the solvers to converge held constant at a value of 500
+        * <span style="color: #FF0000">random_state</span> = random instance to shuffle the data for the solver algorithm held constant at a value of 88888888
+2. Hyperparameter tuning was conducted using the 5-fold cross-validation method with optimal model performance determined using the F1 score. 
 
 
 ```python
@@ -4430,6 +4508,34 @@ individual_balanced_class_grid_search = GridSearchCV(estimator=individual_pipeli
 [Hyperparameter Tuning](https://link.springer.com/book/10.1007/978-1-4614-6849-3?page=1) is an iterative process that involves experimenting with different hyperparameter combinations, evaluating the model's performance, and refining the hyperparameter values to achieve the best possible performance on new, unseen data - aimed at building effective and well-generalizing machine learning models. A model's performance depends not only on the learned parameters (weights) during training but also on hyperparameters, which are external configuration settings that cannot be learned from the data. 
 
 [Model Stacking](https://www.manning.com/books/ensemble-methods-for-machine-learning) - also known as stacked generalization, is an ensemble approach which involves creating a variety of base learners and using them to create intermediate predictions, one for each learned model. A meta-model is incorporated that gains knowledge of the same target from intermediate predictions. Unlike bagging, in stacking, the models are typically different (e.g. not all decision trees) and fit on the same dataset (e.g. instead of samples of the training dataset). Unlike boosting, in stacking, a single model is used to learn how to best combine the predictions from the contributing models (e.g. instead of a sequence of models that correct the predictions of prior models). Stacking is appropriate when the predictions made by the base learners or the errors in predictions made by the models have minimal correlation. Achieving an improvement in performance is dependent upon the choice of base learners and whether they are sufficiently skillful in their predictions.
+
+1. A modelling pipeline using a stacking classifier was implemented.
+    * **Meta learner**: [Logistic regression model](https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LogisticRegression.html) from the <mark style="background-color: #CCECFF"><b>sklearn.linear_model</b></mark> Python library API with 5 hyperparameters:
+        * <span style="color: #FF0000">penalty</span> = penalty norm made to vary between L1, L2 and none
+        * <span style="color: #FF0000">class_weight</span> = weights associated with classes held constant at a value  equal to balanced or none, as applicable
+        * <span style="color: #FF0000">solver</span> = algorithm used in the optimization problem held constant at a value equal to saga
+        * <span style="color: #FF0000">max_iter</span> = maximum number of iterations taken for the solvers to converge held constant at 500
+        * <span style="color: #FF0000">random_state</span> = random instance to shuffle the data for the solver algorithm held constant at 88888888
+    * **Base learner**: [Decision tree model](https://scikit-learn.org/stable/modules/generated/sklearn.tree.DecisionTreeClassifier.html) from the <mark style="background-color: #CCECFF"><b>sklearn.linear_model</b></mark> Python library API with 5 hyperparameters:
+        * <span style="color: #FF0000">max_depth</span> = maximum depth of the tree made to vary between 3 and 5
+        * <span style="color: #FF0000">class_weight</span> = weights associated with classes held constant at a value  equal to balanced or none, as applicable
+        * <span style="color: #FF0000">criterion</span> = function to measure the quality of a split held constant at a value equal to entropy
+        * <span style="color: #FF0000">min_samples_leaf</span> = minimum number of samples required to split an internal node held constant at 3
+        * <span style="color: #FF0000">random_state</span> = random instance for feature permutation process of the algorithm held constant at 88888888
+    * **Base learner**: [Random forest model](https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestClassifier.html#) from the <mark style="background-color: #CCECFF"><b>sklearn.linear_model</b></mark> Python library API with 6 hyperparameters:
+        * <span style="color: #FF0000">max_depth</span> = maximum depth of the tree made to vary between 3 and 5
+        * <span style="color: #FF0000">class_weight</span> = weights associated with classes held constant at a value equal to balanced or none, as applicable
+        * <span style="color: #FF0000">criterion</span> = function to measure the quality of a split held constant at a value equal to entropy
+        * <span style="color: #FF0000">max_features</span> = number of features to consider when looking for the best split held constant at a value equal to sqrt
+        * <span style="color: #FF0000">min_samples_leaf</span> = minimum number of samples required to split an internal node held constant at 3
+        * <span style="color: #FF0000">random_state</span> = random instance for controlling the bootstrapping of the samples and feature sampling of the algorithm held constant at 88888888
+    * **Base learner**: [Support vector machine model](https://scikit-learn.org/stable/modules/generated/sklearn.svm.SVC.html) from the <mark style="background-color: #CCECFF"><b>sklearn.linear_model</b></mark> Python library API with 5 hyperparameters:
+        * <span style="color: #FF0000">C</span> = inverse of regularization strength made to vary between 1.0 and 0.5
+        * <span style="color: #FF0000">class_weight</span> = weights associated with classes held constant at a value  equal to balanced or none, as applicable
+        * <span style="color: #FF0000">kernel</span> = kernel type to be used in the algorithm made held constant at a value equal to linear
+        * <span style="color: #FF0000">probability</span> = setting to enable probability estimates held constant at a value equal to true
+        * <span style="color: #FF0000">random_state</span> = random instance for controling data shuffle for probability estimation of the algorithm held constant at 88888888        
+2. Hyperparameter tuning was conducted using the 5-fold cross-validation method with optimal model performance determined using the F1 score. 
 
 
 ```python
@@ -4608,6 +4714,18 @@ stacked_balanced_class_grid_search = GridSearchCV(estimator=stacked_balanced_cla
 [Class Weights](https://link.springer.com/book/10.1007/978-1-4614-6849-3?page=1) are used to assign different levels of importance to different classes when the distribution of instances across different classes in a classification problem is not equal. By assigning higher weights to the minority class, the model is encouraged to give more attention to correctly predicting instances from the minority class. Class weights are incorporated into the loss function during training. The loss for each instance is multiplied by its corresponding class weight. This means that misclassifying an instance from the minority class will have a greater impact on the overall loss than misclassifying an instance from the majority class. The use of class weights helps balance the influence of each class during training, mitigating the impact of class imbalance. It provides a way to focus the learning process on the classes that are underrepresented in the training data.
 
 [Hyperparameter Tuning](https://link.springer.com/book/10.1007/978-1-4614-6849-3?page=1) is an iterative process that involves experimenting with different hyperparameter combinations, evaluating the model's performance, and refining the hyperparameter values to achieve the best possible performance on new, unseen data - aimed at building effective and well-generalizing machine learning models. A model's performance depends not only on the learned parameters (weights) during training but also on hyperparameters, which are external configuration settings that cannot be learned from the data. 
+
+1. The optimal [logistic regression model](https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LogisticRegression.html) (**individual classifier**) determined from the 5-fold cross-validation of **train data (final)** contained the following hyperparameters:
+    * <span style="color: #FF0000">penalty</span> = L2
+    * <span style="color: #FF0000">class_weight</span> = balanced
+    * <span style="color: #FF0000">solver</span> = saga
+    * <span style="color: #FF0000">max_iter</span> = 500
+    * <span style="color: #FF0000">random_state</span> = 88888888
+2. The **F1 scores** estimated for the different data subsets were as follows:
+    * **train data (final)** = 0.9306
+    * **train data (cross-validated)** = 0.9116
+    * **validation data** = 0.9495
+3. Moderate overfitting noted based on the considerable difference in the apparent and cross-validated **F1 scores**.
 
 
 ```python
@@ -4883,6 +5001,37 @@ joblib.dump(individual_unbalanced_class_best_model_original,
 [Hyperparameter Tuning](https://link.springer.com/book/10.1007/978-1-4614-6849-3?page=1) is an iterative process that involves experimenting with different hyperparameter combinations, evaluating the model's performance, and refining the hyperparameter values to achieve the best possible performance on new, unseen data - aimed at building effective and well-generalizing machine learning models. A model's performance depends not only on the learned parameters (weights) during training but also on hyperparameters, which are external configuration settings that cannot be learned from the data. 
 
 [Model Stacking](https://www.manning.com/books/ensemble-methods-for-machine-learning) - also known as stacked generalization, is an ensemble approach which involves creating a variety of base learners and using them to create intermediate predictions, one for each learned model. A meta-model is incorporated that gains knowledge of the same target from intermediate predictions. Unlike bagging, in stacking, the models are typically different (e.g. not all decision trees) and fit on the same dataset (e.g. instead of samples of the training dataset). Unlike boosting, in stacking, a single model is used to learn how to best combine the predictions from the contributing models (e.g. instead of a sequence of models that correct the predictions of prior models). Stacking is appropriate when the predictions made by the base learners or the errors in predictions made by the models have minimal correlation. Achieving an improvement in performance is dependent upon the choice of base learners and whether they are sufficiently skillful in their predictions.
+
+1. The optimal [decision tree model](https://scikit-learn.org/stable/modules/generated/sklearn.tree.DecisionTreeClassifier.html) (**base learner**) determined from the 5-fold cross-validation of **train data (final)** contained the following hyperparameters:
+    * <span style="color: #FF0000">max_depth</span> = 3
+    * <span style="color: #FF0000">class_weight</span> = balanced
+    * <span style="color: #FF0000">criterion</span> = entropy
+    * <span style="color: #FF0000">min_samples_leaf</span> = 3
+    * <span style="color: #FF0000">random_state</span> = 88888888
+2. The optimal [random forest model](https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestClassifier.html#) (**base learner**) determined from the 5-fold cross-validation of **train data (final)** contained the following hyperparameters:
+    * <span style="color: #FF0000">max_depth</span> = 5
+    * <span style="color: #FF0000">class_weight</span> = balanced
+    * <span style="color: #FF0000">criterion</span> = entropy
+    * <span style="color: #FF0000">max_features</span> = sqrt
+    * <span style="color: #FF0000">min_samples_leaf</span> = 3
+    * <span style="color: #FF0000">random_state</span> = 88888888
+3. The optimal [support vector machine model](https://scikit-learn.org/stable/modules/generated/sklearn.svm.SVC.html) (**base learner**) determined from the 5-fold cross-validation of **train data (final)** contained the following hyperparameters:
+    * <span style="color: #FF0000">C</span> = 0.50
+    * <span style="color: #FF0000">class_weight</span> = balanced
+    * <span style="color: #FF0000">kernel</span> = linear
+    * <span style="color: #FF0000">probability</span> = true
+    * <span style="color: #FF0000">random_state</span> = 88888888  
+4. The optimal [logistic regression model](https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LogisticRegression.html) (**meta learner**) determined from the 5-fold cross-validation of **train data (final)** contained the following hyperparameters:
+    * <span style="color: #FF0000">penalty</span> = L1
+    * <span style="color: #FF0000">class_weight</span> = balanced
+    * <span style="color: #FF0000">solver</span> = saga
+    * <span style="color: #FF0000">max_iter</span> = 500
+    * <span style="color: #FF0000">random_state</span> = 88888888
+5. The **F1 scores** estimated for the different data subsets were as follows:
+    * **train data (final)** = 0.9404
+    * **train data (cross-validated)** = 0.9125
+    * **validation data** = 0.9149
+6. Moderate overfitting noted based on the considerable difference in the apparent and cross-validated **F1 scores**.
 
 
 ```python
@@ -5217,7 +5366,19 @@ joblib.dump(stacked_unbalanced_class_best_model_original,
 
 [Logistic Regression](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=360300) models the relationship between the probability of an event (among two outcome levels) by having the log-odds of the event be a linear combination of a set of predictors weighted by their respective parameter estimates. The parameters are estimated via maximum likelihood estimation by testing different values through multiple iterations to optimize for the best fit of log odds. All of these iterations produce the log likelihood function, and logistic regression seeks to maximize this function to find the best parameter estimates. Given the optimal parameters, the conditional probabilities for each observation can be calculated, logged, and summed together to yield a predicted probability.
 
-[Hyperparameter Tuning](https://link.springer.com/book/10.1007/978-1-4614-6849-3?page=1) is an iterative process that involves experimenting with different hyperparameter combinations, evaluating the model's performance, and refining the hyperparameter values to achieve the best possible performance on new, unseen data - aimed at building effective and well-generalizing machine learning models. A model's performance depends not only on the learned parameters (weights) during training but also on hyperparameters, which are external configuration settings that cannot be learned from the data. 
+[Hyperparameter Tuning](https://link.springer.com/book/10.1007/978-1-4614-6849-3?page=1) is an iterative process that involves experimenting with different hyperparameter combinations, evaluating the model's performance, and refining the hyperparameter values to achieve the best possible performance on new, unseen data - aimed at building effective and well-generalizing machine learning models. A model's performance depends not only on the learned parameters (weights) during training but also on hyperparameters, which are external configuration settings that cannot be learned from the data.
+
+1. The optimal [logistic regression model](https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LogisticRegression.html) (**individual classifier**) determined from the 5-fold cross-validation of **train data (SMOTE-upsampled)** contained the following hyperparameters:
+    * <span style="color: #FF0000">penalty</span> = L2
+    * <span style="color: #FF0000">class_weight</span> = none
+    * <span style="color: #FF0000">solver</span> = saga
+    * <span style="color: #FF0000">max_iter</span> = 500
+    * <span style="color: #FF0000">random_state</span> = 88888888
+2. The **F1 scores** estimated for the different data subsets were as follows:
+    * **train data (SMOTE-upsampled)** = 0.9495
+    * **train data (cross-validated)** = 0.9474
+    * **validation data** = 0.9615
+3. Minimal overfitting noted based on the small difference in the apparent and cross-validated **F1 scores**.
 
 
 ```python
@@ -5280,11 +5441,11 @@ individual_balanced_class_best_model_upsampled_f1_validation = f1_score(y_valida
 ##################################
 # Identifying the optimal model
 ##################################
-print('Best Individual Model using the Original Train Data: ')
+print('Best Individual Model using the SMOTE-Upsampled Train Data: ')
 print(f"Best Individual Model Parameters: {individual_balanced_class_grid_search.best_params_}")
 ```
 
-    Best Individual Model using the Original Train Data: 
+    Best Individual Model using the SMOTE-Upsampled Train Data: 
     Best Individual Model Parameters: {'individual_model__class_weight': None, 'individual_model__penalty': 'l2'}
     
 
@@ -5494,6 +5655,37 @@ joblib.dump(individual_balanced_class_best_model_upsampled,
 
 [Model Stacking](https://www.manning.com/books/ensemble-methods-for-machine-learning) - also known as stacked generalization, is an ensemble approach which involves creating a variety of base learners and using them to create intermediate predictions, one for each learned model. A meta-model is incorporated that gains knowledge of the same target from intermediate predictions. Unlike bagging, in stacking, the models are typically different (e.g. not all decision trees) and fit on the same dataset (e.g. instead of samples of the training dataset). Unlike boosting, in stacking, a single model is used to learn how to best combine the predictions from the contributing models (e.g. instead of a sequence of models that correct the predictions of prior models). Stacking is appropriate when the predictions made by the base learners or the errors in predictions made by the models have minimal correlation. Achieving an improvement in performance is dependent upon the choice of base learners and whether they are sufficiently skillful in their predictions.
 
+1. The optimal [decision tree model](https://scikit-learn.org/stable/modules/generated/sklearn.tree.DecisionTreeClassifier.html) (**base learner**) determined from the 5-fold cross-validation of **train data (SMOTE-upsampled)** contained the following hyperparameters:
+    * <span style="color: #FF0000">max_depth</span> = 5
+    * <span style="color: #FF0000">class_weight</span> = none
+    * <span style="color: #FF0000">criterion</span> = entropy
+    * <span style="color: #FF0000">min_samples_leaf</span> = 3
+    * <span style="color: #FF0000">random_state</span> = 88888888
+2. The optimal [random forest model](https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestClassifier.html#) (**base learner**) determined from the 5-fold cross-validation of **train data (SMOTE-upsampled)** contained the following hyperparameters:
+    * <span style="color: #FF0000">max_depth</span> = 5
+    * <span style="color: #FF0000">class_weight</span> = none
+    * <span style="color: #FF0000">criterion</span> = entropy
+    * <span style="color: #FF0000">max_features</span> = sqrt
+    * <span style="color: #FF0000">min_samples_leaf</span> = 3
+    * <span style="color: #FF0000">random_state</span> = 88888888
+3. The optimal [support vector machine model](https://scikit-learn.org/stable/modules/generated/sklearn.svm.SVC.html) (**base learner**) determined from the 5-fold cross-validation of **train data (SMOTE-upsampled)** contained the following hyperparameters:
+    * <span style="color: #FF0000">C</span> = 0.50
+    * <span style="color: #FF0000">class_weight</span> = none
+    * <span style="color: #FF0000">kernel</span> = linear
+    * <span style="color: #FF0000">probability</span> = true
+    * <span style="color: #FF0000">random_state</span> = 88888888  
+4. The optimal [logistic regression model](https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LogisticRegression.html) (**meta learner**) determined from the 5-fold cross-validation of **train data (SMOTE-upsampled)** contained the following hyperparameters:
+    * <span style="color: #FF0000">penalty</span> = None
+    * <span style="color: #FF0000">class_weight</span> = none
+    * <span style="color: #FF0000">solver</span> = saga
+    * <span style="color: #FF0000">max_iter</span> = 500
+    * <span style="color: #FF0000">random_state</span> = 88888888
+5. The **F1 scores** estimated for the different data subsets were as follows:
+    * **train data (SMOTE-upsampled)** = 0.9571
+    * **train data (cross-validated)** = 0.9584
+    * **validation data** = 0.9709
+6. Minimal overfitting noted based on the small difference in the apparent and cross-validated **F1 scores**.
+
 
 ```python
 ##################################
@@ -5615,11 +5807,11 @@ stacked_balanced_class_best_model_upsampled_f1_validation = f1_score(y_validatio
 ##################################
 # Identifying the optimal model
 ##################################
-print('Best Stacked Model using the Upsampled Train Data: ')
+print('Best Stacked Model using the SMOTE-Upsampled Train Data: ')
 print(f"Best Stacked Model Parameters: {stacked_balanced_class_grid_search.best_params_}")
 ```
 
-    Best Stacked Model using the Upsampled Train Data: 
+    Best Stacked Model using the SMOTE-Upsampled Train Data: 
     Best Stacked Model Parameters: {'stacked_model__dt__max_depth': 5, 'stacked_model__final_estimator__class_weight': None, 'stacked_model__final_estimator__penalty': None, 'stacked_model__rf__max_depth': 5, 'stacked_model__svm__C': 0.5}
     
 
@@ -5825,6 +6017,18 @@ joblib.dump(stacked_balanced_class_best_model_upsampled,
 
 [Hyperparameter Tuning](https://link.springer.com/book/10.1007/978-1-4614-6849-3?page=1) is an iterative process that involves experimenting with different hyperparameter combinations, evaluating the model's performance, and refining the hyperparameter values to achieve the best possible performance on new, unseen data - aimed at building effective and well-generalizing machine learning models. A model's performance depends not only on the learned parameters (weights) during training but also on hyperparameters, which are external configuration settings that cannot be learned from the data.
 
+1. The optimal [logistic regression model](https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LogisticRegression.html) (**individual classifier**) from the 5-fold cross-validation of **train data (CNN-downsampled)** contained the following hyperparameters:
+    * <span style="color: #FF0000">penalty</span> = L2
+    * <span style="color: #FF0000">class_weight</span> = balanced
+    * <span style="color: #FF0000">solver</span> = saga
+    * <span style="color: #FF0000">max_iter</span> = 500
+    * <span style="color: #FF0000">random_state</span> = 88888888
+2. The **F1 scores** estimated for the different data subsets were as follows:
+    * **train data (CNN-downsampled)** = 0.8533
+    * **train data (cross-validated)** = 0.7537
+    * **validation data** = 0.9709
+3. High overfitting noted based on the large difference in the apparent and cross-validated **F1 scores**.
+
 
 ```python
 ##################################
@@ -5886,11 +6090,11 @@ individual_unbalanced_class_best_model_downsampled_f1_validation = f1_score(y_va
 ##################################
 # Identifying the optimal model
 ##################################
-print('Best Individual Model using the Original Train Data: ')
+print('Best Individual Model using the CNN-Downsampled Train Data: ')
 print(f"Best Individual Model Parameters: {individual_unbalanced_class_grid_search.best_params_}")
 ```
 
-    Best Individual Model using the Original Train Data: 
+    Best Individual Model using the CNN-Downsampled Train Data: 
     Best Individual Model Parameters: {'individual_model__class_weight': 'balanced', 'individual_model__penalty': 'l2'}
     
 
@@ -6102,6 +6306,37 @@ joblib.dump(individual_unbalanced_class_best_model_downsampled,
 
 [Model Stacking](https://www.manning.com/books/ensemble-methods-for-machine-learning) - also known as stacked generalization, is an ensemble approach which involves creating a variety of base learners and using them to create intermediate predictions, one for each learned model. A meta-model is incorporated that gains knowledge of the same target from intermediate predictions. Unlike bagging, in stacking, the models are typically different (e.g. not all decision trees) and fit on the same dataset (e.g. instead of samples of the training dataset). Unlike boosting, in stacking, a single model is used to learn how to best combine the predictions from the contributing models (e.g. instead of a sequence of models that correct the predictions of prior models). Stacking is appropriate when the predictions made by the base learners or the errors in predictions made by the models have minimal correlation. Achieving an improvement in performance is dependent upon the choice of base learners and whether they are sufficiently skillful in their predictions.
 
+1. The optimal [decision tree model](https://scikit-learn.org/stable/modules/generated/sklearn.tree.DecisionTreeClassifier.html) (**base learner**) determined from the 5-fold cross-validation of **train data (CNN-downsampled)** contained the following hyperparameters:
+    * <span style="color: #FF0000">max_depth</span> = 3
+    * <span style="color: #FF0000">class_weight</span> = balanced
+    * <span style="color: #FF0000">criterion</span> = entropy
+    * <span style="color: #FF0000">min_samples_leaf</span> = 3
+    * <span style="color: #FF0000">random_state</span> = 88888888
+2. The optimal [random forest model](https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestClassifier.html#) (**base learner**) determined from the 5-fold cross-validation of **train data (CNN-downsampled)** contained the following hyperparameters:
+    * <span style="color: #FF0000">max_depth</span> = 2
+    * <span style="color: #FF0000">class_weight</span> = balanced
+    * <span style="color: #FF0000">criterion</span> = entropy
+    * <span style="color: #FF0000">max_features</span> = sqrt
+    * <span style="color: #FF0000">min_samples_leaf</span> = 3
+    * <span style="color: #FF0000">random_state</span> = 88888888
+3. The optimal [support vector machine model](https://scikit-learn.org/stable/modules/generated/sklearn.svm.SVC.html) (**base learner**) determined from the 5-fold cross-validation of **train data (CNN-downsampled)** contained the following hyperparameters:
+    * <span style="color: #FF0000">C</span> = 1.00
+    * <span style="color: #FF0000">class_weight</span> = balanced
+    * <span style="color: #FF0000">kernel</span> = linear
+    * <span style="color: #FF0000">probability</span> = true
+    * <span style="color: #FF0000">random_state</span> = 88888888  
+4. The optimal [logistic regression model](https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LogisticRegression.html) (**meta learner**) determined from the 5-fold cross-validation of **train data (CNN-downsampled)** contained the following hyperparameters:
+    * <span style="color: #FF0000">penalty</span> = None
+    * <span style="color: #FF0000">class_weight</span> = balanced
+    * <span style="color: #FF0000">solver</span> = saga
+    * <span style="color: #FF0000">max_iter</span> = 500
+    * <span style="color: #FF0000">random_state</span> = 88888888
+5. The **F1 scores** estimated for the different data subsets were as follows:
+    * **train data (CNN-downsampled)** = 0.8219
+    * **train data (cross-validated)** = 0.7531
+    * **validation data** = 0.9524
+6. High overfitting noted based on the large difference in the apparent and cross-validated **F1 scores**.
+
 
 ```python
 ##################################
@@ -6227,25 +6462,41 @@ stacked_unbalanced_class_best_model_downsampled_f1_validation = f1_score(y_valid
 
 ```python
 ##################################
-# Evaluating the F1 scores
-# on the training, cross-validation, and validation data
+# Identifying the optimal model
 ##################################
-stacked_unbalanced_class_best_model_downsampled_f1_cv = stacked_unbalanced_class_grid_search.best_score_
-stacked_unbalanced_class_best_model_downsampled_f1_train_cnn = f1_score(y_train_cnn, stacked_unbalanced_class_best_model_downsampled.predict(X_train_cnn))
-stacked_unbalanced_class_best_model_downsampled_f1_validation = f1_score(y_validation, stacked_unbalanced_class_best_model_downsampled.predict(X_validation))
+print('Best Stacked Model using the CNN-Downsampled Train Data: ')
+print(f"Best Stacked Model Parameters: {stacked_unbalanced_class_grid_search.best_params_}")
 ```
+
+    Best Stacked Model using the CNN-Downsampled Train Data: 
+    Best Stacked Model Parameters: {'stacked_model__dt__max_depth': 3, 'stacked_model__final_estimator__class_weight': 'balanced', 'stacked_model__final_estimator__penalty': None, 'stacked_model__rf__max_depth': 3, 'stacked_model__svm__C': 1.0}
+    
 
 
 ```python
 ##################################
-# Identifying the optimal model
+# Summarizing the F1 score results
+# on the training and cross-validated data
+# to assess overfitting optimism
 ##################################
-print('Best Stacked Model using the Downsampled Train Data: ')
-print(f"Best Stacked Model Parameters: {stacked_unbalanced_class_grid_search.best_params_}")
+print(f"F1 Score on Cross-Validated Data: {stacked_unbalanced_class_best_model_downsampled_f1_cv:.4f}")
+print(f"F1 Score on Training Data: {stacked_unbalanced_class_best_model_downsampled_f1_train_cnn:.4f}")
+print("\nClassification Report on Training Data:\n", classification_report(y_train_cnn, stacked_unbalanced_class_best_model_downsampled.predict(X_train_cnn)))
 ```
 
-    Best Stacked Model using the Downsampled Train Data: 
-    Best Stacked Model Parameters: {'stacked_model__dt__max_depth': 3, 'stacked_model__final_estimator__class_weight': 'balanced', 'stacked_model__final_estimator__penalty': None, 'stacked_model__rf__max_depth': 3, 'stacked_model__svm__C': 1.0}
+    F1 Score on Cross-Validated Data: 0.7531
+    F1 Score on Training Data: 0.8219
+    
+    Classification Report on Training Data:
+                   precision    recall  f1-score   support
+    
+               0       0.67      0.82      0.73        22
+               1       0.88      0.77      0.82        39
+    
+        accuracy                           0.79        61
+       macro avg       0.77      0.79      0.78        61
+    weighted avg       0.80      0.79      0.79        61
+    
     
 
 
@@ -6275,6 +6526,11 @@ plt.show()
 ![png](output_219_0.png)
     
 
+
+
+```python
+
+```
 
 
 ```python
@@ -6325,7 +6581,7 @@ plt.show()
 
 
     
-![png](output_221_0.png)
+![png](output_222_0.png)
     
 
 
@@ -6390,7 +6646,7 @@ plt.show()
 
 
     
-![png](output_225_0.png)
+![png](output_226_0.png)
     
 
 
@@ -6521,7 +6777,7 @@ for container in f1_plot.containers:
 
 
     
-![png](output_229_0.png)
+![png](output_230_0.png)
     
 
 
@@ -6664,7 +6920,7 @@ for container in updated_f1_plot.containers:
 
 
     
-![png](output_233_0.png)
+![png](output_234_0.png)
     
 
 
@@ -6726,19 +6982,19 @@ for index, (name, model) in enumerate(final_model.named_estimators_.items()):
 
 
     
-![png](output_238_0.png)
+![png](output_239_0.png)
     
 
 
 
     
-![png](output_238_1.png)
+![png](output_239_1.png)
     
 
 
 
     
-![png](output_238_2.png)
+![png](output_239_2.png)
     
 
 
@@ -6778,7 +7034,7 @@ if hasattr(final_model.final_estimator_, 'coef_'):
 
 
     
-![png](output_240_0.png)
+![png](output_241_0.png)
     
 
 
@@ -6816,7 +7072,7 @@ plt.show()
 
 
     
-![png](output_241_0.png)
+![png](output_242_0.png)
     
 
 
@@ -7209,7 +7465,7 @@ plt.show()
 
 
     
-![png](output_245_0.png)
+![png](output_246_0.png)
     
 
 
@@ -7273,7 +7529,7 @@ plt.show()
 
 
     
-![png](output_247_0.png)
+![png](output_248_0.png)
     
 
 
@@ -7542,7 +7798,7 @@ plt.show()
 
 
     
-![png](output_250_0.png)
+![png](output_251_0.png)
     
 
 
@@ -7606,7 +7862,7 @@ plt.show()
 
 
     
-![png](output_252_0.png)
+![png](output_253_0.png)
     
 
 
