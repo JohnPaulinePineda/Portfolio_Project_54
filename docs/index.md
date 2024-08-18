@@ -32,8 +32,8 @@
         * [1.6.8 Model Testing](#1.6.8)
         * [1.6.9 Model Inference](#1.6.9)
     * [1.7 Predictive Model Deployment](#1.7)
-        * [1.7.1 API Development](#1.7.1)
-        * [1.7.2 UI Development](#1.7.2)
+        * [1.7.1 Application Programming Interface (API) Development](#1.7.1)
+        * [1.7.2 User Interface (UI) Development](#1.7.2)
         * [1.7.3 Model Serving](#1.7.2)
 * [**2. Summary**](#Summary)   
 * [**3. References**](#References)
@@ -4510,7 +4510,7 @@ individual_balanced_class_grid_search = GridSearchCV(estimator=individual_pipeli
 [Model Stacking](https://www.manning.com/books/ensemble-methods-for-machine-learning) - also known as stacked generalization, is an ensemble approach which involves creating a variety of base learners and using them to create intermediate predictions, one for each learned model. A meta-model is incorporated that gains knowledge of the same target from intermediate predictions. Unlike bagging, in stacking, the models are typically different (e.g. not all decision trees) and fit on the same dataset (e.g. instead of samples of the training dataset). Unlike boosting, in stacking, a single model is used to learn how to best combine the predictions from the contributing models (e.g. instead of a sequence of models that correct the predictions of prior models). Stacking is appropriate when the predictions made by the base learners or the errors in predictions made by the models have minimal correlation. Achieving an improvement in performance is dependent upon the choice of base learners and whether they are sufficiently skillful in their predictions.
 
 1. A modelling pipeline using a stacking classifier was implemented.
-    * **Meta learner**: [Logistic regression model](https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LogisticRegression.html) from the <mark style="background-color: #CCECFF"><b>sklearn.linear_model</b></mark> Python library API with 5 hyperparameters:
+    * **Meta-learner**: [Logistic regression model](https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LogisticRegression.html) from the <mark style="background-color: #CCECFF"><b>sklearn.linear_model</b></mark> Python library API with 5 hyperparameters:
         * <span style="color: #FF0000">penalty</span> = penalty norm made to vary between L1, L2 and none
         * <span style="color: #FF0000">class_weight</span> = weights associated with classes held constant at a value  equal to balanced or none, as applicable
         * <span style="color: #FF0000">solver</span> = algorithm used in the optimization problem held constant at a value equal to saga
@@ -4563,7 +4563,7 @@ stacked_unbalanced_class_base_learners = [('dt', DecisionTreeClassifier(class_we
 
 ```python
 ##################################
-# Defining the meta learner
+# Defining the meta-learner
 # using the logistic regression structure
 ##################################
 stacked_unbalanced_class_meta_learner = LogisticRegression(solver='saga', 
@@ -4647,7 +4647,7 @@ stacked_balanced_class_base_learners = [('dt', DecisionTreeClassifier(class_weig
 
 ```python
 ##################################
-# Defining the meta learner
+# Defining the meta-learner
 # using the logistic regression structure
 ##################################
 stacked_balanced_class_meta_learner = LogisticRegression(solver='saga', 
@@ -5021,7 +5021,7 @@ joblib.dump(individual_unbalanced_class_best_model_original,
     * <span style="color: #FF0000">kernel</span> = linear
     * <span style="color: #FF0000">probability</span> = true
     * <span style="color: #FF0000">random_state</span> = 88888888  
-4. The optimal [logistic regression model](https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LogisticRegression.html) (**meta learner**) determined from the 5-fold cross-validation of **train data (final)** contained the following hyperparameters:
+4. The optimal [logistic regression model](https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LogisticRegression.html) (**meta-learner**) determined from the 5-fold cross-validation of **train data (final)** contained the following hyperparameters:
     * <span style="color: #FF0000">penalty</span> = L1
     * <span style="color: #FF0000">class_weight</span> = balanced
     * <span style="color: #FF0000">solver</span> = saga
@@ -5674,7 +5674,7 @@ joblib.dump(individual_balanced_class_best_model_upsampled,
     * <span style="color: #FF0000">kernel</span> = linear
     * <span style="color: #FF0000">probability</span> = true
     * <span style="color: #FF0000">random_state</span> = 88888888  
-4. The optimal [logistic regression model](https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LogisticRegression.html) (**meta learner**) determined from the 5-fold cross-validation of **train data (SMOTE-upsampled)** contained the following hyperparameters:
+4. The optimal [logistic regression model](https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LogisticRegression.html) (**meta-learner**) determined from the 5-fold cross-validation of **train data (SMOTE-upsampled)** contained the following hyperparameters:
     * <span style="color: #FF0000">penalty</span> = None
     * <span style="color: #FF0000">class_weight</span> = none
     * <span style="color: #FF0000">solver</span> = saga
@@ -6325,7 +6325,7 @@ joblib.dump(individual_unbalanced_class_best_model_downsampled,
     * <span style="color: #FF0000">kernel</span> = linear
     * <span style="color: #FF0000">probability</span> = true
     * <span style="color: #FF0000">random_state</span> = 88888888  
-4. The optimal [logistic regression model](https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LogisticRegression.html) (**meta learner**) determined from the 5-fold cross-validation of **train data (CNN-downsampled)** contained the following hyperparameters:
+4. The optimal [logistic regression model](https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LogisticRegression.html) (**meta-learner**) determined from the 5-fold cross-validation of **train data (CNN-downsampled)** contained the following hyperparameters:
     * <span style="color: #FF0000">penalty</span> = None
     * <span style="color: #FF0000">class_weight</span> = balanced
     * <span style="color: #FF0000">solver</span> = saga
@@ -6669,6 +6669,38 @@ joblib.dump(stacked_unbalanced_class_best_model_downsampled,
 
 ### 1.6.7 Model Selection <a class="anchor" id="1.6.7"></a>
 
+1. The stacked classifier developed from the **train data (SMOTE-upsampled)** was selected as the final model by demonstrating the best validation **F1 score** with minimal overfitting :
+    * **train data (SMOTE-upsampled)** = 0.9571
+    * **train data (cross-validated)** = 0.9584
+    * **validation data** = 0.9709
+2. The final model configuration are described as follows:
+    * **Base learner**: [decision tree model](https://scikit-learn.org/stable/modules/generated/sklearn.tree.DecisionTreeClassifier.html) with optimal hyperparameters:
+        * <span style="color: #FF0000">max_depth</span> = 5
+        * <span style="color: #FF0000">class_weight</span> = none
+        * <span style="color: #FF0000">criterion</span> = entropy
+        * <span style="color: #FF0000">min_samples_leaf</span> = 3
+        * <span style="color: #FF0000">random_state</span> = 88888888
+    * **Base learner**: [random forest model](https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestClassifier.html#) with optimal hyperparameters:
+        * <span style="color: #FF0000">max_depth</span> = 5
+        * <span style="color: #FF0000">class_weight</span> = none
+        * <span style="color: #FF0000">criterion</span> = entropy
+        * <span style="color: #FF0000">max_features</span> = sqrt
+        * <span style="color: #FF0000">min_samples_leaf</span> = 3
+        * <span style="color: #FF0000">random_state</span> = 88888888
+    * **Base learner**: [support vector machine model](https://scikit-learn.org/stable/modules/generated/sklearn.svm.SVC.html) with optimal hyperparameters:
+        * <span style="color: #FF0000">C</span> = 0.50
+        * <span style="color: #FF0000">class_weight</span> = none
+        * <span style="color: #FF0000">kernel</span> = linear
+        * <span style="color: #FF0000">probability</span> = true
+        * <span style="color: #FF0000">random_state</span> = 88888888  
+    * **Meta-learner**: [logistic regression model](https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LogisticRegression.html) with optimal hyperparameters:
+        * <span style="color: #FF0000">penalty</span> = None
+        * <span style="color: #FF0000">class_weight</span> = none
+        * <span style="color: #FF0000">solver</span> = saga
+        * <span style="color: #FF0000">max_iter</span> = 500
+        * <span style="color: #FF0000">random_state</span> = 88888888
+
+
 
 ```python
 ##################################
@@ -6782,6 +6814,13 @@ for container in f1_plot.containers:
 
 
 ### 1.6.8 Model Testing <a class="anchor" id="1.6.8"></a>
+
+1. The selected stacked classifier developed from the **train data (SMOTE-upsampled)** also demonstrated a high **F1 score** on the independent test dataset:
+    * **train data (SMOTE-upsampled)** = 0.9571
+    * **train data (cross-validated)** = 0.9584
+    * **validation data** = 0.9709
+    * **test data** = 0.9352
+    
 
 
 ```python
@@ -6924,7 +6963,46 @@ for container in updated_f1_plot.containers:
     
 
 
-### 1.6.9 Model Inference <a class="anchor" id="1.6.7"></a>
+### 1.6.9 Model Inference <a class="anchor" id="1.6.9"></a>
+
+1. For the final selected stacked classifier developed from the **train data (SMOTE-upsampled)**, the contributions of the base learners and predictors, ranked by feature importance, are given as follows:
+    * **Base learner**: [random forest model](https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestClassifier.html#)
+        * <span style="color: #FF0000">ALLERGY</span>
+        * <span style="color: #FF0000">ALCOHOL CONSUMING </span>
+        * <span style="color: #FF0000">PEER_PRESSURE</span>
+        * <span style="color: #FF0000">ANXIETY</span>
+        * <span style="color: #FF0000">FATIGUE</span>
+        * <span style="color: #FF0000">COUGHING</span>
+        * <span style="color: #FF0000">SWALLOWING DIFFICULTY</span>
+        * <span style="color: #FF0000">WHEEZING</span>
+        * <span style="color: #FF0000">CHEST PAIN</span>
+        * <span style="color: #FF0000">YELLOW_FINGERS</span>
+    * **Base learner**: [support vector machine model](https://scikit-learn.org/stable/modules/generated/sklearn.svm.SVC.html)
+        * <span style="color: #FF0000">FATIGUE</span>
+        * <span style="color: #FF0000">ALLERGY</span>
+        * <span style="color: #FF0000">ALCOHOL CONSUMING </span>
+        * <span style="color: #FF0000">PEER_PRESSURE</span>
+        * <span style="color: #FF0000">WHEEZING</span>
+        * <span style="color: #FF0000">ANXIETY</span>
+        * <span style="color: #FF0000">YELLOW_FINGERS</span>
+        * <span style="color: #FF0000">SWALLOWING DIFFICULTY</span>
+        * <span style="color: #FF0000">COUGHING</span>
+        * <span style="color: #FF0000">CHEST PAIN</span>
+    * **Base learner**: [decision tree model](https://scikit-learn.org/stable/modules/generated/sklearn.tree.DecisionTreeClassifier.html)
+        * <span style="color: #FF0000">ALLERGY</span>
+        * <span style="color: #FF0000">PEER_PRESSURE</span>
+        * <span style="color: #FF0000">ALCOHOL CONSUMING </span>
+        * <span style="color: #FF0000">YELLOW_FINGERS</span>
+        * <span style="color: #FF0000">SWALLOWING DIFFICULTY</span>
+        * <span style="color: #FF0000">ANXIETY</span>
+        * <span style="color: #FF0000">CHEST PAIN</span>
+        * <span style="color: #FF0000">COUGHING</span>
+        * <span style="color: #FF0000">FATIGUE</span>
+        * <span style="color: #FF0000">WHEEZING</span>
+2. Model inference involved indicating the characteristics and predicting the probability of the new case against the model training observations.
+        * Characteristics based on all features used for generating the final selected stacked classifier
+        * Predicted lung cancer probability based on the final selected stacked classifier logistic curve
+
 
 
 ```python
@@ -7866,6 +7944,16 @@ plt.show()
     
 
 
+## 1.7. Predictive Model Deployment <a class="anchor" id="1.7"></a>
+
+### 1.7.1 Application Programming Interface (API) Development <a class="anchor" id="1.7.1"></a>
+
+### 1.7.2 User Interface (UI) Development <a class="anchor" id="1.7.2"></a>
+
+### 1.7.3 Model Serving <a class="anchor" id="1.7.3"></a>
+
+# 2. Summary <a class="anchor" id="Summary"></a>
+
 # 3. References <a class="anchor" id="References"></a>
 
 * **[Book]** [Data Preparation for Machine Learning: Data Cleaning, Feature Selection, and Data Transforms in Python](https://machinelearningmastery.com/data-preparation-for-machine-learning/) by Jason Brownlee
@@ -7952,6 +8040,25 @@ plt.show()
 * **[Article]** [Stacked Ensembles — Improving Model Performance on a Higher Level](https://towardsdatascience.com/stacked-ensembles-improving-model-performance-on-a-higher-level-99ffc4ea5523) by Yenwee Lim (Towards Data Science)
 * **[Article]** [Stacking to Improve Model Performance: A Comprehensive Guide on Ensemble Learning in Python](https://medium.com/@brijesh_soni/stacking-to-improve-model-performance-a-comprehensive-guide-on-ensemble-learning-in-python-9ed53c93ce28) by Brijesh Soni (Medium)
 * **[Article]** [Stacking Ensemble Machine Learning With Python](https://machinelearningmastery.com/stacking-ensemble-machine-learning-with-python/) by Jason Brownlee (Machine Learning Mastery)
+* **[Article]** [Machine Learning Model deployment with FastAPI, Streamlit and Docker](https://medium.com/latinxinai/fastapi-and-streamlit-app-with-docker-compose-e4d18d78d61d) by Felipe Fernandez (Medium)
+* **[Article]** [End-to-end machine learning using FastAPI, Streamlit, Docker, Google Cloud Platform](https://medium.com/@marcozaninitaly/end-to-end-machine-learning-using-fastapi-streamlit-docker-google-cloud-platform-fcdf9f9216e0) by Marco Zanin (Medium)
+* **[Article]** [FastAPI and Streamlit: The Python Duo You Must Know About](https://towardsdatascience.com/fastapi-and-streamlit-the-python-duo-you-must-know-about-72825def1243) by Paul Lusztin (Medium)
+* **[Article]** [How to Build an Instant Machine Learning Web Application with Streamlit and FastAPI](https://developer.nvidia.com/blog/how-to-build-an-instant-machine-learning-web-application-with-streamlit-and-fastapi/) by Kurtis Pykes (Developer.Nvidia.Com)
+* **[Article]** [ML - Deploy Machine Learning Models Using FastAPI](https://dorian599.medium.com/ml-deploy-machine-learning-models-using-fastapi-6ab6aef7e777) by Dorian Machado (Medium)
+* **[Article]** [FastAPI: The Modern Toolkit for Machine Learning Deployment](https://machinelearningmastery.com/stacking-ensemble-machine-learning-with-python/) by Reza Shokrzad (Medium)
+* **[Article]** [Deploying and Hosting a Machine Learning Model with FastAPI and Heroku](https://testdriven.io/blog/fastapi-machine-learning/) by Michael Herman (TestDriven.IO)
+* **[Article]** [Using FastAPI to deploy Machine Learning models](https://engineering.rappi.com/using-fastapi-to-deploy-machine-learning-models-cd5ed7219ea) by Carl Handlin (Medium)
+* **[Video Tutorial]** [Machine Learning Model with FastAPI, Streamlit and Docker](https://www.youtube.com/watch?v=cCsnmxXxWaM) by codetricks (YouTube)
+* **[Video Tutorial]** [Machine learning model serving with streamlit and FastAPI - PyConES 2020](https://www.youtube.com/watch?v=IvHCxycjeR0) by Python Espana (YouTube)
+* **[Video Tutorial]** [Deploying a Public Machine Learning Web App using Streamlit in Python | ML Deployment](https://www.youtube.com/watch?v=qzo5B8PuNoY) by Siddhardhan (YouTube)
+* **[Video Tutorial]** [Deploy Machine Learning Model using Streamlit in Python | ML model Deployment](https://www.youtube.com/watch?v=WLwjvWq0GWA) by Siddhardhan (YouTube)
+* **[Video Tutorial]** [How to Deploy Machine Learning Model as an API in Python - FastAPI](https://www.youtube.com/watch?v=ZTz26f6XXrQ&list=PLfFghEzKVmjscIdESnS8ebs50mvXTnyVH&index=3) by Siddhardhan (YouTube)
+* **[Video Tutorial]** [Deploying Machine Learning model as API on Heroku | FastAPI | Heroku | Python | ML](https://www.youtube.com/watch?v=VEjgGI3vU-k&list=PLfFghEzKVmjscIdESnS8ebs50mvXTnyVH&index=5) by Siddhardhan (YouTube)
+* **[Video Tutorial]** [Deploying a Machine Learning web app using Streamlit on Heroku](https://www.youtube.com/watch?v=10k_tC3Nzp0&list=PLfFghEzKVmjscIdESnS8ebs50mvXTnyVH&index=6) by Siddhardhan (YouTube)
+* **[Video Tutorial]** [Deploy a Machine Learning Streamlit App Using Docker Containers | 2024 Tutorial | Step-by-Step Guide](https://www.youtube.com/watch?v=5pPTNzUcIxg&list=PLfFghEzKVmjscIdESnS8ebs50mvXTnyVH&index=8) by Siddhardhan (YouTube)
+* **[Video Tutorial]** [Deploying a Machine Learning model as Dockerized API | ML model Deployment | MLOPS](https://www.youtube.com/watch?v=HlMPjUFjeQQ&list=PLfFghEzKVmjscIdESnS8ebs50mvXTnyVH&index=9) by Siddhardhan (YouTube)
+* **[Video Tutorial]** [Machine Learning Model Deployment with Python (Streamlit + MLflow) | Part 1/2](https://www.youtube.com/watch?v=zhgRFBWa6bk&list=PLV8yxwGOxvvrGSOqaPdxIpQKdPXJnZb17) by DeepFindr (YouTube)
+* **[Video Tutorial]** [Machine Learning Model Deployment with Python (Streamlit + MLflow) | Part 2/2](https://www.youtube.com/watch?v=RVMIibDbzaE&list=PLV8yxwGOxvvrGSOqaPdxIpQKdPXJnZb17&index=3) by DeepFindr (YouTube)
 * **[Publication]** [Data Quality for Machine Learning Tasks](https://journals.sagepub.com/doi/10.1177/0962280206074463) by Nitin Gupta, Shashank Mujumdar, Hima Patel, Satoshi Masuda, Naveen Panwar, Sambaran Bandyopadhyay, Sameep Mehta, Shanmukha Guttula, Shazia Afzal, Ruhi Sharma Mittal and Vitobha Munigala (KDD ’21: Proceedings of the 27th ACM SIGKDD Conference on Knowledge Discovery & Data Mining)
 * **[Publication]** [Overview and Importance of Data Quality for Machine Learning Tasks](https://dl.acm.org/doi/10.1145/3394486.3406477) by Abhinav Jain, Hima Patel, Lokesh Nagalapatti, Nitin Gupta, Sameep Mehta, Shanmukha Guttula, Shashank Mujumdar, Shazia Afzal, Ruhi Sharma Mittal and Vitobha Munigala (KDD ’20: Proceedings of the 26th ACM SIGKDD International Conference on Knowledge Discovery & Data Mining)
 * **[Publication]** [Mathematical Contributions to the Theory of Evolution: Regression, Heredity and Panmixia](https://royalsocietypublishing.org/doi/10.1098/rsta.1896.0007) by Karl Pearson (Royal Society)
@@ -7966,6 +8073,7 @@ plt.show()
 * **[Course]** [DataCamp Python Data Analyst Certificate](https://app.datacamp.com/learn/career-tracks/data-analyst-with-python) by DataCamp Team (DataCamp)
 * **[Course]** [DataCamp Python Associate Data Scientist Certificate](https://app.datacamp.com/learn/career-tracks/associate-data-scientist-in-python) by DataCamp Team (DataCamp)
 * **[Course]** [DataCamp Python Data Scientist Certificate](https://app.datacamp.com/learn/career-tracks/data-scientist-in-python) by DataCamp Team (DataCamp)
+* **[Course]** [DataCamp Machine Learning Engineer Certificate](https://app.datacamp.com/learn/career-tracks/machine-learning-engineer) by DataCamp Team (DataCamp)
 * **[Course]** [DataCamp Machine Learning Scientist Certificate](https://app.datacamp.com/learn/career-tracks/machine-learning-scientist-with-python) by DataCamp Team (DataCamp)
 * **[Course]** [IBM Data Analyst Professional Certificate](https://www.coursera.org/professional-certificates/ibm-data-analyst) by IBM Team (Coursera)
 * **[Course]** [IBM Data Science Professional Certificate](https://www.coursera.org/professional-certificates/ibm-data-science) by IBM Team (Coursera)

@@ -14646,8 +14646,8 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 </ul>
 </li>
 <li><a href="#1.7">1.7 Predictive Model Deployment</a><ul>
-<li><a href="#1.7.1">1.7.1 API Development</a></li>
-<li><a href="#1.7.2">1.7.2 UI Development</a></li>
+<li><a href="#1.7.1">1.7.1 Application Programming Interface (API) Development</a></li>
+<li><a href="#1.7.2">1.7.2 User Interface (UI) Development</a></li>
 <li><a href="#1.7.2">1.7.3 Model Serving</a></li>
 </ul>
 </li>
@@ -21766,7 +21766,7 @@ Name: LUNG_CANCER, dtype: float64</pre>
 <p><a href="https://www.manning.com/books/ensemble-methods-for-machine-learning">Model Stacking</a> - also known as stacked generalization, is an ensemble approach which involves creating a variety of base learners and using them to create intermediate predictions, one for each learned model. A meta-model is incorporated that gains knowledge of the same target from intermediate predictions. Unlike bagging, in stacking, the models are typically different (e.g. not all decision trees) and fit on the same dataset (e.g. instead of samples of the training dataset). Unlike boosting, in stacking, a single model is used to learn how to best combine the predictions from the contributing models (e.g. instead of a sequence of models that correct the predictions of prior models). Stacking is appropriate when the predictions made by the base learners or the errors in predictions made by the models have minimal correlation. Achieving an improvement in performance is dependent upon the choice of base learners and whether they are sufficiently skillful in their predictions.</p>
 <ol>
 <li>A modelling pipeline using a stacking classifier was implemented.<ul>
-<li><strong>Meta learner</strong>: <a href="https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LogisticRegression.html">Logistic regression model</a> from the <mark style="background-color: #CCECFF"><b>sklearn.linear_model</b></mark> Python library API with 5 hyperparameters:<ul>
+<li><strong>Meta-learner</strong>: <a href="https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LogisticRegression.html">Logistic regression model</a> from the <mark style="background-color: #CCECFF"><b>sklearn.linear_model</b></mark> Python library API with 5 hyperparameters:<ul>
 <li><span style="color: #FF0000">penalty</span> = penalty norm made to vary between L1, L2 and none</li>
 <li><span style="color: #FF0000">class_weight</span> = weights associated with classes held constant at a value  equal to balanced or none, as applicable</li>
 <li><span style="color: #FF0000">solver</span> = algorithm used in the optimization problem held constant at a value equal to saga</li>
@@ -21850,7 +21850,7 @@ Name: LUNG_CANCER, dtype: float64</pre>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1">##################################</span>
-<span class="c1"># Defining the meta learner</span>
+<span class="c1"># Defining the meta-learner</span>
 <span class="c1"># using the logistic regression structure</span>
 <span class="c1">##################################</span>
 <span class="n">stacked_unbalanced_class_meta_learner</span> <span class="o">=</span> <span class="n">LogisticRegression</span><span class="p">(</span><span class="n">solver</span><span class="o">=</span><span class="s1">'saga'</span><span class="p">,</span> 
@@ -22000,7 +22000,7 @@ Name: LUNG_CANCER, dtype: float64</pre>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1">##################################</span>
-<span class="c1"># Defining the meta learner</span>
+<span class="c1"># Defining the meta-learner</span>
 <span class="c1"># using the logistic regression structure</span>
 <span class="c1">##################################</span>
 <span class="n">stacked_balanced_class_meta_learner</span> <span class="o">=</span> <span class="n">LogisticRegression</span><span class="p">(</span><span class="n">solver</span><span class="o">=</span><span class="s1">'saga'</span><span class="p">,</span> 
@@ -22761,7 +22761,7 @@ class="
 <li><span style="color: #FF0000">random_state</span> = 88888888  </li>
 </ul>
 </li>
-<li>The optimal <a href="https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LogisticRegression.html">logistic regression model</a> (<strong>meta learner</strong>) determined from the 5-fold cross-validation of <strong>train data (final)</strong> contained the following hyperparameters:<ul>
+<li>The optimal <a href="https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LogisticRegression.html">logistic regression model</a> (<strong>meta-learner</strong>) determined from the 5-fold cross-validation of <strong>train data (final)</strong> contained the following hyperparameters:<ul>
 <li><span style="color: #FF0000">penalty</span> = L1</li>
 <li><span style="color: #FF0000">class_weight</span> = balanced</li>
 <li><span style="color: #FF0000">solver</span> = saga</li>
@@ -24073,7 +24073,7 @@ class="
 <li><span style="color: #FF0000">random_state</span> = 88888888  </li>
 </ul>
 </li>
-<li>The optimal <a href="https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LogisticRegression.html">logistic regression model</a> (<strong>meta learner</strong>) determined from the 5-fold cross-validation of <strong>train data (SMOTE-upsampled)</strong> contained the following hyperparameters:<ul>
+<li>The optimal <a href="https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LogisticRegression.html">logistic regression model</a> (<strong>meta-learner</strong>) determined from the 5-fold cross-validation of <strong>train data (SMOTE-upsampled)</strong> contained the following hyperparameters:<ul>
 <li><span style="color: #FF0000">penalty</span> = None</li>
 <li><span style="color: #FF0000">class_weight</span> = none</li>
 <li><span style="color: #FF0000">solver</span> = saga</li>
@@ -25381,7 +25381,7 @@ class="
 <li><span style="color: #FF0000">random_state</span> = 88888888  </li>
 </ul>
 </li>
-<li>The optimal <a href="https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LogisticRegression.html">logistic regression model</a> (<strong>meta learner</strong>) determined from the 5-fold cross-validation of <strong>train data (CNN-downsampled)</strong> contained the following hyperparameters:<ul>
+<li>The optimal <a href="https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LogisticRegression.html">logistic regression model</a> (<strong>meta-learner</strong>) determined from the 5-fold cross-validation of <strong>train data (CNN-downsampled)</strong> contained the following hyperparameters:<ul>
 <li><span style="color: #FF0000">penalty</span> = None</li>
 <li><span style="color: #FF0000">class_weight</span> = balanced</li>
 <li><span style="color: #FF0000">solver</span> = saga</li>
@@ -26062,7 +26062,51 @@ class="
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h3 id="1.6.7-Model-Selection-">1.6.7 Model Selection <a class="anchor" id="1.6.7" /><a class="anchor-link" href="#1.6.7-Model-Selection-">&#182;</a></h3>
+<h3 id="1.6.7-Model-Selection-">1.6.7 Model Selection <a class="anchor" id="1.6.7" /><a class="anchor-link" href="#1.6.7-Model-Selection-">&#182;</a></h3><ol>
+<li>The stacked classifier developed from the <strong>train data (SMOTE-upsampled)</strong> was selected as the final model by demonstrating the best validation <strong>F1 score</strong> with minimal overfitting :<ul>
+<li><strong>train data (SMOTE-upsampled)</strong> = 0.9571</li>
+<li><strong>train data (cross-validated)</strong> = 0.9584</li>
+<li><strong>validation data</strong> = 0.9709</li>
+</ul>
+</li>
+<li>The final model configuration are described as follows:<ul>
+<li><strong>Base learner</strong>: <a href="https://scikit-learn.org/stable/modules/generated/sklearn.tree.DecisionTreeClassifier.html">decision tree model</a> with optimal hyperparameters:<ul>
+<li><span style="color: #FF0000">max_depth</span> = 5</li>
+<li><span style="color: #FF0000">class_weight</span> = none</li>
+<li><span style="color: #FF0000">criterion</span> = entropy</li>
+<li><span style="color: #FF0000">min_samples_leaf</span> = 3</li>
+<li><span style="color: #FF0000">random_state</span> = 88888888</li>
+</ul>
+</li>
+<li><strong>Base learner</strong>: <a href="https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestClassifier.html#">random forest model</a> with optimal hyperparameters:<ul>
+<li><span style="color: #FF0000">max_depth</span> = 5</li>
+<li><span style="color: #FF0000">class_weight</span> = none</li>
+<li><span style="color: #FF0000">criterion</span> = entropy</li>
+<li><span style="color: #FF0000">max_features</span> = sqrt</li>
+<li><span style="color: #FF0000">min_samples_leaf</span> = 3</li>
+<li><span style="color: #FF0000">random_state</span> = 88888888</li>
+</ul>
+</li>
+<li><strong>Base learner</strong>: <a href="https://scikit-learn.org/stable/modules/generated/sklearn.svm.SVC.html">support vector machine model</a> with optimal hyperparameters:<ul>
+<li><span style="color: #FF0000">C</span> = 0.50</li>
+<li><span style="color: #FF0000">class_weight</span> = none</li>
+<li><span style="color: #FF0000">kernel</span> = linear</li>
+<li><span style="color: #FF0000">probability</span> = true</li>
+<li><span style="color: #FF0000">random_state</span> = 88888888  </li>
+</ul>
+</li>
+<li><strong>Meta-learner</strong>: <a href="https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LogisticRegression.html">logistic regression model</a> with optimal hyperparameters:<ul>
+<li><span style="color: #FF0000">penalty</span> = None</li>
+<li><span style="color: #FF0000">class_weight</span> = none</li>
+<li><span style="color: #FF0000">solver</span> = saga</li>
+<li><span style="color: #FF0000">max_iter</span> = 500</li>
+<li><span style="color: #FF0000">random_state</span> = 88888888</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+
 </div>
 </div>
 </div>
@@ -26249,7 +26293,16 @@ class="
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h3 id="1.6.8-Model-Testing-">1.6.8 Model Testing <a class="anchor" id="1.6.8" /><a class="anchor-link" href="#1.6.8-Model-Testing-">&#182;</a></h3>
+<h3 id="1.6.8-Model-Testing-">1.6.8 Model Testing <a class="anchor" id="1.6.8" /><a class="anchor-link" href="#1.6.8-Model-Testing-">&#182;</a></h3><ol>
+<li>The selected stacked classifier developed from the <strong>train data (SMOTE-upsampled)</strong> also demonstrated a high <strong>F1 score</strong> on the independent test dataset:<ul>
+<li><strong>train data (SMOTE-upsampled)</strong> = 0.9571</li>
+<li><strong>train data (cross-validated)</strong> = 0.9584</li>
+<li><strong>validation data</strong> = 0.9709</li>
+<li><strong>test data</strong> = 0.9352</li>
+</ul>
+</li>
+</ol>
+
 </div>
 </div>
 </div>
@@ -26476,7 +26529,55 @@ class="
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h3 id="1.6.9-Model-Inference-">1.6.9 Model Inference <a class="anchor" id="1.6.7" /><a class="anchor-link" href="#1.6.9-Model-Inference-">&#182;</a></h3>
+<h3 id="1.6.9-Model-Inference-">1.6.9 Model Inference <a class="anchor" id="1.6.9" /><a class="anchor-link" href="#1.6.9-Model-Inference-">&#182;</a></h3><ol>
+<li>For the final selected stacked classifier developed from the <strong>train data (SMOTE-upsampled)</strong>, the contributions of the base learners and predictors, ranked by feature importance, are given as follows:<ul>
+<li><strong>Base learner</strong>: <a href="https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestClassifier.html#">random forest model</a><ul>
+<li><span style="color: #FF0000">ALLERGY</span></li>
+<li><span style="color: #FF0000">ALCOHOL CONSUMING </span></li>
+<li><span style="color: #FF0000">PEER_PRESSURE</span></li>
+<li><span style="color: #FF0000">ANXIETY</span></li>
+<li><span style="color: #FF0000">FATIGUE</span></li>
+<li><span style="color: #FF0000">COUGHING</span></li>
+<li><span style="color: #FF0000">SWALLOWING DIFFICULTY</span></li>
+<li><span style="color: #FF0000">WHEEZING</span></li>
+<li><span style="color: #FF0000">CHEST PAIN</span></li>
+<li><span style="color: #FF0000">YELLOW_FINGERS</span></li>
+</ul>
+</li>
+<li><strong>Base learner</strong>: <a href="https://scikit-learn.org/stable/modules/generated/sklearn.svm.SVC.html">support vector machine model</a><ul>
+<li><span style="color: #FF0000">FATIGUE</span></li>
+<li><span style="color: #FF0000">ALLERGY</span></li>
+<li><span style="color: #FF0000">ALCOHOL CONSUMING </span></li>
+<li><span style="color: #FF0000">PEER_PRESSURE</span></li>
+<li><span style="color: #FF0000">WHEEZING</span></li>
+<li><span style="color: #FF0000">ANXIETY</span></li>
+<li><span style="color: #FF0000">YELLOW_FINGERS</span></li>
+<li><span style="color: #FF0000">SWALLOWING DIFFICULTY</span></li>
+<li><span style="color: #FF0000">COUGHING</span></li>
+<li><span style="color: #FF0000">CHEST PAIN</span></li>
+</ul>
+</li>
+<li><strong>Base learner</strong>: <a href="https://scikit-learn.org/stable/modules/generated/sklearn.tree.DecisionTreeClassifier.html">decision tree model</a><ul>
+<li><span style="color: #FF0000">ALLERGY</span></li>
+<li><span style="color: #FF0000">PEER_PRESSURE</span></li>
+<li><span style="color: #FF0000">ALCOHOL CONSUMING </span></li>
+<li><span style="color: #FF0000">YELLOW_FINGERS</span></li>
+<li><span style="color: #FF0000">SWALLOWING DIFFICULTY</span></li>
+<li><span style="color: #FF0000">ANXIETY</span></li>
+<li><span style="color: #FF0000">CHEST PAIN</span></li>
+<li><span style="color: #FF0000">COUGHING</span></li>
+<li><span style="color: #FF0000">FATIGUE</span></li>
+<li><span style="color: #FF0000">WHEEZING</span></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Model inference involved indicating the characteristics and predicting the probability of the new case against the model training observations.
+<pre><code> * Characteristics based on all features used for generating the final selected stacked classifier
+ * Predicted lung cancer probability based on the final selected stacked classifier logistic curve</code></pre>
+</li>
+</ol>
+
 </div>
 </div>
 </div>
@@ -27926,6 +28027,61 @@ class="
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<h2 id="1.7.-Predictive-Model-Deployment-">1.7. Predictive Model Deployment <a class="anchor" id="1.7" /><a class="anchor-link" href="#1.7.-Predictive-Model-Deployment-">&#182;</a></h2>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<h3 id="1.7.1-Application-Programming-Interface-(API)-Development-">1.7.1 Application Programming Interface (API) Development <a class="anchor" id="1.7.1" /><a class="anchor-link" href="#1.7.1-Application-Programming-Interface-(API)-Development-">&#182;</a></h3>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<h3 id="1.7.2-User-Interface-(UI)-Development-">1.7.2 User Interface (UI) Development <a class="anchor" id="1.7.2" /><a class="anchor-link" href="#1.7.2-User-Interface-(UI)-Development-">&#182;</a></h3>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<h3 id="1.7.3-Model-Serving-">1.7.3 Model Serving <a class="anchor" id="1.7.3" /><a class="anchor-link" href="#1.7.3-Model-Serving-">&#182;</a></h3>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<h1 id="2.-Summary-">2. Summary <a class="anchor" id="Summary" /><a class="anchor-link" href="#2.-Summary-">&#182;</a></h1>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <h1 id="3.-References-">3. References <a class="anchor" id="References" /><a class="anchor-link" href="#3.-References-">&#182;</a></h1><ul>
 <li><strong>[Book]</strong> <a href="https://machinelearningmastery.com/data-preparation-for-machine-learning/">Data Preparation for Machine Learning: Data Cleaning, Feature Selection, and Data Transforms in Python</a> by Jason Brownlee</li>
 <li><strong>[Book]</strong> <a href="http://www.feat.engineering/">Feature Engineering and Selection: A Practical Approach for Predictive Models</a> by Max Kuhn and Kjell Johnson</li>
@@ -28011,6 +28167,25 @@ class="
 <li><strong>[Article]</strong> <a href="https://towardsdatascience.com/stacked-ensembles-improving-model-performance-on-a-higher-level-99ffc4ea5523">Stacked Ensembles — Improving Model Performance on a Higher Level</a> by Yenwee Lim (Towards Data Science)</li>
 <li><strong>[Article]</strong> <a href="https://medium.com/@brijesh_soni/stacking-to-improve-model-performance-a-comprehensive-guide-on-ensemble-learning-in-python-9ed53c93ce28">Stacking to Improve Model Performance: A Comprehensive Guide on Ensemble Learning in Python</a> by Brijesh Soni (Medium)</li>
 <li><strong>[Article]</strong> <a href="https://machinelearningmastery.com/stacking-ensemble-machine-learning-with-python/">Stacking Ensemble Machine Learning With Python</a> by Jason Brownlee (Machine Learning Mastery)</li>
+<li><strong>[Article]</strong> <a href="https://medium.com/latinxinai/fastapi-and-streamlit-app-with-docker-compose-e4d18d78d61d">Machine Learning Model deployment with FastAPI, Streamlit and Docker</a> by Felipe Fernandez (Medium)</li>
+<li><strong>[Article]</strong> <a href="https://medium.com/@marcozaninitaly/end-to-end-machine-learning-using-fastapi-streamlit-docker-google-cloud-platform-fcdf9f9216e0">End-to-end machine learning using FastAPI, Streamlit, Docker, Google Cloud Platform</a> by Marco Zanin (Medium)</li>
+<li><strong>[Article]</strong> <a href="https://towardsdatascience.com/fastapi-and-streamlit-the-python-duo-you-must-know-about-72825def1243">FastAPI and Streamlit: The Python Duo You Must Know About</a> by Paul Lusztin (Medium)</li>
+<li><strong>[Article]</strong> <a href="https://developer.nvidia.com/blog/how-to-build-an-instant-machine-learning-web-application-with-streamlit-and-fastapi/">How to Build an Instant Machine Learning Web Application with Streamlit and FastAPI</a> by Kurtis Pykes (Developer.Nvidia.Com)</li>
+<li><strong>[Article]</strong> <a href="https://dorian599.medium.com/ml-deploy-machine-learning-models-using-fastapi-6ab6aef7e777">ML - Deploy Machine Learning Models Using FastAPI</a> by Dorian Machado (Medium)</li>
+<li><strong>[Article]</strong> <a href="https://machinelearningmastery.com/stacking-ensemble-machine-learning-with-python/">FastAPI: The Modern Toolkit for Machine Learning Deployment</a> by Reza Shokrzad (Medium)</li>
+<li><strong>[Article]</strong> <a href="https://testdriven.io/blog/fastapi-machine-learning/">Deploying and Hosting a Machine Learning Model with FastAPI and Heroku</a> by Michael Herman (TestDriven.IO)</li>
+<li><strong>[Article]</strong> <a href="https://engineering.rappi.com/using-fastapi-to-deploy-machine-learning-models-cd5ed7219ea">Using FastAPI to deploy Machine Learning models</a> by Carl Handlin (Medium)</li>
+<li><strong>[Video Tutorial]</strong> <a href="https://www.youtube.com/watch?v=cCsnmxXxWaM">Machine Learning Model with FastAPI, Streamlit and Docker</a> by codetricks (YouTube)</li>
+<li><strong>[Video Tutorial]</strong> <a href="https://www.youtube.com/watch?v=IvHCxycjeR0">Machine learning model serving with streamlit and FastAPI - PyConES 2020</a> by Python Espana (YouTube)</li>
+<li><strong>[Video Tutorial]</strong> <a href="https://www.youtube.com/watch?v=qzo5B8PuNoY">Deploying a Public Machine Learning Web App using Streamlit in Python | ML Deployment</a> by Siddhardhan (YouTube)</li>
+<li><strong>[Video Tutorial]</strong> <a href="https://www.youtube.com/watch?v=WLwjvWq0GWA">Deploy Machine Learning Model using Streamlit in Python | ML model Deployment</a> by Siddhardhan (YouTube)</li>
+<li><strong>[Video Tutorial]</strong> <a href="https://www.youtube.com/watch?v=ZTz26f6XXrQ&amp;list=PLfFghEzKVmjscIdESnS8ebs50mvXTnyVH&amp;index=3">How to Deploy Machine Learning Model as an API in Python - FastAPI</a> by Siddhardhan (YouTube)</li>
+<li><strong>[Video Tutorial]</strong> <a href="https://www.youtube.com/watch?v=VEjgGI3vU-k&amp;list=PLfFghEzKVmjscIdESnS8ebs50mvXTnyVH&amp;index=5">Deploying Machine Learning model as API on Heroku | FastAPI | Heroku | Python | ML</a> by Siddhardhan (YouTube)</li>
+<li><strong>[Video Tutorial]</strong> <a href="https://www.youtube.com/watch?v=10k_tC3Nzp0&amp;list=PLfFghEzKVmjscIdESnS8ebs50mvXTnyVH&amp;index=6">Deploying a Machine Learning web app using Streamlit on Heroku</a> by Siddhardhan (YouTube)</li>
+<li><strong>[Video Tutorial]</strong> <a href="https://www.youtube.com/watch?v=5pPTNzUcIxg&amp;list=PLfFghEzKVmjscIdESnS8ebs50mvXTnyVH&amp;index=8">Deploy a Machine Learning Streamlit App Using Docker Containers | 2024 Tutorial | Step-by-Step Guide</a> by Siddhardhan (YouTube)</li>
+<li><strong>[Video Tutorial]</strong> <a href="https://www.youtube.com/watch?v=HlMPjUFjeQQ&amp;list=PLfFghEzKVmjscIdESnS8ebs50mvXTnyVH&amp;index=9">Deploying a Machine Learning model as Dockerized API | ML model Deployment | MLOPS</a> by Siddhardhan (YouTube)</li>
+<li><strong>[Video Tutorial]</strong> <a href="https://www.youtube.com/watch?v=zhgRFBWa6bk&amp;list=PLV8yxwGOxvvrGSOqaPdxIpQKdPXJnZb17">Machine Learning Model Deployment with Python (Streamlit + MLflow) | Part 1/2</a> by DeepFindr (YouTube)</li>
+<li><strong>[Video Tutorial]</strong> <a href="https://www.youtube.com/watch?v=RVMIibDbzaE&amp;list=PLV8yxwGOxvvrGSOqaPdxIpQKdPXJnZb17&amp;index=3">Machine Learning Model Deployment with Python (Streamlit + MLflow) | Part 2/2</a> by DeepFindr (YouTube)</li>
 <li><strong>[Publication]</strong> <a href="https://journals.sagepub.com/doi/10.1177/0962280206074463">Data Quality for Machine Learning Tasks</a> by Nitin Gupta, Shashank Mujumdar, Hima Patel, Satoshi Masuda, Naveen Panwar, Sambaran Bandyopadhyay, Sameep Mehta, Shanmukha Guttula, Shazia Afzal, Ruhi Sharma Mittal and Vitobha Munigala (KDD ’21: Proceedings of the 27th ACM SIGKDD Conference on Knowledge Discovery &amp; Data Mining)</li>
 <li><strong>[Publication]</strong> <a href="https://dl.acm.org/doi/10.1145/3394486.3406477">Overview and Importance of Data Quality for Machine Learning Tasks</a> by Abhinav Jain, Hima Patel, Lokesh Nagalapatti, Nitin Gupta, Sameep Mehta, Shanmukha Guttula, Shashank Mujumdar, Shazia Afzal, Ruhi Sharma Mittal and Vitobha Munigala (KDD ’20: Proceedings of the 26th ACM SIGKDD International Conference on Knowledge Discovery &amp; Data Mining)</li>
 <li><strong>[Publication]</strong> <a href="https://royalsocietypublishing.org/doi/10.1098/rsta.1896.0007">Mathematical Contributions to the Theory of Evolution: Regression, Heredity and Panmixia</a> by Karl Pearson (Royal Society)</li>
@@ -28025,6 +28200,7 @@ class="
 <li><strong>[Course]</strong> <a href="https://app.datacamp.com/learn/career-tracks/data-analyst-with-python">DataCamp Python Data Analyst Certificate</a> by DataCamp Team (DataCamp)</li>
 <li><strong>[Course]</strong> <a href="https://app.datacamp.com/learn/career-tracks/associate-data-scientist-in-python">DataCamp Python Associate Data Scientist Certificate</a> by DataCamp Team (DataCamp)</li>
 <li><strong>[Course]</strong> <a href="https://app.datacamp.com/learn/career-tracks/data-scientist-in-python">DataCamp Python Data Scientist Certificate</a> by DataCamp Team (DataCamp)</li>
+<li><strong>[Course]</strong> <a href="https://app.datacamp.com/learn/career-tracks/machine-learning-engineer">DataCamp Machine Learning Engineer Certificate</a> by DataCamp Team (DataCamp)</li>
 <li><strong>[Course]</strong> <a href="https://app.datacamp.com/learn/career-tracks/machine-learning-scientist-with-python">DataCamp Machine Learning Scientist Certificate</a> by DataCamp Team (DataCamp)</li>
 <li><strong>[Course]</strong> <a href="https://www.coursera.org/professional-certificates/ibm-data-analyst">IBM Data Analyst Professional Certificate</a> by IBM Team (Coursera)</li>
 <li><strong>[Course]</strong> <a href="https://www.coursera.org/professional-certificates/ibm-data-science">IBM Data Science Professional Certificate</a> by IBM Team (Coursera)</li>
