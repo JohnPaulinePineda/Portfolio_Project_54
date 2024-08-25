@@ -2,7 +2,7 @@
 # Model Deployment : Estimating Lung Cancer Probabilities From Demographic Factors, Clinical Symptoms And Behavioral Indicators
 
 ***
-### John Pauline Pineda <br> <br> *August 24, 2024*
+### John Pauline Pineda <br> <br> *August 31, 2024*
 ***
 
 * [**1. Table of Contents**](#TOC)
@@ -69,15 +69,15 @@ The predictor variables for the study are:
 * <span style="color: #FF0000">YELLOW_FINGERS</span> - Clinical symptom of yellowing of fingers (1, Absent | 2, Present)
 * <span style="color: #FF0000">ANXIETY</span> - Behavioral indication of experiencing anxiety (1, Absent | 2, Present)
 * <span style="color: #FF0000">PEER_PRESSURE</span> - Behavioral indication of experiencing peer pressure (1, Absent | 2, Present)
-* <span style="color: #FF0000">CHRONIC DISEASE</span> - Clinical symptom of chronic diseases (1, Absent | 2, Present)
+* <span style="color: #FF0000">CHRONIC_DISEASE</span> - Clinical symptom of chronic diseases (1, Absent | 2, Present)
 * <span style="color: #FF0000">FATIGUE</span> - Clinical symptom of chronic fatigue (1, Absent | 2, Present)
 * <span style="color: #FF0000">ALLERGY</span> - Clinical symptom of allergies (1, Absent | 2, Present)
 * <span style="color: #FF0000">WHEEZING</span> - Clinical symptom of wheezing (1, Absent | 2, Present)
-* <span style="color: #FF0000">ALCOHOL CONSUMING</span> - Behavioral indication of consuming alcohol (1, Absent | 2, Present)
+* <span style="color: #FF0000">ALCOHOL_CONSUMING</span> - Behavioral indication of consuming alcohol (1, Absent | 2, Present)
 * <span style="color: #FF0000">COUGHING</span> - Clinical symptom of wheezing (1, Absent | 2, Present)
-* <span style="color: #FF0000">SHORTNESS OF BREATH</span> - Clinical symptom of shortness of breath (1, Absent | 2, Present)
-* <span style="color: #FF0000">SWALLOWING DIFFICULTY</span> - Clinical symptom of difficulty in swallowing (1, Absent | 2, Present)
-* <span style="color: #FF0000">CHEST PAIN</span> - Clinical symptom of chest pain (1, Absent | 2, Present)
+* <span style="color: #FF0000">SHORTNESS_OF_BREATH</span> - Clinical symptom of shortness of breath (1, Absent | 2, Present)
+* <span style="color: #FF0000">SWALLOWING_DIFFICULTY</span> - Clinical symptom of difficulty in swallowing (1, Absent | 2, Present)
+* <span style="color: #FF0000">CHEST_PAIN</span> - Clinical symptom of chest pain (1, Absent | 2, Present)
 
 
 ## 1.2. Data Description <a class="anchor" id="1.2"></a>
@@ -99,11 +99,11 @@ The predictor variables for the study are:
              * <span style="color: #FF0000">FATIGUE</span>
              * <span style="color: #FF0000">ALLERGY</span>
              * <span style="color: #FF0000">WHEEZING</span>
-             * <span style="color: #FF0000">ALCOHOL CONSUMING </span>
+             * <span style="color: #FF0000">ALCOHOL_CONSUMING </span>
              * <span style="color: #FF0000">COUGHING</span>
-             * <span style="color: #FF0000">SHORTNESS OF BREATH</span>
-             * <span style="color: #FF0000">SWALLOWING DIFFICULTY</span>
-             * <span style="color: #FF0000">CHEST PAIN</span>
+             * <span style="color: #FF0000">SHORTNESS_OF_BREATH</span>
+             * <span style="color: #FF0000">SWALLOWING_DIFFICULTY</span>
+             * <span style="color: #FF0000">CHEST_PAIN</span>
 
 
 ```python
@@ -229,6 +229,29 @@ lung_cancer.columns = [x.strip() for x in lung_cancer.columns]
 
 ```python
 ##################################
+# Standardizing the column names
+##################################
+lung_cancer.columns = ['GENDER', 
+                       'AGE', 
+                       'SMOKING', 
+                       'YELLOW_FINGERS', 
+                       'ANXIETY',
+                       'PEER_PRESSURE', 
+                       'CHRONIC_DISEASE', 
+                       'FATIGUE', 
+                       'ALLERGY', 
+                       'WHEEZING',
+                       'ALCOHOL_CONSUMING', 
+                       'COUGHING', 
+                       'SHORTNESS_OF_BREATH',
+                       'SWALLOWING_DIFFICULTY', 
+                       'CHEST_PAIN', 
+                       'LUNG_CANCER']
+```
+
+
+```python
+##################################
 # Verifying the corrected column names
 ##################################
 print('Column Names: ')
@@ -240,9 +263,9 @@ display(lung_cancer.columns)
 
 
     Index(['GENDER', 'AGE', 'SMOKING', 'YELLOW_FINGERS', 'ANXIETY',
-           'PEER_PRESSURE', 'CHRONIC DISEASE', 'FATIGUE', 'ALLERGY', 'WHEEZING',
-           'ALCOHOL CONSUMING', 'COUGHING', 'SHORTNESS OF BREATH',
-           'SWALLOWING DIFFICULTY', 'CHEST PAIN', 'LUNG_CANCER'],
+           'PEER_PRESSURE', 'CHRONIC_DISEASE', 'FATIGUE', 'ALLERGY', 'WHEEZING',
+           'ALCOHOL_CONSUMING', 'COUGHING', 'SHORTNESS_OF_BREATH',
+           'SWALLOWING_DIFFICULTY', 'CHEST_PAIN', 'LUNG_CANCER'],
           dtype='object')
 
 
@@ -265,15 +288,15 @@ display(lung_cancer.dtypes)
     YELLOW_FINGERS            int64
     ANXIETY                   int64
     PEER_PRESSURE             int64
-    CHRONIC DISEASE           int64
+    CHRONIC_DISEASE           int64
     FATIGUE                   int64
     ALLERGY                   int64
     WHEEZING                  int64
-    ALCOHOL CONSUMING         int64
+    ALCOHOL_CONSUMING         int64
     COUGHING                  int64
-    SHORTNESS OF BREATH       int64
-    SWALLOWING DIFFICULTY     int64
-    CHEST PAIN                int64
+    SHORTNESS_OF_BREATH       int64
+    SWALLOWING_DIFFICULTY     int64
+    CHEST_PAIN                int64
     LUNG_CANCER              object
     dtype: object
 
@@ -313,15 +336,15 @@ lung_cancer.head()
       <th>YELLOW_FINGERS</th>
       <th>ANXIETY</th>
       <th>PEER_PRESSURE</th>
-      <th>CHRONIC DISEASE</th>
+      <th>CHRONIC_DISEASE</th>
       <th>FATIGUE</th>
       <th>ALLERGY</th>
       <th>WHEEZING</th>
-      <th>ALCOHOL CONSUMING</th>
+      <th>ALCOHOL_CONSUMING</th>
       <th>COUGHING</th>
-      <th>SHORTNESS OF BREATH</th>
-      <th>SWALLOWING DIFFICULTY</th>
-      <th>CHEST PAIN</th>
+      <th>SHORTNESS_OF_BREATH</th>
+      <th>SWALLOWING_DIFFICULTY</th>
+      <th>CHEST_PAIN</th>
       <th>LUNG_CANCER</th>
     </tr>
   </thead>
@@ -458,15 +481,15 @@ display(lung_cancer.dtypes)
     YELLOW_FINGERS             object
     ANXIETY                    object
     PEER_PRESSURE              object
-    CHRONIC DISEASE            object
+    CHRONIC_DISEASE            object
     FATIGUE                    object
     ALLERGY                    object
     WHEEZING                   object
-    ALCOHOL CONSUMING          object
+    ALCOHOL_CONSUMING          object
     COUGHING                   object
-    SHORTNESS OF BREATH        object
-    SWALLOWING DIFFICULTY      object
-    CHEST PAIN                 object
+    SHORTNESS_OF_BREATH        object
+    SWALLOWING_DIFFICULTY      object
+    CHEST_PAIN                 object
     LUNG_CANCER              category
     dtype: object
 
@@ -506,15 +529,15 @@ lung_cancer.head()
       <th>YELLOW_FINGERS</th>
       <th>ANXIETY</th>
       <th>PEER_PRESSURE</th>
-      <th>CHRONIC DISEASE</th>
+      <th>CHRONIC_DISEASE</th>
       <th>FATIGUE</th>
       <th>ALLERGY</th>
       <th>WHEEZING</th>
-      <th>ALCOHOL CONSUMING</th>
+      <th>ALCOHOL_CONSUMING</th>
       <th>COUGHING</th>
-      <th>SHORTNESS OF BREATH</th>
-      <th>SWALLOWING DIFFICULTY</th>
-      <th>CHEST PAIN</th>
+      <th>SHORTNESS_OF_BREATH</th>
+      <th>SWALLOWING_DIFFICULTY</th>
+      <th>CHEST_PAIN</th>
       <th>LUNG_CANCER</th>
     </tr>
   </thead>
@@ -754,7 +777,7 @@ display(lung_cancer.describe(include=['category','object']).transpose())
       <td>155</td>
     </tr>
     <tr>
-      <th>CHRONIC DISEASE</th>
+      <th>CHRONIC_DISEASE</th>
       <td>309</td>
       <td>2</td>
       <td>Present</td>
@@ -782,7 +805,7 @@ display(lung_cancer.describe(include=['category','object']).transpose())
       <td>172</td>
     </tr>
     <tr>
-      <th>ALCOHOL CONSUMING</th>
+      <th>ALCOHOL_CONSUMING</th>
       <td>309</td>
       <td>2</td>
       <td>Present</td>
@@ -796,21 +819,21 @@ display(lung_cancer.describe(include=['category','object']).transpose())
       <td>179</td>
     </tr>
     <tr>
-      <th>SHORTNESS OF BREATH</th>
+      <th>SHORTNESS_OF_BREATH</th>
       <td>309</td>
       <td>2</td>
       <td>Present</td>
       <td>198</td>
     </tr>
     <tr>
-      <th>SWALLOWING DIFFICULTY</th>
+      <th>SWALLOWING_DIFFICULTY</th>
       <td>309</td>
       <td>2</td>
       <td>Absent</td>
       <td>164</td>
     </tr>
     <tr>
-      <th>CHEST PAIN</th>
+      <th>CHEST_PAIN</th>
       <td>309</td>
       <td>2</td>
       <td>Present</td>
@@ -889,15 +912,15 @@ lung_cancer[lung_cancer.duplicated()]
       <th>YELLOW_FINGERS</th>
       <th>ANXIETY</th>
       <th>PEER_PRESSURE</th>
-      <th>CHRONIC DISEASE</th>
+      <th>CHRONIC_DISEASE</th>
       <th>FATIGUE</th>
       <th>ALLERGY</th>
       <th>WHEEZING</th>
-      <th>ALCOHOL CONSUMING</th>
+      <th>ALCOHOL_CONSUMING</th>
       <th>COUGHING</th>
-      <th>SHORTNESS OF BREATH</th>
-      <th>SWALLOWING DIFFICULTY</th>
-      <th>CHEST PAIN</th>
+      <th>SHORTNESS_OF_BREATH</th>
+      <th>SWALLOWING_DIFFICULTY</th>
+      <th>CHEST_PAIN</th>
       <th>LUNG_CANCER</th>
     </tr>
   </thead>
@@ -1688,7 +1711,7 @@ display(all_column_quality_summary)
     </tr>
     <tr>
       <th>6</th>
-      <td>CHRONIC DISEASE</td>
+      <td>CHRONIC_DISEASE</td>
       <td>object</td>
       <td>309</td>
       <td>309</td>
@@ -1724,7 +1747,7 @@ display(all_column_quality_summary)
     </tr>
     <tr>
       <th>10</th>
-      <td>ALCOHOL CONSUMING</td>
+      <td>ALCOHOL_CONSUMING</td>
       <td>object</td>
       <td>309</td>
       <td>309</td>
@@ -1742,7 +1765,7 @@ display(all_column_quality_summary)
     </tr>
     <tr>
       <th>12</th>
-      <td>SHORTNESS OF BREATH</td>
+      <td>SHORTNESS_OF_BREATH</td>
       <td>object</td>
       <td>309</td>
       <td>309</td>
@@ -1751,7 +1774,7 @@ display(all_column_quality_summary)
     </tr>
     <tr>
       <th>13</th>
-      <td>SWALLOWING DIFFICULTY</td>
+      <td>SWALLOWING_DIFFICULTY</td>
       <td>object</td>
       <td>309</td>
       <td>309</td>
@@ -1760,7 +1783,7 @@ display(all_column_quality_summary)
     </tr>
     <tr>
       <th>14</th>
-      <td>CHEST PAIN</td>
+      <td>CHEST_PAIN</td>
       <td>object</td>
       <td>309</td>
       <td>309</td>
@@ -2441,7 +2464,7 @@ display(categorical_column_quality_summary)
     </tr>
     <tr>
       <th>5</th>
-      <td>CHRONIC DISEASE</td>
+      <td>CHRONIC_DISEASE</td>
       <td>Present</td>
       <td>Absent</td>
       <td>156</td>
@@ -2489,7 +2512,7 @@ display(categorical_column_quality_summary)
     </tr>
     <tr>
       <th>9</th>
-      <td>ALCOHOL CONSUMING</td>
+      <td>ALCOHOL_CONSUMING</td>
       <td>Present</td>
       <td>Absent</td>
       <td>172</td>
@@ -2513,7 +2536,7 @@ display(categorical_column_quality_summary)
     </tr>
     <tr>
       <th>11</th>
-      <td>SHORTNESS OF BREATH</td>
+      <td>SHORTNESS_OF_BREATH</td>
       <td>Present</td>
       <td>Absent</td>
       <td>198</td>
@@ -2525,7 +2548,7 @@ display(categorical_column_quality_summary)
     </tr>
     <tr>
       <th>12</th>
-      <td>SWALLOWING DIFFICULTY</td>
+      <td>SWALLOWING_DIFFICULTY</td>
       <td>Absent</td>
       <td>Present</td>
       <td>164</td>
@@ -2537,7 +2560,7 @@ display(categorical_column_quality_summary)
     </tr>
     <tr>
       <th>13</th>
-      <td>CHEST PAIN</td>
+      <td>CHEST_PAIN</td>
       <td>Present</td>
       <td>Absent</td>
       <td>172</td>
@@ -2662,10 +2685,10 @@ len(categorical_column_quality_summary[(categorical_column_quality_summary['Uniq
     * Minimal correlation observed between the predictors using the phi coefficient for evaluating both dichotomous categorical variables.
 4. Among pairwise combinations of variables in the training subset, the highest correlation values were noted for:
     * <span style="color: #FF0000">ANXIETY</span> and <span style="color: #FF0000">YELLOW_FINGERS</span>: Phi.Coefficient = +0.570
-    * <span style="color: #FF0000">ANXIETY</span> and <span style="color: #FF0000">SWALLOWING DIFFICULTY</span>: Phi.Coefficient = +0.490
-    * <span style="color: #FF0000">SHORTNESS OF BREATH</span> and <span style="color: #FF0000">FATIGUE</span>: Phi.Coefficient = +0.440
+    * <span style="color: #FF0000">ANXIETY</span> and <span style="color: #FF0000">SWALLOWING_DIFFICULTY</span>: Phi.Coefficient = +0.490
+    * <span style="color: #FF0000">SHORTNESS_OF_BREATH</span> and <span style="color: #FF0000">FATIGUE</span>: Phi.Coefficient = +0.440
     * <span style="color: #FF0000">COUGHING</span> and <span style="color: #FF0000">WHEEZING</span>: Phi.Coefficient = +0.370
-    * <span style="color: #FF0000">SWALLOWING DIFFICULTY</span> and <span style="color: #FF0000">PEER_PRESSURE</span>: Phi.Coefficient = +0.370
+    * <span style="color: #FF0000">SWALLOWING_DIFFICULTY</span> and <span style="color: #FF0000">PEER_PRESSURE</span>: Phi.Coefficient = +0.370
 
 
 
@@ -2801,7 +2824,7 @@ for column in lung_cancer_numeric:
 
 
     
-![png](output_82_0.png)
+![png](output_83_0.png)
     
 
 
@@ -2843,15 +2866,15 @@ display(lung_cancer_correlation)
       <th>YELLOW_FINGERS</th>
       <th>ANXIETY</th>
       <th>PEER_PRESSURE</th>
-      <th>CHRONIC DISEASE</th>
+      <th>CHRONIC_DISEASE</th>
       <th>FATIGUE</th>
       <th>ALLERGY</th>
       <th>WHEEZING</th>
-      <th>ALCOHOL CONSUMING</th>
+      <th>ALCOHOL_CONSUMING</th>
       <th>COUGHING</th>
-      <th>SHORTNESS OF BREATH</th>
-      <th>SWALLOWING DIFFICULTY</th>
-      <th>CHEST PAIN</th>
+      <th>SHORTNESS_OF_BREATH</th>
+      <th>SWALLOWING_DIFFICULTY</th>
+      <th>CHEST_PAIN</th>
     </tr>
   </thead>
   <tbody>
@@ -3099,7 +3122,7 @@ plt.show()
 
 
     
-![png](output_86_0.png)
+![png](output_87_0.png)
     
 
 
@@ -3116,10 +3139,10 @@ plt.show()
     * <span style="color: #FF0000">FATIGUE</span>
     * <span style="color: #FF0000">ALLERGY</span>
     * <span style="color: #FF0000">WHEEZING</span>
-    * <span style="color: #FF0000">ALCOHOL CONSUMING </span>
+    * <span style="color: #FF0000">ALCOHOL_CONSUMING </span>
     * <span style="color: #FF0000">COUGHING</span>
-    * <span style="color: #FF0000">SWALLOWING DIFFICULTY</span>
-    * <span style="color: #FF0000">CHEST PAIN</span> 
+    * <span style="color: #FF0000">SWALLOWING_DIFFICULTY</span>
+    * <span style="color: #FF0000">CHEST_PAIN</span> 
         
 
 
@@ -3178,7 +3201,7 @@ plt.show()
 
 
     
-![png](output_92_0.png)
+![png](output_93_0.png)
     
 
 
@@ -3239,7 +3262,7 @@ plt.show()
 
 
     
-![png](output_94_0.png)
+![png](output_95_0.png)
     
 
 
@@ -3255,19 +3278,19 @@ plt.show()
     * **Alternative**: The categorical predictor is dependent on the target variable   
 4. There is sufficient evidence to conclude of a statistically significant relationship between the individual categories and the <span style="color: #FF0000">LUNG_CANCER</span> groups in 9 categorical predictors given their high chisquare statistic values with reported low p-values less than the significance level of 0.05.
     * <span style="color: #FF0000">ALLERGY</span>: ChiSquare.Test.Statistic=31.238, ChiSquare.Test.PValue=0.000
-    * <span style="color: #FF0000">ALCOHOL CONSUMING</span>: ChiSquare.Test.Statistic=24.005, ChiSquare.Test.PValue=0.000   
-    * <span style="color: #FF0000">SWALLOWING DIFFICULTY</span>: ChiSquare.Test.Statistic=19.307, ChiSquare.Test.PValue=0.000 
+    * <span style="color: #FF0000">ALCOHOL_CONSUMING</span>: ChiSquare.Test.Statistic=24.005, ChiSquare.Test.PValue=0.000   
+    * <span style="color: #FF0000">SWALLOWING_DIFFICULTY</span>: ChiSquare.Test.Statistic=19.307, ChiSquare.Test.PValue=0.000 
     * <span style="color: #FF0000">WHEEZING</span>: ChiSquare.Test.Statistic=17.723, ChiSquare.Test.PValue=0.000
     * <span style="color: #FF0000">COUGHING</span>: ChiSquare.Test.Statistic=17.606, ChiSquare.Test.PValue=0.000
-    * <span style="color: #FF0000">CHEST PAIN</span>: ChiSquare.Test.Statistic=10.083, ChiSquare.Test.PValue=0.001   
+    * <span style="color: #FF0000">CHEST_PAIN</span>: ChiSquare.Test.Statistic=10.083, ChiSquare.Test.PValue=0.001   
     * <span style="color: #FF0000">PEER_PRESSURE</span>: ChiSquare.Test.Statistic=9.641, ChiSquare.Test.PValue=0.001 
     * <span style="color: #FF0000">YELLOW_FINGERS</span>: ChiSquare.Test.Statistic=9.088, ChiSquare.Test.PValue=0.002
     * <span style="color: #FF0000">FATIGUE</span>: ChiSquare.Test.Statistic=6.081, ChiSquare.Test.PValue=0.013 
     * <span style="color: #FF0000">ANXIETY</span>: ChiSquare.Test.Statistic=5.648, ChiSquare.Test.PValue=0.017 
 5. There is no sufficient evidence to conclude of a statistically significant relationship between the individual categories and the <span style="color: #FF0000">LUNG_CANCER</span> groups in 4 categorical predictors given their low chisquare statistic values with reported high p-values greater than the significance level of 0.05.    
-    * <span style="color: #FF0000">CHRONIC DISEASE</span>: ChiSquare.Test.Statistic=3.161, ChiSquare.Test.PValue=0.075
+    * <span style="color: #FF0000">CHRONIC_DISEASE</span>: ChiSquare.Test.Statistic=3.161, ChiSquare.Test.PValue=0.075
     * <span style="color: #FF0000">GENDER</span>: ChiSquare.Test.Statistic=1.021, ChiSquare.Test.PValue=0.312
-    * <span style="color: #FF0000">SHORTNESS OF BREATH</span>: ChiSquare.Test.Statistic=0.790, ChiSquare.Test.PValue=0.373   
+    * <span style="color: #FF0000">SHORTNESS_OF_BREATH</span>: ChiSquare.Test.Statistic=0.790, ChiSquare.Test.PValue=0.373   
     * <span style="color: #FF0000">SMOKING</span>: ChiSquare.Test.Statistic=0.722, ChiSquare.Test.PValue=0.395
 
 
@@ -3396,12 +3419,12 @@ display(lung_cancer_categorical_summary.sort_values(by=['ChiSquare.Test.PValue']
       <td>2.281422e-08</td>
     </tr>
     <tr>
-      <th>LUNG_CANCER_ALCOHOL CONSUMING</th>
+      <th>LUNG_CANCER_ALCOHOL_CONSUMING</th>
       <td>24.005406</td>
       <td>9.606559e-07</td>
     </tr>
     <tr>
-      <th>LUNG_CANCER_SWALLOWING DIFFICULTY</th>
+      <th>LUNG_CANCER_SWALLOWING_DIFFICULTY</th>
       <td>19.307277</td>
       <td>1.112814e-05</td>
     </tr>
@@ -3416,7 +3439,7 @@ display(lung_cancer_categorical_summary.sort_values(by=['ChiSquare.Test.PValue']
       <td>2.717123e-05</td>
     </tr>
     <tr>
-      <th>LUNG_CANCER_CHEST PAIN</th>
+      <th>LUNG_CANCER_CHEST_PAIN</th>
       <td>10.083198</td>
       <td>1.496275e-03</td>
     </tr>
@@ -3441,7 +3464,7 @@ display(lung_cancer_categorical_summary.sort_values(by=['ChiSquare.Test.PValue']
       <td>1.747141e-02</td>
     </tr>
     <tr>
-      <th>LUNG_CANCER_CHRONIC DISEASE</th>
+      <th>LUNG_CANCER_CHRONIC_DISEASE</th>
       <td>3.161200</td>
       <td>7.540772e-02</td>
     </tr>
@@ -3451,7 +3474,7 @@ display(lung_cancer_categorical_summary.sort_values(by=['ChiSquare.Test.PValue']
       <td>3.121527e-01</td>
     </tr>
     <tr>
-      <th>LUNG_CANCER_SHORTNESS OF BREATH</th>
+      <th>LUNG_CANCER_SHORTNESS_OF_BREATH</th>
       <td>0.790604</td>
       <td>3.739175e-01</td>
     </tr>
@@ -3472,9 +3495,9 @@ display(lung_cancer_categorical_summary.sort_values(by=['ChiSquare.Test.PValue']
 1. All dichotomous categorical predictors and the target variable were one-hot encoded for the downstream modelling process. 
 2. Predictors determined with insufficient association with the <span style="color: #FF0000">LUNG_CANCER</span> target variables were exlucded for the subsequent modelling steps.
     * <span style="color: #FF0000">AGE</span>: T.Test.Statistic=-1.574, T.Test.PValue=0.116
-    * <span style="color: #FF0000">CHRONIC DISEASE</span>: ChiSquare.Test.Statistic=3.161, ChiSquare.Test.PValue=0.075
+    * <span style="color: #FF0000">CHRONIC_DISEASE</span>: ChiSquare.Test.Statistic=3.161, ChiSquare.Test.PValue=0.075
     * <span style="color: #FF0000">GENDER</span>: ChiSquare.Test.Statistic=1.021, ChiSquare.Test.PValue=0.312
-    * <span style="color: #FF0000">SHORTNESS OF BREATH</span>: ChiSquare.Test.Statistic=0.790, ChiSquare.Test.PValue=0.373   
+    * <span style="color: #FF0000">SHORTNESS_OF_BREATH</span>: ChiSquare.Test.Statistic=0.790, ChiSquare.Test.PValue=0.373   
     * <span style="color: #FF0000">SMOKING</span>: ChiSquare.Test.Statistic=0.722, ChiSquare.Test.PValue=0.395
 
 
@@ -3517,15 +3540,15 @@ display(lung_cancer_transformed)
       <th>YELLOW_FINGERS</th>
       <th>ANXIETY</th>
       <th>PEER_PRESSURE</th>
-      <th>CHRONIC DISEASE</th>
+      <th>CHRONIC_DISEASE</th>
       <th>FATIGUE</th>
       <th>ALLERGY</th>
       <th>WHEEZING</th>
-      <th>ALCOHOL CONSUMING</th>
+      <th>ALCOHOL_CONSUMING</th>
       <th>COUGHING</th>
-      <th>SHORTNESS OF BREATH</th>
-      <th>SWALLOWING DIFFICULTY</th>
-      <th>CHEST PAIN</th>
+      <th>SHORTNESS_OF_BREATH</th>
+      <th>SWALLOWING_DIFFICULTY</th>
+      <th>CHEST_PAIN</th>
       <th>LUNG_CANCER</th>
     </tr>
   </thead>
@@ -3762,7 +3785,7 @@ lung_cancer_transformed.to_csv(os.path.join("..", DATASETS_PREPROCESSED_PATH, "l
 # Saving the tranformed data
 # to the DATASETS_PREPROCESSED_PATH
 ##################################
-lung_cancer_filtered = lung_cancer_transformed.drop(['GENDER','CHRONIC DISEASE', 'SHORTNESS OF BREATH', 'SMOKING', 'AGE'], axis=1)
+lung_cancer_filtered = lung_cancer_transformed.drop(['GENDER','CHRONIC_DISEASE', 'SHORTNESS_OF_BREATH', 'SMOKING', 'AGE'], axis=1)
 lung_cancer_filtered.to_csv(os.path.join("..", DATASETS_FINAL_PATH, "lung_cancer_final.csv"), index=False)
 display(lung_cancer_filtered)
 ```
@@ -3792,10 +3815,10 @@ display(lung_cancer_filtered)
       <th>FATIGUE</th>
       <th>ALLERGY</th>
       <th>WHEEZING</th>
-      <th>ALCOHOL CONSUMING</th>
+      <th>ALCOHOL_CONSUMING</th>
       <th>COUGHING</th>
-      <th>SWALLOWING DIFFICULTY</th>
-      <th>CHEST PAIN</th>
+      <th>SWALLOWING_DIFFICULTY</th>
+      <th>CHEST_PAIN</th>
       <th>LUNG_CANCER</th>
     </tr>
   </thead>
@@ -3984,10 +4007,10 @@ display(lung_cancer_filtered)
              * <span style="color: #FF0000">FATIGUE</span>
              * <span style="color: #FF0000">ALLERGY</span>
              * <span style="color: #FF0000">WHEEZING</span>
-             * <span style="color: #FF0000">ALCOHOL CONSUMING </span>
+             * <span style="color: #FF0000">ALCOHOL_CONSUMING </span>
              * <span style="color: #FF0000">COUGHING</span>
-             * <span style="color: #FF0000">SWALLOWING DIFFICULTY</span>
-             * <span style="color: #FF0000">CHEST PAIN</span>
+             * <span style="color: #FF0000">SWALLOWING_DIFFICULTY</span>
+             * <span style="color: #FF0000">CHEST_PAIN</span>
 6. The **train data (final)** subset is comprised of:
     * **173 rows** (observations)
         * **151 LUNG_CANCER=Yes**: 87.28%
@@ -4847,7 +4870,7 @@ plt.show()
 
 
     
-![png](output_147_0.png)
+![png](output_148_0.png)
     
 
 
@@ -4900,7 +4923,7 @@ plt.show()
 
 
     
-![png](output_149_0.png)
+![png](output_150_0.png)
     
 
 
@@ -4965,7 +4988,7 @@ plt.show()
 
 
     
-![png](output_153_0.png)
+![png](output_154_0.png)
     
 
 
@@ -5219,7 +5242,7 @@ plt.show()
 
 
     
-![png](output_161_0.png)
+![png](output_162_0.png)
     
 
 
@@ -5272,7 +5295,7 @@ plt.show()
 
 
     
-![png](output_163_0.png)
+![png](output_164_0.png)
     
 
 
@@ -5337,7 +5360,7 @@ plt.show()
 
 
     
-![png](output_167_0.png)
+![png](output_168_0.png)
     
 
 
@@ -5500,7 +5523,7 @@ plt.show()
 
 
     
-![png](output_176_0.png)
+![png](output_177_0.png)
     
 
 
@@ -5553,7 +5576,7 @@ plt.show()
 
 
     
-![png](output_178_0.png)
+![png](output_179_0.png)
     
 
 
@@ -5618,7 +5641,7 @@ plt.show()
 
 
     
-![png](output_182_0.png)
+![png](output_183_0.png)
     
 
 
@@ -5866,7 +5889,7 @@ plt.show()
 
 
     
-![png](output_190_0.png)
+![png](output_191_0.png)
     
 
 
@@ -5919,7 +5942,7 @@ plt.show()
 
 
     
-![png](output_192_0.png)
+![png](output_193_0.png)
     
 
 
@@ -5984,7 +6007,7 @@ plt.show()
 
 
     
-![png](output_196_0.png)
+![png](output_197_0.png)
     
 
 
@@ -6149,7 +6172,7 @@ plt.show()
 
 
     
-![png](output_205_0.png)
+![png](output_206_0.png)
     
 
 
@@ -6202,7 +6225,7 @@ plt.show()
 
 
     
-![png](output_207_0.png)
+![png](output_208_0.png)
     
 
 
@@ -6267,7 +6290,7 @@ plt.show()
 
 
     
-![png](output_211_0.png)
+![png](output_212_0.png)
     
 
 
@@ -6523,7 +6546,7 @@ plt.show()
 
 
     
-![png](output_219_0.png)
+![png](output_220_0.png)
     
 
 
@@ -6581,7 +6604,7 @@ plt.show()
 
 
     
-![png](output_222_0.png)
+![png](output_223_0.png)
     
 
 
@@ -6646,7 +6669,7 @@ plt.show()
 
 
     
-![png](output_226_0.png)
+![png](output_227_0.png)
     
 
 
@@ -6809,7 +6832,7 @@ for container in f1_plot.containers:
 
 
     
-![png](output_230_0.png)
+![png](output_231_0.png)
     
 
 
@@ -6959,7 +6982,7 @@ for container in updated_f1_plot.containers:
 
 
     
-![png](output_234_0.png)
+![png](output_235_0.png)
     
 
 
@@ -6968,34 +6991,34 @@ for container in updated_f1_plot.containers:
 1. For the final selected stacked classifier developed from the **train data (SMOTE-upsampled)**, the contributions of the base learners and predictors, ranked by feature importance, are given as follows:
     * **Base learner**: [random forest model](https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestClassifier.html#)
         * <span style="color: #FF0000">ALLERGY</span>
-        * <span style="color: #FF0000">ALCOHOL CONSUMING </span>
+        * <span style="color: #FF0000">ALCOHOL_CONSUMING </span>
         * <span style="color: #FF0000">PEER_PRESSURE</span>
         * <span style="color: #FF0000">ANXIETY</span>
         * <span style="color: #FF0000">FATIGUE</span>
         * <span style="color: #FF0000">COUGHING</span>
-        * <span style="color: #FF0000">SWALLOWING DIFFICULTY</span>
+        * <span style="color: #FF0000">SWALLOWING_DIFFICULTY</span>
         * <span style="color: #FF0000">WHEEZING</span>
-        * <span style="color: #FF0000">CHEST PAIN</span>
+        * <span style="color: #FF0000">CHEST_PAIN</span>
         * <span style="color: #FF0000">YELLOW_FINGERS</span>
     * **Base learner**: [support vector machine model](https://scikit-learn.org/stable/modules/generated/sklearn.svm.SVC.html)
         * <span style="color: #FF0000">FATIGUE</span>
         * <span style="color: #FF0000">ALLERGY</span>
-        * <span style="color: #FF0000">ALCOHOL CONSUMING </span>
+        * <span style="color: #FF0000">ALCOHOL_CONSUMING </span>
         * <span style="color: #FF0000">PEER_PRESSURE</span>
         * <span style="color: #FF0000">WHEEZING</span>
         * <span style="color: #FF0000">ANXIETY</span>
         * <span style="color: #FF0000">YELLOW_FINGERS</span>
-        * <span style="color: #FF0000">SWALLOWING DIFFICULTY</span>
+        * <span style="color: #FF0000">SWALLOWING_DIFFICULTY</span>
         * <span style="color: #FF0000">COUGHING</span>
-        * <span style="color: #FF0000">CHEST PAIN</span>
+        * <span style="color: #FF0000">CHEST_PAIN</span>
     * **Base learner**: [decision tree model](https://scikit-learn.org/stable/modules/generated/sklearn.tree.DecisionTreeClassifier.html)
         * <span style="color: #FF0000">ALLERGY</span>
         * <span style="color: #FF0000">PEER_PRESSURE</span>
-        * <span style="color: #FF0000">ALCOHOL CONSUMING </span>
+        * <span style="color: #FF0000">ALCOHOL_CONSUMING </span>
         * <span style="color: #FF0000">YELLOW_FINGERS</span>
-        * <span style="color: #FF0000">SWALLOWING DIFFICULTY</span>
+        * <span style="color: #FF0000">SWALLOWING_DIFFICULTY</span>
         * <span style="color: #FF0000">ANXIETY</span>
-        * <span style="color: #FF0000">CHEST PAIN</span>
+        * <span style="color: #FF0000">CHEST_PAIN</span>
         * <span style="color: #FF0000">COUGHING</span>
         * <span style="color: #FF0000">FATIGUE</span>
         * <span style="color: #FF0000">WHEEZING</span>
@@ -7060,19 +7083,19 @@ for index, (name, model) in enumerate(final_model.named_estimators_.items()):
 
 
     
-![png](output_239_0.png)
+![png](output_240_0.png)
     
 
 
 
     
-![png](output_239_1.png)
+![png](output_240_1.png)
     
 
 
 
     
-![png](output_239_2.png)
+![png](output_240_2.png)
     
 
 
@@ -7108,44 +7131,6 @@ meta_feature_names = [f'Model Prediction - {x}' for x in final_model_base_learne
 if hasattr(final_model.final_estimator_, 'coef_'):
     importance = np.abs(final_model.final_estimator_.coef_).flatten()
     plot_feature_importance(importance, meta_feature_names, model_name='Stacked Model Meta-Learner: Logistic Regression')
-```
-
-
-    
-![png](output_241_0.png)
-    
-
-
-
-```python
-##################################
-# Plotting the estimated logistic curve
-# of the final classification model
-# involving a stacked model with
-# a logistic regression meta-learner
-# and random forest, SVC and decision tree
-# base learners
-##################################
-plt.figure(figsize=(17, 8))
-plt.plot(stacked_balanced_class_best_model_upsampled_logit_values_sorted, 
-         stacked_balanced_class_best_model_upsampled_probabilities_sorted, label='Classification Model Logistic Curve', color='black')
-plt.ylim(-0.05, 1.05)
-plt.xlim(-6.00, 6.00)
-target_0_indices = y_train_smote == 0
-target_1_indices = y_train_smote == 1
-plt.scatter(stacked_balanced_class_best_model_upsampled_logit_values[target_0_indices], 
-            stacked_balanced_class_best_model_upsampled_probabilities[target_0_indices], 
-            color='blue', alpha=0.40, s=100, marker= 'o', edgecolor='k', label='LUNG_CANCER=NO')
-plt.scatter(stacked_balanced_class_best_model_upsampled_logit_values[target_1_indices], 
-            stacked_balanced_class_best_model_upsampled_probabilities[target_1_indices], 
-            color='red', alpha=0.40, s=100, marker='o', edgecolor='k', label='LUNG_CANCER=YES')
-plt.axhline(0.5, color='green', linestyle='--', label='Classification Model Threshold')
-plt.title('Final Classification Model: Stacked Model (Meta-Learner = Logistic Regression, Base Learners: Random Forest, Support Vector Classifier, Decision Tree)')
-plt.xlabel('Logit (Log-Odds)')
-plt.ylabel('Estimated Lung Cancer Probability')
-plt.grid(True)
-plt.legend(loc='upper left')
-plt.show()
 ```
 
 
@@ -7194,10 +7179,10 @@ lung_cancer_train_smote.head()
       <th>FATIGUE</th>
       <th>ALLERGY</th>
       <th>WHEEZING</th>
-      <th>ALCOHOL CONSUMING</th>
+      <th>ALCOHOL_CONSUMING</th>
       <th>COUGHING</th>
-      <th>SWALLOWING DIFFICULTY</th>
-      <th>CHEST PAIN</th>
+      <th>SWALLOWING_DIFFICULTY</th>
+      <th>CHEST_PAIN</th>
       <th>LUNG_CANCER</th>
     </tr>
   </thead>
@@ -7281,6 +7266,165 @@ lung_cancer_train_smote.head()
 
 ```python
 ##################################
+# Plotting the categorical distributions
+# for a low-risk test case
+##################################
+fig, axs = plt.subplots(2, 5, figsize=(17, 8))
+
+colors = ['blue','red']
+level_order = ['Absent','Present']
+
+sns.countplot(x='YELLOW_FINGERS', hue='LUNG_CANCER', data=lung_cancer_train_smote, ax=axs[0, 0], order=level_order, palette=colors)
+axs[0, 0].set_title('YELLOW_FINGERS')
+axs[0, 0].set_ylabel('Classification Model Training Case Count')
+axs[0, 0].set_xlabel(None)
+axs[0, 0].set_ylim(0, 200)
+axs[0, 0].legend(title='LUNG_CANCER', loc='upper center')
+for patch, color in zip(axs[0, 0].patches, ['blue','blue','red','red'] ):
+    patch.set_facecolor(color)
+    patch.set_alpha(0.2)
+
+sns.countplot(x='ANXIETY', hue='LUNG_CANCER', data=lung_cancer_train_smote, ax=axs[0, 1], order=level_order, palette=colors)
+axs[0, 1].set_title('ANXIETY')
+axs[0, 1].set_ylabel('Classification Model Training Case Count')
+axs[0, 1].set_xlabel(None)
+axs[0, 1].set_ylim(0, 200)
+axs[0, 1].legend(title='LUNG_CANCER', loc='upper center')
+for patch, color in zip(axs[0, 1].patches, ['blue','blue','red','red'] ):
+    patch.set_facecolor(color)
+    patch.set_alpha(0.2)
+
+sns.countplot(x='PEER_PRESSURE', hue='LUNG_CANCER', data=lung_cancer_train_smote, ax=axs[0, 2], order=level_order, palette=colors)
+axs[0, 2].set_title('PEER_PRESSURE')
+axs[0, 2].set_ylabel('Classification Model Training Case Count')
+axs[0, 2].set_xlabel(None)
+axs[0, 2].set_ylim(0, 200)
+axs[0, 2].legend(title='LUNG_CANCER', loc='upper center')
+for patch, color in zip(axs[0, 2].patches, ['blue','blue','red','red'] ):
+    patch.set_facecolor(color)
+    patch.set_alpha(0.2)
+
+sns.countplot(x='FATIGUE', hue='LUNG_CANCER', data=lung_cancer_train_smote, ax=axs[0, 3], order=level_order, palette=colors)
+axs[0, 3].set_title('FATIGUE')
+axs[0, 3].set_ylabel('Classification Model Training Case Count')
+axs[0, 3].set_xlabel(None)
+axs[0, 3].set_ylim(0, 200)
+axs[0, 3].legend(title='LUNG_CANCER', loc='upper center')
+for patch, color in zip(axs[0, 3].patches, ['blue','blue','red','red'] ):
+    patch.set_facecolor(color)
+    patch.set_alpha(0.2)
+
+sns.countplot(x='ALLERGY', hue='LUNG_CANCER', data=lung_cancer_train_smote, ax=axs[0, 4], order=level_order, palette=colors)
+axs[0, 4].set_title('ALLERGY')
+axs[0, 4].set_ylabel('Classification Model Training Case Count')
+axs[0, 4].set_xlabel(None)
+axs[0, 4].set_ylim(0, 200)
+axs[0, 4].legend(title='LUNG_CANCER', loc='upper center')
+for patch, color in zip(axs[0, 4].patches, ['blue','blue','red','red'] ):
+    patch.set_facecolor(color)
+    patch.set_alpha(0.2)
+
+sns.countplot(x='WHEEZING', hue='LUNG_CANCER', data=lung_cancer_train_smote, ax=axs[1, 0], order=level_order, palette=colors)
+axs[1, 0].set_title('WHEEZING')
+axs[1, 0].set_ylabel('Classification Model Training Case Count')
+axs[1, 0].set_xlabel(None)
+axs[1, 0].set_ylim(0, 200)
+axs[1, 0].legend(title='LUNG_CANCER', loc='upper center')
+for patch, color in zip(axs[1, 0].patches, ['blue','blue','red','red'] ):
+    patch.set_facecolor(color)
+    patch.set_alpha(0.2)
+
+sns.countplot(x='ALCOHOL_CONSUMING', hue='LUNG_CANCER', data=lung_cancer_train_smote, ax=axs[1, 1], order=level_order, palette=colors)
+axs[1, 1].set_title('ALCOHOL_CONSUMING')
+axs[1, 1].set_ylabel('Classification Model Training Case Count')
+axs[1, 1].set_xlabel(None)
+axs[1, 1].set_ylim(0, 200)
+axs[1, 1].legend(title='LUNG_CANCER', loc='upper center')
+for patch, color in zip(axs[1, 1].patches, ['blue','blue','red','red'] ):
+    patch.set_facecolor(color)
+    patch.set_alpha(0.2)
+
+sns.countplot(x='COUGHING', hue='LUNG_CANCER', data=lung_cancer_train_smote, ax=axs[1, 2], order=level_order, palette=colors)
+axs[1, 2].set_title('COUGHING')
+axs[1, 2].set_ylabel('Classification Model Training Case Count')
+axs[1, 2].set_xlabel(None)
+axs[1, 2].set_ylim(0, 200)
+axs[1, 2].legend(title='LUNG_CANCER', loc='upper center')
+for patch, color in zip(axs[1, 2].patches, ['blue','blue','red','red'] ):
+    patch.set_facecolor(color)
+    patch.set_alpha(0.2)
+
+sns.countplot(x='SWALLOWING_DIFFICULTY', hue='LUNG_CANCER', data=lung_cancer_train_smote, ax=axs[1, 3], order=level_order, palette=colors)
+axs[1, 3].set_title('SWALLOWING_DIFFICULTY')
+axs[1, 3].set_ylabel('Classification Model Training Case Count')
+axs[1, 3].set_xlabel(None)
+axs[1, 3].set_ylim(0, 200)
+axs[1, 3].legend(title='LUNG_CANCER', loc='upper center')
+for patch, color in zip(axs[1, 3].patches, ['blue','blue','red','red'] ):
+    patch.set_facecolor(color)
+    patch.set_alpha(0.2)
+
+sns.countplot(x='CHEST_PAIN', hue='LUNG_CANCER', data=lung_cancer_train_smote, ax=axs[1, 4], order=level_order, palette=colors)
+axs[1, 4].set_title('CHEST_PAIN')
+axs[1, 4].set_ylabel('Classification Model Training Case Count')
+axs[1, 4].set_xlabel(None)
+axs[1, 4].set_ylim(0, 200)
+axs[1, 4].legend(title='LUNG_CANCER', loc='upper center')
+for patch, color in zip(axs[1, 4].patches, ['blue','blue','red','red'] ):
+    patch.set_facecolor(color)
+    patch.set_alpha(0.2)
+
+plt.tight_layout()
+plt.show()
+```
+
+
+    
+![png](output_244_0.png)
+    
+
+
+
+```python
+##################################
+# Plotting the estimated logistic curve
+# of the final classification model
+# involving a stacked model with
+# a logistic regression meta-learner
+# and random forest, SVC and decision tree
+# base learners
+##################################
+plt.figure(figsize=(17, 8))
+plt.plot(stacked_balanced_class_best_model_upsampled_logit_values_sorted, 
+         stacked_balanced_class_best_model_upsampled_probabilities_sorted, label='Classification Model Logistic Curve', color='black')
+plt.ylim(-0.05, 1.05)
+plt.xlim(-6.00, 6.00)
+target_0_indices = y_train_smote == 0
+target_1_indices = y_train_smote == 1
+plt.scatter(stacked_balanced_class_best_model_upsampled_logit_values[target_0_indices], 
+            stacked_balanced_class_best_model_upsampled_probabilities[target_0_indices], 
+            color='blue', alpha=0.40, s=100, marker= 'o', edgecolor='k', label='LUNG_CANCER=NO')
+plt.scatter(stacked_balanced_class_best_model_upsampled_logit_values[target_1_indices], 
+            stacked_balanced_class_best_model_upsampled_probabilities[target_1_indices], 
+            color='red', alpha=0.40, s=100, marker='o', edgecolor='k', label='LUNG_CANCER=YES')
+plt.axhline(0.5, color='green', linestyle='--', label='Classification Model Threshold')
+plt.title('Final Classification Model: Stacked Model (Meta-Learner = Logistic Regression, Base Learners: Random Forest, Support Vector Classifier, Decision Tree)')
+plt.xlabel('Logit (Log-Odds)')
+plt.ylabel('Estimated Lung Cancer Probability')
+plt.grid(True)
+plt.legend(loc='upper left')
+plt.show()
+```
+
+
+    
+![png](output_245_0.png)
+    
+
+
+
+```python
+##################################
 # Describing the details of a 
 # low-risk test case
 ##################################
@@ -7290,10 +7434,10 @@ X_sample = {"YELLOW_FINGERS":1,
             "FATIGUE":0,
             "ALLERGY":0,
             "WHEEZING":1,
-            "ALCOHOL CONSUMING":0,
+            "ALCOHOL_CONSUMING":0,
             "COUGHING":0,
-            "SWALLOWING DIFFICULTY":1,
-            "CHEST PAIN":1}
+            "SWALLOWING_DIFFICULTY":1,
+            "CHEST_PAIN":1}
 X_test_sample = pd.DataFrame([X_sample])
 X_test_sample.head()
 ```
@@ -7325,10 +7469,10 @@ X_test_sample.head()
       <th>FATIGUE</th>
       <th>ALLERGY</th>
       <th>WHEEZING</th>
-      <th>ALCOHOL CONSUMING</th>
+      <th>ALCOHOL_CONSUMING</th>
       <th>COUGHING</th>
-      <th>SWALLOWING DIFFICULTY</th>
-      <th>CHEST PAIN</th>
+      <th>SWALLOWING_DIFFICULTY</th>
+      <th>CHEST_PAIN</th>
     </tr>
   </thead>
   <tbody>
@@ -7359,7 +7503,7 @@ X_test_sample.head()
 ##################################
 X_test_sample_category = X_test_sample.copy()
 X_test_sample_category.iloc[:,0:10] = X_test_sample_category.iloc[:,0:10].replace({0: 'Absent', 1: 'Present'})
-X_test_sample_category[X_test_sample_category.columns[0:11]] = X_test_sample_category[X_test_sample_category.columns[0:11]].astype('category')
+X_test_sample_category[X_test_sample_category.columns[0:10]] = X_test_sample_category[X_test_sample_category.columns[0:10]].astype('category')
 X_test_sample_category.head()
 ```
 
@@ -7390,10 +7534,10 @@ X_test_sample_category.head()
       <th>FATIGUE</th>
       <th>ALLERGY</th>
       <th>WHEEZING</th>
-      <th>ALCOHOL CONSUMING</th>
+      <th>ALCOHOL_CONSUMING</th>
       <th>COUGHING</th>
-      <th>SWALLOWING DIFFICULTY</th>
-      <th>CHEST PAIN</th>
+      <th>SWALLOWING_DIFFICULTY</th>
+      <th>CHEST_PAIN</th>
     </tr>
   </thead>
   <tbody>
@@ -7493,9 +7637,9 @@ for patch, color in zip(axs[1, 0].patches, ['blue','blue','red','red'] ):
     patch.set_facecolor(color)
     patch.set_alpha(0.2)
 
-sns.countplot(x='ALCOHOL CONSUMING', hue='LUNG_CANCER', data=lung_cancer_train_smote, ax=axs[1, 1], order=level_order, palette=colors)
-axs[1, 1].axvline(level_order.index(X_test_sample_category['ALCOHOL CONSUMING'].iloc[0]), color='black', linestyle='--', linewidth=3)
-axs[1, 1].set_title('ALCOHOL CONSUMING')
+sns.countplot(x='ALCOHOL_CONSUMING', hue='LUNG_CANCER', data=lung_cancer_train_smote, ax=axs[1, 1], order=level_order, palette=colors)
+axs[1, 1].axvline(level_order.index(X_test_sample_category['ALCOHOL_CONSUMING'].iloc[0]), color='black', linestyle='--', linewidth=3)
+axs[1, 1].set_title('ALCOHOL_CONSUMING')
 axs[1, 1].set_ylabel('Classification Model Training Case Count')
 axs[1, 1].set_xlabel(None)
 axs[1, 1].set_ylim(0, 200)
@@ -7515,9 +7659,9 @@ for patch, color in zip(axs[1, 2].patches, ['blue','blue','red','red'] ):
     patch.set_facecolor(color)
     patch.set_alpha(0.2)
 
-sns.countplot(x='SWALLOWING DIFFICULTY', hue='LUNG_CANCER', data=lung_cancer_train_smote, ax=axs[1, 3], order=level_order, palette=colors)
-axs[1, 3].axvline(level_order.index(X_test_sample_category['SWALLOWING DIFFICULTY'].iloc[0]), color='black', linestyle='--', linewidth=3)
-axs[1, 3].set_title('SWALLOWING DIFFICULTY')
+sns.countplot(x='SWALLOWING_DIFFICULTY', hue='LUNG_CANCER', data=lung_cancer_train_smote, ax=axs[1, 3], order=level_order, palette=colors)
+axs[1, 3].axvline(level_order.index(X_test_sample_category['SWALLOWING_DIFFICULTY'].iloc[0]), color='black', linestyle='--', linewidth=3)
+axs[1, 3].set_title('SWALLOWING_DIFFICULTY')
 axs[1, 3].set_ylabel('Classification Model Training Case Count')
 axs[1, 3].set_xlabel(None)
 axs[1, 3].set_ylim(0, 200)
@@ -7526,9 +7670,9 @@ for patch, color in zip(axs[1, 3].patches, ['blue','blue','red','red'] ):
     patch.set_facecolor(color)
     patch.set_alpha(0.2)
 
-sns.countplot(x='CHEST PAIN', hue='LUNG_CANCER', data=lung_cancer_train_smote, ax=axs[1, 4], order=level_order, palette=colors)
-axs[1, 4].axvline(level_order.index(X_test_sample_category['CHEST PAIN'].iloc[0]), color='black', linestyle='--', linewidth=3)
-axs[1, 4].set_title('CHEST PAIN')
+sns.countplot(x='CHEST_PAIN', hue='LUNG_CANCER', data=lung_cancer_train_smote, ax=axs[1, 4], order=level_order, palette=colors)
+axs[1, 4].axvline(level_order.index(X_test_sample_category['CHEST_PAIN'].iloc[0]), color='black', linestyle='--', linewidth=3)
+axs[1, 4].set_title('CHEST_PAIN')
 axs[1, 4].set_ylabel('Classification Model Training Case Count')
 axs[1, 4].set_xlabel(None)
 axs[1, 4].set_ylim(0, 200)
@@ -7543,7 +7687,7 @@ plt.show()
 
 
     
-![png](output_246_0.png)
+![png](output_248_0.png)
     
 
 
@@ -7607,7 +7751,7 @@ plt.show()
 
 
     
-![png](output_248_0.png)
+![png](output_250_0.png)
     
 
 
@@ -7623,10 +7767,10 @@ X_sample = {"YELLOW_FINGERS":1,
             "FATIGUE":0,
             "ALLERGY":1,
             "WHEEZING":1,
-            "ALCOHOL CONSUMING":0,
+            "ALCOHOL_CONSUMING":0,
             "COUGHING":1,
-            "SWALLOWING DIFFICULTY":1,
-            "CHEST PAIN":1}
+            "SWALLOWING_DIFFICULTY":1,
+            "CHEST_PAIN":1}
 X_test_sample = pd.DataFrame([X_sample])
 X_test_sample.head()
 ```
@@ -7658,10 +7802,10 @@ X_test_sample.head()
       <th>FATIGUE</th>
       <th>ALLERGY</th>
       <th>WHEEZING</th>
-      <th>ALCOHOL CONSUMING</th>
+      <th>ALCOHOL_CONSUMING</th>
       <th>COUGHING</th>
-      <th>SWALLOWING DIFFICULTY</th>
-      <th>CHEST PAIN</th>
+      <th>SWALLOWING_DIFFICULTY</th>
+      <th>CHEST_PAIN</th>
     </tr>
   </thead>
   <tbody>
@@ -7692,7 +7836,7 @@ X_test_sample.head()
 ##################################
 X_test_sample_category = X_test_sample.copy()
 X_test_sample_category.iloc[:,0:10] = X_test_sample_category.iloc[:,0:10].replace({0: 'Absent', 1: 'Present'})
-X_test_sample_category[X_test_sample_category.columns[0:11]] = X_test_sample_category[X_test_sample_category.columns[0:11]].astype('category')
+X_test_sample_category[X_test_sample_category.columns[0:10]] = X_test_sample_category[X_test_sample_category.columns[0:10]].astype('category')
 X_test_sample_category.head()
 ```
 
@@ -7723,10 +7867,10 @@ X_test_sample_category.head()
       <th>FATIGUE</th>
       <th>ALLERGY</th>
       <th>WHEEZING</th>
-      <th>ALCOHOL CONSUMING</th>
+      <th>ALCOHOL_CONSUMING</th>
       <th>COUGHING</th>
-      <th>SWALLOWING DIFFICULTY</th>
-      <th>CHEST PAIN</th>
+      <th>SWALLOWING_DIFFICULTY</th>
+      <th>CHEST_PAIN</th>
     </tr>
   </thead>
   <tbody>
@@ -7826,9 +7970,9 @@ for patch, color in zip(axs[1, 0].patches, ['blue','blue','red','red'] ):
     patch.set_facecolor(color)
     patch.set_alpha(0.2)
 
-sns.countplot(x='ALCOHOL CONSUMING', hue='LUNG_CANCER', data=lung_cancer_train_smote, ax=axs[1, 1], order=level_order, palette=colors)
-axs[1, 1].axvline(level_order.index(X_test_sample_category['ALCOHOL CONSUMING'].iloc[0]), color='black', linestyle='--', linewidth=3)
-axs[1, 1].set_title('ALCOHOL CONSUMING')
+sns.countplot(x='ALCOHOL_CONSUMING', hue='LUNG_CANCER', data=lung_cancer_train_smote, ax=axs[1, 1], order=level_order, palette=colors)
+axs[1, 1].axvline(level_order.index(X_test_sample_category['ALCOHOL_CONSUMING'].iloc[0]), color='black', linestyle='--', linewidth=3)
+axs[1, 1].set_title('ALCOHOL_CONSUMING')
 axs[1, 1].set_ylabel('Classification Model Training Case Count')
 axs[1, 1].set_xlabel(None)
 axs[1, 1].set_ylim(0, 200)
@@ -7848,9 +7992,9 @@ for patch, color in zip(axs[1, 2].patches, ['blue','blue','red','red'] ):
     patch.set_facecolor(color)
     patch.set_alpha(0.2)
 
-sns.countplot(x='SWALLOWING DIFFICULTY', hue='LUNG_CANCER', data=lung_cancer_train_smote, ax=axs[1, 3], order=level_order, palette=colors)
-axs[1, 3].axvline(level_order.index(X_test_sample_category['SWALLOWING DIFFICULTY'].iloc[0]), color='black', linestyle='--', linewidth=3)
-axs[1, 3].set_title('SWALLOWING DIFFICULTY')
+sns.countplot(x='SWALLOWING_DIFFICULTY', hue='LUNG_CANCER', data=lung_cancer_train_smote, ax=axs[1, 3], order=level_order, palette=colors)
+axs[1, 3].axvline(level_order.index(X_test_sample_category['SWALLOWING_DIFFICULTY'].iloc[0]), color='black', linestyle='--', linewidth=3)
+axs[1, 3].set_title('SWALLOWING_DIFFICULTY')
 axs[1, 3].set_ylabel('Classification Model Training Case Count')
 axs[1, 3].set_xlabel(None)
 axs[1, 3].set_ylim(0, 200)
@@ -7859,9 +8003,9 @@ for patch, color in zip(axs[1, 3].patches, ['blue','blue','red','red'] ):
     patch.set_facecolor(color)
     patch.set_alpha(0.2)
 
-sns.countplot(x='CHEST PAIN', hue='LUNG_CANCER', data=lung_cancer_train_smote, ax=axs[1, 4], order=level_order, palette=colors)
-axs[1, 4].axvline(level_order.index(X_test_sample_category['CHEST PAIN'].iloc[0]), color='black', linestyle='--', linewidth=3)
-axs[1, 4].set_title('CHEST PAIN')
+sns.countplot(x='CHEST_PAIN', hue='LUNG_CANCER', data=lung_cancer_train_smote, ax=axs[1, 4], order=level_order, palette=colors)
+axs[1, 4].axvline(level_order.index(X_test_sample_category['CHEST_PAIN'].iloc[0]), color='black', linestyle='--', linewidth=3)
+axs[1, 4].set_title('CHEST_PAIN')
 axs[1, 4].set_ylabel('Classification Model Training Case Count')
 axs[1, 4].set_xlabel(None)
 axs[1, 4].set_ylim(0, 200)
@@ -7876,7 +8020,7 @@ plt.show()
 
 
     
-![png](output_251_0.png)
+![png](output_253_0.png)
     
 
 
@@ -7940,7 +8084,7 @@ plt.show()
 
 
     
-![png](output_253_0.png)
+![png](output_255_0.png)
     
 
 
