@@ -2,10 +2,245 @@
 # Loading Python Libraries
 ##################################
 import streamlit as st
+import numpy as np
+import seaborn as sns
+import matplotlib.pyplot as plt
+import pandas as pd
+import os
+import joblib
 
-st.header('st.button')
+##################################
+# Defining file paths
+##################################
+DATASETS_FINAL_PATH = r"datasets\final\complete"
+DATASETS_FINAL_TRAIN_PATH = r"datasets\final\train"
+DATASETS_FINAL_TRAIN_FEATURES_PATH = r"datasets\final\train\features"
+DATASETS_FINAL_TRAIN_TARGET_PATH = r"datasets\final\train\target"
 
-if st.button('Say hello'):
-    st.write('Why hello there')
-else:
-    st.write('Goodbye')
+##################################
+# Loading the dataset
+# from the DATASETS_FINAL_TRAIN_PATH
+##################################
+X_train_smote = pd.read_csv(os.path.join("..", DATASETS_FINAL_TRAIN_FEATURES_PATH, "X_train_smote.csv"))
+y_train_smote = pd.read_csv(os.path.join("..", DATASETS_FINAL_TRAIN_TARGET_PATH, "y_train_smote.csv"))
+
+##################################
+# Rebuilding the upsampled training data
+# for plotting categorical distributions
+##################################
+lung_cancer_train_smote = pd.concat([X_train_smote, y_train_smote], axis=1)
+lung_cancer_train_smote.iloc[:,0:10] = lung_cancer_train_smote.iloc[:,0:10].replace({0: 'Absent', 1: 'Present'})
+lung_cancer_train_smote['LUNG_CANCER'] = lung_cancer_train_smote['LUNG_CANCER'].replace({0: 'No', 1: 'Yes'})
+lung_cancer_train_smote[lung_cancer_train_smote.columns[0:11]] = lung_cancer_train_smote[lung_cancer_train_smote.columns[0:11]].astype('category')
+
+##################################
+# Setting the page layout to wide
+##################################
+st.set_page_config(layout="wide")
+
+##################################
+# Listing the variables
+##################################
+variables = ["YELLOW_FINGERS",
+             "ANXIETY", 
+             "PEER_PRESSURE", 
+             "FATIGUE",
+             "ALLERGY", 
+             "WHEEZING", 
+             "ALCOHOL_CONSUMING", 
+             "COUGHING",
+             "SWALLOWING_DIFFICULTY", 
+             "CHEST_PAIN"]
+
+##################################
+# Initialize lists to store user responses
+##################################
+categorical_responses = {}
+numeric_responses = {}
+
+##################################
+# Creating a title for the application
+##################################
+st.markdown("""---""")
+st.markdown("<h1 style='text-align: center;'>Lung Cancer Probability Estimator</h1>", unsafe_allow_html=True)
+
+
+##################################
+# Creating a section for 
+# selecting the 
+##################################
+st.markdown("""---""")
+st.markdown("<h4 style='font-size: 20px; font-weight: bold;'>Select Clinical Symptoms and Behavioral Indicators:</h4>", unsafe_allow_html=True)
+
+##################################
+# Looping to create radio buttons for each variable
+# and storing the user inputs
+##################################
+# Using Markdown to make text bold
+cols = st.columns(5)
+for i, var in enumerate(variables):
+    with cols[i % 5]:
+        response = st.radio(f"**{var}**:", ["Present", "Absent"], key=var)
+        categorical_responses[var] = response
+        numeric_responses[var] = 1 if response == "Present" else 0
+        
+st.markdown("""---""")
+               
+##################################
+# Converting the user inputs
+##################################       
+X_test_sample_numeric = pd.DataFrame([numeric_responses])
+X_test_sample_category = pd.DataFrame([categorical_responses])
+
+st.markdown("""
+    <style>
+    .stButton > button {
+        display: block;
+        margin: 0 auto;
+    }
+    </style>
+    """, unsafe_allow_html=True)
+
+entered = st.button("Show Selection Against Data Distribution and Estimate Lung Cancer Probability")
+
+##################################
+# Listing the logic for the button action
+##################################    
+if entered:
+    
+    st.markdown("""---""")  
+    
+    ##################################
+    # Creating a 2x5 grid of plots
+    ##################################
+    fig, axs = plt.subplots(2, 5, figsize=(17, 8))
+
+    colors = ['blue','red']
+    level_order = ['Absent','Present']
+    
+    ##################################
+    # Plotting the user inouts
+    # against the countplots
+    # of the training data
+    # for each variable
+    ##################################
+    sns.countplot(x='YELLOW_FINGERS', hue='LUNG_CANCER', data=lung_cancer_train_smote, ax=axs[0, 0], order=level_order, palette=colors)
+    axs[0, 0].axvline(level_order.index(X_test_sample_category['YELLOW_FINGERS'].iloc[0]), color='black', linestyle='--', linewidth=3)
+    axs[0, 0].set_title('YELLOW_FINGERS')
+    axs[0, 0].set_ylabel('Classification Model Training Case Count')
+    axs[0, 0].set_xlabel(None)
+    axs[0, 0].set_ylim(0, 200)
+    axs[0, 0].legend(title='LUNG_CANCER', loc='upper center')
+    for patch, color in zip(axs[0, 0].patches, ['blue','blue','red','red'] ):
+        patch.set_facecolor(color)
+        patch.set_alpha(0.2)
+
+    sns.countplot(x='ANXIETY', hue='LUNG_CANCER', data=lung_cancer_train_smote, ax=axs[0, 1], order=level_order, palette=colors)
+    axs[0, 1].axvline(level_order.index(X_test_sample_category['ANXIETY'].iloc[0]), color='black', linestyle='--', linewidth=3)
+    axs[0, 1].set_title('ANXIETY')
+    axs[0, 1].set_ylabel('Classification Model Training Case Count')
+    axs[0, 1].set_xlabel(None)
+    axs[0, 1].set_ylim(0, 200)
+    axs[0, 1].legend(title='LUNG_CANCER', loc='upper center')
+    for patch, color in zip(axs[0, 1].patches, ['blue','blue','red','red'] ):
+        patch.set_facecolor(color)
+        patch.set_alpha(0.2)
+
+    sns.countplot(x='PEER_PRESSURE', hue='LUNG_CANCER', data=lung_cancer_train_smote, ax=axs[0, 2], order=level_order, palette=colors)
+    axs[0, 2].axvline(level_order.index(X_test_sample_category['PEER_PRESSURE'].iloc[0]), color='black', linestyle='--', linewidth=3)
+    axs[0, 2].set_title('PEER_PRESSURE')
+    axs[0, 2].set_ylabel('Classification Model Training Case Count')
+    axs[0, 2].set_xlabel(None)
+    axs[0, 2].set_ylim(0, 200)
+    axs[0, 2].legend(title='LUNG_CANCER', loc='upper center')
+    for patch, color in zip(axs[0, 2].patches, ['blue','blue','red','red'] ):
+        patch.set_facecolor(color)
+        patch.set_alpha(0.2)
+
+    sns.countplot(x='FATIGUE', hue='LUNG_CANCER', data=lung_cancer_train_smote, ax=axs[0, 3], order=level_order, palette=colors)
+    axs[0, 3].axvline(level_order.index(X_test_sample_category['FATIGUE'].iloc[0]), color='black', linestyle='--', linewidth=3)
+    axs[0, 3].set_title('FATIGUE')
+    axs[0, 3].set_ylabel('Classification Model Training Case Count')
+    axs[0, 3].set_xlabel(None)
+    axs[0, 3].set_ylim(0, 200)
+    axs[0, 3].legend(title='LUNG_CANCER', loc='upper center')
+    for patch, color in zip(axs[0, 3].patches, ['blue','blue','red','red'] ):
+        patch.set_facecolor(color)
+        patch.set_alpha(0.2)
+
+    sns.countplot(x='ALLERGY', hue='LUNG_CANCER', data=lung_cancer_train_smote, ax=axs[0, 4], order=level_order, palette=colors)
+    axs[0, 4].axvline(level_order.index(X_test_sample_category['ALLERGY'].iloc[0]), color='black', linestyle='--', linewidth=3)
+    axs[0, 4].set_title('ALLERGY')
+    axs[0, 4].set_ylabel('Classification Model Training Case Count')
+    axs[0, 4].set_xlabel(None)
+    axs[0, 4].set_ylim(0, 200)
+    axs[0, 4].legend(title='LUNG_CANCER', loc='upper center')
+    for patch, color in zip(axs[0, 4].patches, ['blue','blue','red','red'] ):
+        patch.set_facecolor(color)
+        patch.set_alpha(0.2)
+
+    sns.countplot(x='WHEEZING', hue='LUNG_CANCER', data=lung_cancer_train_smote, ax=axs[1, 0], order=level_order, palette=colors)
+    axs[1, 0].axvline(level_order.index(X_test_sample_category['WHEEZING'].iloc[0]), color='black', linestyle='--', linewidth=3)
+    axs[1, 0].set_title('WHEEZING')
+    axs[1, 0].set_ylabel('Classification Model Training Case Count')
+    axs[1, 0].set_xlabel(None)
+    axs[1, 0].set_ylim(0, 200)
+    axs[1, 0].legend(title='LUNG_CANCER', loc='upper center')
+    for patch, color in zip(axs[1, 0].patches, ['blue','blue','red','red'] ):
+        patch.set_facecolor(color)
+        patch.set_alpha(0.2)
+
+    sns.countplot(x='ALCOHOL_CONSUMING', hue='LUNG_CANCER', data=lung_cancer_train_smote, ax=axs[1, 1], order=level_order, palette=colors)
+    axs[1, 1].axvline(level_order.index(X_test_sample_category['ALCOHOL_CONSUMING'].iloc[0]), color='black', linestyle='--', linewidth=3)
+    axs[1, 1].set_title('ALCOHOL_CONSUMING')
+    axs[1, 1].set_ylabel('Classification Model Training Case Count')
+    axs[1, 1].set_xlabel(None)
+    axs[1, 1].set_ylim(0, 200)
+    axs[1, 1].legend(title='LUNG_CANCER', loc='upper center')
+    for patch, color in zip(axs[1, 1].patches, ['blue','blue','red','red'] ):
+        patch.set_facecolor(color)
+        patch.set_alpha(0.2)
+
+    sns.countplot(x='COUGHING', hue='LUNG_CANCER', data=lung_cancer_train_smote, ax=axs[1, 2], order=level_order, palette=colors)
+    axs[1, 2].axvline(level_order.index(X_test_sample_category['COUGHING'].iloc[0]), color='black', linestyle='--', linewidth=3)
+    axs[1, 2].set_title('COUGHING')
+    axs[1, 2].set_ylabel('Classification Model Training Case Count')
+    axs[1, 2].set_xlabel(None)
+    axs[1, 2].set_ylim(0, 200)
+    axs[1, 2].legend(title='LUNG_CANCER', loc='upper center')
+    for patch, color in zip(axs[1, 2].patches, ['blue','blue','red','red'] ):
+        patch.set_facecolor(color)
+        patch.set_alpha(0.2)
+
+    sns.countplot(x='SWALLOWING_DIFFICULTY', hue='LUNG_CANCER', data=lung_cancer_train_smote, ax=axs[1, 3], order=level_order, palette=colors)
+    axs[1, 3].axvline(level_order.index(X_test_sample_category['SWALLOWING_DIFFICULTY'].iloc[0]), color='black', linestyle='--', linewidth=3)
+    axs[1, 3].set_title('SWALLOWING_DIFFICULTY')
+    axs[1, 3].set_ylabel('Classification Model Training Case Count')
+    axs[1, 3].set_xlabel(None)
+    axs[1, 3].set_ylim(0, 200)
+    axs[1, 3].legend(title='LUNG_CANCER', loc='upper center')
+    for patch, color in zip(axs[1, 3].patches, ['blue','blue','red','red'] ):
+        patch.set_facecolor(color)
+        patch.set_alpha(0.2)
+
+    sns.countplot(x='CHEST_PAIN', hue='LUNG_CANCER', data=lung_cancer_train_smote, ax=axs[1, 4], order=level_order, palette=colors)
+    axs[1, 4].axvline(level_order.index(X_test_sample_category['CHEST_PAIN'].iloc[0]), color='black', linestyle='--', linewidth=3)
+    axs[1, 4].set_title('CHEST_PAIN')
+    axs[1, 4].set_ylabel('Classification Model Training Case Count')
+    axs[1, 4].set_xlabel(None)
+    axs[1, 4].set_ylim(0, 200)
+    axs[1, 4].legend(title='LUNG_CANCER', loc='upper center')
+    for patch, color in zip(axs[1, 4].patches, ['blue','blue','red','red'] ):
+        patch.set_facecolor(color)
+        patch.set_alpha(0.2)
+
+    plt.tight_layout()
+    
+    ##################################
+    # Displaying the plot
+    ##################################
+    st.pyplot(fig)
+    
+    st.markdown("""---""")
+        
+      
