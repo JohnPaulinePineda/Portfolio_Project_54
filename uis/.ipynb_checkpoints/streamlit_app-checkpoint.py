@@ -8,6 +8,8 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import os
 import joblib
+from sklearn.linear_model import LogisticRegression
+from model_prediction import compute_individual_logit_probability_class, compute_list_logit_probability_class
 
 ##################################
 # Defining file paths
@@ -64,19 +66,17 @@ numeric_responses = {}
 st.markdown("""---""")
 st.markdown("<h1 style='text-align: center;'>Lung Cancer Probability Estimator</h1>", unsafe_allow_html=True)
 
-
 ##################################
 # Creating a section for 
 # selecting the 
 ##################################
 st.markdown("""---""")
-st.markdown("<h4 style='font-size: 20px; font-weight: bold;'>Select Clinical Symptoms and Behavioral Indicators:</h4>", unsafe_allow_html=True)
+st.markdown("<h4 style='font-size: 20px; font-weight: bold;'>Select Clinical Symptoms and Behavioral Indicators</h4>", unsafe_allow_html=True)
 
 ##################################
 # Looping to create radio buttons for each variable
 # and storing the user inputs
 ##################################
-# Using Markdown to make text bold
 cols = st.columns(5)
 for i, var in enumerate(variables):
     with cols[i % 5]:
@@ -119,7 +119,7 @@ if entered:
     level_order = ['Absent','Present']
     
     ##################################
-    # Plotting the user inouts
+    # Plotting the user inputs
     # against the countplots
     # of the training data
     # for each variable
@@ -240,6 +240,88 @@ if entered:
     # Displaying the plot
     ##################################
     st.pyplot(fig)
+    
+    ##################################
+    # Generating the test case prediction
+    # for updating on the baseline logistic curve
+    ##################################   
+    test_case_model_prediction = compute_individual_logit_probability_class(X_test_sample_numeric)
+    X_sample_logit = test_case_model_prediction[0]
+    X_sample_probability = test_case_model_prediction[1]
+    X_sample_class = test_case_model_prediction[2]
+    
+    ##################################
+    # Generating the train case predictions
+    # for baseline logistic curve plotting
+    ##################################
+    X_list_logit, X_list_probability, X_list_logit_sorted, X_list_probability_sorted = compute_list_logit_probability_class(X_train_smote)
+       
+    ##################################
+    # Creating a 1x1 plot
+    ##################################
+    fig, ax = plt.subplots(figsize=(17, 8))
+    
+    ##################################
+    # Plotting the computed logit value
+    # estimated probability
+    # and predicted class
+    # for the test case 
+    # in the estimated logistic curve
+    # of the final classification model
+    ##################################    
+    ax.plot(X_list_logit_sorted, 
+            X_list_probability_sorted, 
+            label='Classification Model Logistic Curve', 
+            color='black')
+    ax.set_ylim(-0.05, 1.05)
+    ax.set_xlim(-6.00, 6.00)
+    target_0_indices = y_train_smote == 0
+    target_1_indices = y_train_smote == 1
+    ax.axhline(0.5, color='green', linestyle='--', label='Classification Model Threshold')
+    ax.scatter(X_list_logit[target_0_indices['LUNG_CANCER'].tolist()], 
+               X_list_probability[target_0_indices['LUNG_CANCER'].tolist()], 
+               color='blue', alpha=0.20, s=100, marker= 'o', edgecolor='k', label='Classification Model Training Cases: LUNG_CANCER = No')
+    ax.scatter(X_list_logit[target_1_indices['LUNG_CANCER'].tolist()],
+               X_list_probability[target_1_indices['LUNG_CANCER'].tolist()], 
+               color='red', alpha=0.20, s=100, marker='o', edgecolor='k', label='Classification Model Training Cases: LUNG_CANCER = Yes')
+    if X_sample_class == "Low-Risk":
+        ax.scatter(X_sample_logit, X_sample_probability, color='blue', s=125, edgecolor='k', label='Test Case (Low-Risk)', marker= 's', zorder=5)
+        ax.axvline(X_sample_logit, color='black', linestyle='--', linewidth=3)
+        ax.axhline(X_sample_probability, color='black', linestyle='--', linewidth=3)
+    if X_sample_class == "High-Risk":
+        ax.scatter(X_sample_logit, X_sample_probability, color='red', s=125, edgecolor='k', label='Test Case (High-Risk)', marker= 's', zorder=5)
+        ax.axvline(X_sample_logit, color='black', linestyle='--', linewidth=3)
+        ax.axhline(X_sample_probability, color='black', linestyle='--', linewidth=3)
+
+    ax.set_title('Final Classification Model: Stacked Model (Meta-Learner = Logistic Regression, Base Learners = Random Forest, Support Vector Classifier, Decision Tree)')
+    ax.set_xlabel('Logit (Log-Odds)')
+    ax.set_ylabel('Estimated Lung Cancer Probability')
+    ax.grid(False)
+    ax.legend(facecolor='white', framealpha=1, loc='upper center', bbox_to_anchor=(0.5, -0.10), ncol=3)
+    plt.tight_layout(rect=[0, 0, 1.00, 0.95])
+    
+    ##################################
+    # Displaying the plot
+    ##################################    
+    st.pyplot(fig)
+    
+    st.markdown("""---""")
+    
+    ##################################
+    # Summarizing the results
+    ################################## 
+
+    st.markdown("<h4 style='font-size: 20px; font-weight: bold;'>Test Case Model Prediction Summary</h4>", unsafe_allow_html=True)
+    
+    if X_sample_class == "Low-Risk":
+        st.markdown(f"<h4 style='font-size: 20px;'>Computed Logit Value: <span style='color:blue;'>{X_sample_logit:.5f}</span></h4>", unsafe_allow_html=True)
+        st.markdown(f"<h4 style='font-size: 20px;'>Estimated Lung Cancer Probability: <span style='color:blue;'>{X_sample_probability*100:.5f}%</span></h4>", unsafe_allow_html=True)
+        st.markdown(f"<h4 style='font-size: 20px;'>Predicted Class: <span style='color:blue;'>{X_sample_class}</span></h4>", unsafe_allow_html=True)
+    
+    if X_sample_class == "High-Risk":
+        st.markdown(f"<h4 style='font-size: 20px;'>Computed Logit Value: <span style='color:red;'>{X_sample_logit:.5f}</span></h4>", unsafe_allow_html=True)
+        st.markdown(f"<h4 style='font-size: 20px;'>Estimated Lung Cancer Probability: <span style='color:red;'>{X_sample_probability*100:.5f}%</span></h4>", unsafe_allow_html=True)
+        st.markdown(f"<h4 style='font-size: 20px;'>Predicted Class: <span style='color:red;'>{X_sample_class}</span></h4>", unsafe_allow_html=True)
     
     st.markdown("""---""")
         
