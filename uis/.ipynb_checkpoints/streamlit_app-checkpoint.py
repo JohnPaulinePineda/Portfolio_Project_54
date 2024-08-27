@@ -71,7 +71,8 @@ st.markdown("<h1 style='text-align: center;'>Lung Cancer Probability Estimator</
 # selecting the 
 ##################################
 st.markdown("""---""")
-st.markdown("<h4 style='font-size: 20px; font-weight: bold;'>Select Clinical Symptoms and Behavioral Indicators</h4>", unsafe_allow_html=True)
+st.markdown("<h4 style='font-size: 20px; font-weight: bold;'>Clinical Symptoms and Behavioral Indicators</h4>", unsafe_allow_html=True)
+st.markdown("""---""")
 
 ##################################
 # Looping to create radio buttons for each variable
@@ -108,7 +109,9 @@ entered = st.button("Show Selection Against Data Distribution and Estimate Lung 
 ##################################    
 if entered:
     
-    st.markdown("""---""")  
+    st.markdown("""---""")      
+    st.markdown("<h4 style='font-size: 20px; font-weight: bold;'>Test Case Characteristics</h4>", unsafe_allow_html=True)    
+    st.markdown("""---""") 
     
     ##################################
     # Creating a 2x5 grid of plots
@@ -255,7 +258,11 @@ if entered:
     # for baseline logistic curve plotting
     ##################################
     X_list_logit, X_list_probability, X_list_logit_sorted, X_list_probability_sorted = compute_list_logit_probability_class(X_train_smote)
-       
+    
+    st.markdown("""---""")    
+    st.markdown("<h4 style='font-size: 20px; font-weight: bold;'>Test Case Lung Cancer Probability Estimation</h4>", unsafe_allow_html=True)    
+    st.markdown("""---""") 
+    
     ##################################
     # Creating a 1x1 plot
     ##################################
@@ -305,13 +312,13 @@ if entered:
     ##################################    
     st.pyplot(fig)
     
-    st.markdown("""---""")
-    
     ##################################
     # Summarizing the results
     ################################## 
-
-    st.markdown("<h4 style='font-size: 20px; font-weight: bold;'>Test Case Model Prediction Summary</h4>", unsafe_allow_html=True)
+    
+    st.markdown("""---""")   
+    st.markdown("<h4 style='font-size: 20px; font-weight: bold;'>Test Case Description and Model Prediction Summary</h4>", unsafe_allow_html=True)    
+    st.markdown("""---""")
     
     if X_sample_class == "Low-Risk":
         st.markdown(f"<h4 style='font-size: 20px;'>Computed Logit Value: <span style='color:blue;'>{X_sample_logit:.5f}</span></h4>", unsafe_allow_html=True)
