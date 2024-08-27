@@ -55,7 +55,7 @@ variables = ["YELLOW_FINGERS",
              "CHEST_PAIN"]
 
 ##################################
-# Initialize lists to store user responses
+# Initializing lists to store user responses
 ##################################
 categorical_responses = {}
 numeric_responses = {}
@@ -68,7 +68,8 @@ st.markdown("<h1 style='text-align: center;'>Lung Cancer Probability Estimator</
 
 ##################################
 # Creating a section for 
-# selecting the 
+# selecting the options
+# for the test case characteristics
 ##################################
 st.markdown("""---""")
 st.markdown("<h4 style='font-size: 20px; font-weight: bold;'>Clinical Symptoms and Behavioral Indicators</h4>", unsafe_allow_html=True)
@@ -89,6 +90,7 @@ st.markdown("""---""")
                
 ##################################
 # Converting the user inputs
+# to different data types
 ##################################       
 X_test_sample_numeric = pd.DataFrame([numeric_responses])
 X_test_sample_category = pd.DataFrame([categorical_responses])
@@ -105,19 +107,29 @@ st.markdown("""
 entered = st.button("Show Selection Against Data Distribution and Estimate Lung Cancer Probability")
 
 ##################################
-# Listing the logic for the button action
+# Defining the code logic
+# for the button action
 ##################################    
 if entered:
-    
+    ##################################
+    # Defining a section title
+    # for the test case characteristics
+    ##################################    
     st.markdown("""---""")      
     st.markdown("<h4 style='font-size: 20px; font-weight: bold;'>Test Case Characteristics</h4>", unsafe_allow_html=True)    
     st.markdown("""---""") 
     
     ##################################
     # Creating a 2x5 grid of plots
+    # for comparing the test case characteristics
+    # against the training data distribution
     ##################################
     fig, axs = plt.subplots(2, 5, figsize=(17, 8))
-
+    
+    ##################################
+    # Defining fixed colors to
+    # represent different category levels
+    ##################################
     colors = ['blue','red']
     level_order = ['Absent','Present']
     
@@ -246,7 +258,7 @@ if entered:
     
     ##################################
     # Generating the test case prediction
-    # for updating on the baseline logistic curve
+    # to be superimposed on the baseline logistic curve
     ##################################   
     test_case_model_prediction = compute_individual_logit_probability_class(X_test_sample_numeric)
     X_sample_logit = test_case_model_prediction[0]
@@ -255,16 +267,22 @@ if entered:
     
     ##################################
     # Generating the train case predictions
-    # for baseline logistic curve plotting
+    # for formulating the baseline logistic curve
     ##################################
     X_list_logit, X_list_probability, X_list_logit_sorted, X_list_probability_sorted = compute_list_logit_probability_class(X_train_smote)
     
+    ##################################
+    # Defining a section title
+    # for the test case lung cancer probability estimation
+    ################################## 
     st.markdown("""---""")    
     st.markdown("<h4 style='font-size: 20px; font-weight: bold;'>Test Case Lung Cancer Probability Estimation</h4>", unsafe_allow_html=True)    
     st.markdown("""---""") 
     
     ##################################
     # Creating a 1x1 plot
+    # for plotting the estimated logistic curve
+    # of the final classification model
     ##################################
     fig, ax = plt.subplots(figsize=(17, 8))
     
@@ -299,7 +317,6 @@ if entered:
         ax.scatter(X_sample_logit, X_sample_probability, color='red', s=125, edgecolor='k', label='Test Case (High-Risk)', marker= 's', zorder=5)
         ax.axvline(X_sample_logit, color='black', linestyle='--', linewidth=3)
         ax.axhline(X_sample_probability, color='black', linestyle='--', linewidth=3)
-
     ax.set_title('Final Classification Model: Stacked Model (Meta-Learner = Logistic Regression, Base Learners = Random Forest, Support Vector Classifier, Decision Tree)')
     ax.set_xlabel('Logit (Log-Odds)')
     ax.set_ylabel('Estimated Lung Cancer Probability')
@@ -313,13 +330,16 @@ if entered:
     st.pyplot(fig)
     
     ##################################
-    # Summarizing the results
-    ################################## 
-    
+    # Defining a section title
+    # for the test case model prediction summary
+    ##################################      
     st.markdown("""---""")   
-    st.markdown("<h4 style='font-size: 20px; font-weight: bold;'>Test Case Description and Model Prediction Summary</h4>", unsafe_allow_html=True)    
+    st.markdown("<h4 style='font-size: 20px; font-weight: bold;'>Test Case Model Prediction Summary</h4>", unsafe_allow_html=True)    
     st.markdown("""---""")
     
+    ##################################
+    # Summarizing the test case model prediction results
+    ##################################     
     if X_sample_class == "Low-Risk":
         st.markdown(f"<h4 style='font-size: 20px;'>Computed Logit Value: <span style='color:blue;'>{X_sample_logit:.5f}</span></h4>", unsafe_allow_html=True)
         st.markdown(f"<h4 style='font-size: 20px;'>Estimated Lung Cancer Probability: <span style='color:blue;'>{X_sample_probability*100:.5f}%</span></h4>", unsafe_allow_html=True)
@@ -331,5 +351,3 @@ if entered:
         st.markdown(f"<h4 style='font-size: 20px;'>Predicted Class: <span style='color:red;'>{X_sample_class}</span></h4>", unsafe_allow_html=True)
     
     st.markdown("""---""")
-        
-      
