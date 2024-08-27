@@ -67,6 +67,12 @@ st.markdown("""---""")
 st.markdown("<h1 style='text-align: center;'>Lung Cancer Probability Estimator</h1>", unsafe_allow_html=True)
 
 ##################################
+# Providing a description for the application
+##################################
+st.markdown("""---""")
+st.markdown("<h5 style='font-size: 20px;'>This model evaluates the lung cancer risk of a test case based on certain clinical symptoms and behavioral indicators. Pass the appropriate details below to visually assess your characteristics against the study population, compute your risk index, estimate your lung cancer probability, and determine your risk category. For more information on the complete model development process, you may refer to this <a href='https://johnpaulinepineda.github.io/Portfolio_Project_54/' style='font-weight: bold;'>Jupyter Notebook</a>. Additionally, all associated datasets and code files can be accessed from this <a href='https://github.com/JohnPaulinePineda/Portfolio_Project_54' style='font-weight: bold;'>GitHub Project Repository</a>.</h5>", unsafe_allow_html=True)
+
+##################################
 # Creating a section for 
 # selecting the options
 # for the test case characteristics
@@ -104,7 +110,7 @@ st.markdown("""
     </style>
     """, unsafe_allow_html=True)
 
-entered = st.button("Show Selection Against Data Distribution and Estimate Lung Cancer Probability")
+entered = st.button("Assess Characteristics Against Study Population + Compute Risk Index + Estimate Lung Cancer Probability + Predict Risk Category")
 
 ##################################
 # Defining the code logic
@@ -289,7 +295,7 @@ if entered:
     ##################################
     # Plotting the computed logit value
     # estimated probability
-    # and predicted class
+    # and predicted risk category
     # for the test case 
     # in the estimated logistic curve
     # of the final classification model
@@ -318,7 +324,7 @@ if entered:
         ax.axvline(X_sample_logit, color='black', linestyle='--', linewidth=3)
         ax.axhline(X_sample_probability, color='black', linestyle='--', linewidth=3)
     ax.set_title('Final Classification Model: Stacked Model (Meta-Learner = Logistic Regression, Base Learners = Random Forest, Support Vector Classifier, Decision Tree)')
-    ax.set_xlabel('Logit (Log-Odds)')
+    ax.set_xlabel('Risk Index (Log-Odds)')
     ax.set_ylabel('Estimated Lung Cancer Probability')
     ax.grid(False)
     ax.legend(facecolor='white', framealpha=1, loc='upper center', bbox_to_anchor=(0.5, -0.10), ncol=3)
@@ -341,13 +347,13 @@ if entered:
     # Summarizing the test case model prediction results
     ##################################     
     if X_sample_class == "Low-Risk":
-        st.markdown(f"<h4 style='font-size: 20px;'>Computed Logit Value: <span style='color:blue;'>{X_sample_logit:.5f}</span></h4>", unsafe_allow_html=True)
+        st.markdown(f"<h4 style='font-size: 20px;'>Computed Risk Index: <span style='color:blue;'>{X_sample_logit:.5f}</span></h4>", unsafe_allow_html=True)
         st.markdown(f"<h4 style='font-size: 20px;'>Estimated Lung Cancer Probability: <span style='color:blue;'>{X_sample_probability*100:.5f}%</span></h4>", unsafe_allow_html=True)
-        st.markdown(f"<h4 style='font-size: 20px;'>Predicted Class: <span style='color:blue;'>{X_sample_class}</span></h4>", unsafe_allow_html=True)
+        st.markdown(f"<h4 style='font-size: 20px;'>Predicted Risk Category: <span style='color:blue;'>{X_sample_class}</span></h4>", unsafe_allow_html=True)
     
     if X_sample_class == "High-Risk":
-        st.markdown(f"<h4 style='font-size: 20px;'>Computed Logit Value: <span style='color:red;'>{X_sample_logit:.5f}</span></h4>", unsafe_allow_html=True)
+        st.markdown(f"<h4 style='font-size: 20px;'>Computed Risk Index: <span style='color:red;'>{X_sample_logit:.5f}</span></h4>", unsafe_allow_html=True)
         st.markdown(f"<h4 style='font-size: 20px;'>Estimated Lung Cancer Probability: <span style='color:red;'>{X_sample_probability*100:.5f}%</span></h4>", unsafe_allow_html=True)
-        st.markdown(f"<h4 style='font-size: 20px;'>Predicted Class: <span style='color:red;'>{X_sample_class}</span></h4>", unsafe_allow_html=True)
+        st.markdown(f"<h4 style='font-size: 20px;'>Predicted Risk Category: <span style='color:red;'>{X_sample_class}</span></h4>", unsafe_allow_html=True)
     
     st.markdown("""---""")

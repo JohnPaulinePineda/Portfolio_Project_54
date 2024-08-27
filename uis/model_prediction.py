@@ -19,9 +19,9 @@ final_classification_model = joblib.load(os.path.join("..", MODELS_PATH, "stacke
 
 ##################################
 # Formulating a function to
-# compute the logit value,
+# compute the risk index,
 # estimate the lung cancer probability,
-# and predict the class
+# and predict the risk category
 # of an individual test case
 ##################################
 def compute_individual_logit_probability_class(X_test_sample):
@@ -32,9 +32,9 @@ def compute_individual_logit_probability_class(X_test_sample):
 
 ##################################
 # Formulating a function to
-# compute the logit value,
+# compute the risk index,
 # estimate the lung cancer probability,
-# and predict the class
+# and predict the risk category
 # of a list of train cases
 ##################################
 def compute_list_logit_probability_class(X_train_list):

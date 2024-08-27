@@ -32,7 +32,7 @@
         * [1.6.8 Model Testing](#1.6.8)
         * [1.6.9 Model Inference](#1.6.9)
     * [1.7 Predictive Model Deployment](#1.7)
-        * [1.7.1 Application Programming Interface (API) Development](#1.7.1)
+        * [1.7.1 Local Model Object Development](#1.7.1)
         * [1.7.2 User Interface (UI) Development](#1.7.2)
         * [1.7.3 Model Serving](#1.7.2)
 * [**2. Summary**](#Summary)   
@@ -150,7 +150,442 @@ from sklearn.model_selection import train_test_split, GridSearchCV, cross_val_sc
 
 from imblearn.over_sampling import SMOTE
 from imblearn.under_sampling import CondensedNearestNeighbour
+
+import pkg_resources
 ```
+
+
+```python
+##################################
+# Listing all loaded packages
+# and their versions
+##################################
+for package in sorted(pkg_resources.working_set, key=lambda x: x.project_name.lower()):
+    print(f"{package.project_name}=={package.version}")
+```
+
+    absl-py==2.0.0
+    aiobotocore==2.4.2
+    aiofiles==22.1.0
+    aiohttp==3.8.3
+    aioitertools==0.7.1
+    aiosignal==1.2.0
+    aiosqlite==0.18.0
+    alabaster==0.7.12
+    altair==5.4.0
+    anaconda-anon-usage==0.4.1
+    anaconda-catalogs==0.2.0
+    anaconda-client==1.12.0
+    anaconda-navigator==2.4.3
+    anaconda-project==0.11.1
+    anyio==3.5.0
+    appdirs==1.4.4
+    argon2-cffi==21.3.0
+    argon2-cffi-bindings==21.2.0
+    arrow==1.2.3
+    astroid==2.14.2
+    astropy==5.1
+    asttokens==2.0.5
+    astunparse==1.6.3
+    async-timeout==4.0.2
+    atomicwrites==1.4.0
+    attrs==22.1.0
+    autograd==1.6.2
+    autograd-gamma==0.5.0
+    Automat==20.2.0
+    autopep8==1.6.0
+    Babel==2.11.0
+    backcall==0.2.0
+    backports.functools-lru-cache==1.6.4
+    backports.tempfile==1.0
+    backports.weakref==1.0.post1
+    bcrypt==3.2.0
+    beautifulsoup4==4.12.2
+    binaryornot==0.4.4
+    black==0.0
+    bleach==4.1.0
+    blinker==1.8.2
+    bokeh==3.2.1
+    boltons==23.0.0
+    boto3==1.24.28
+    botocore==1.27.59
+    Bottleneck==1.3.5
+    brotlipy==0.7.0
+    cachetools==5.3.2
+    certifi==2023.7.22
+    cffi==1.15.1
+    chardet==4.0.0
+    charset-normalizer==2.0.4
+    click==8.0.4
+    click-plugins==1.1.1
+    cligj==0.7.2
+    cloudpickle==2.2.1
+    clyent==1.2.2
+    colorama==0.4.6
+    colorcet==3.0.1
+    comm==0.1.2
+    conda==23.7.4
+    conda-build==3.26.0
+    conda-content-trust==0.2.0
+    conda-index==0.2.3
+    conda-libmamba-solver==23.5.0
+    conda-pack==0.6.0
+    conda-package-handling==2.2.0
+    conda-package-streaming==0.9.0
+    conda-repo-cli==1.0.41
+    conda-token==0.4.0
+    conda-verify==3.4.2
+    constantly==15.1.0
+    contourpy==1.0.5
+    cookiecutter==1.7.3
+    cryptography==41.0.2
+    cssselect==1.1.0
+    cycler==0.11.0
+    cytoolz==0.12.0
+    daal4py==2023.1.1
+    dask==2023.6.0
+    datashader==0.15.1
+    datashape==0.5.4
+    debugpy==1.6.7
+    decorator==5.1.1
+    defusedxml==0.7.1
+    diff-match-patch==20200713
+    dill==0.3.6
+    distributed==2023.6.0
+    docopt==0.6.2
+    docstring-to-markdown==0.11
+    docutils==0.18.1
+    ecos==2.0.13
+    entrypoints==0.4
+    et-xmlfile==1.1.0
+    executing==0.8.3
+    fastjsonschema==2.16.2
+    filelock==3.9.0
+    fiona==1.9.5
+    flake8==6.0.0
+    Flask==2.2.2
+    flatbuffers==23.5.26
+    fonttools==4.25.0
+    formulaic==1.0.1
+    frozendict==2.3.8
+    frozenlist==1.3.3
+    fsspec==2023.3.0
+    future==0.18.3
+    gast==0.5.4
+    gensim==4.3.0
+    geopandas==0.14.1
+    gitdb==4.0.11
+    GitPython==3.1.43
+    glob2==0.7
+    google-auth==2.25.2
+    google-auth-oauthlib==1.2.0
+    google-pasta==0.2.0
+    greenlet==2.0.1
+    grpcio==1.60.0
+    h5py==3.7.0
+    HeapDict==1.0.1
+    holoviews==1.17.0
+    html5lib==1.1
+    hvplot==0.8.4
+    hyperlink==21.0.0
+    idna==3.4
+    imagecodecs==2021.8.26
+    imageio==2.26.0
+    imagesize==1.4.1
+    imbalanced-learn==0.10.1
+    imblearn==0.0
+    importlib-metadata==6.0.0
+    incremental==21.3.0
+    inflection==0.5.1
+    iniconfig==1.1.1
+    intake==0.6.8
+    interface-meta==1.3.0
+    intervaltree==3.1.0
+    ipykernel==6.19.2
+    ipympl==0.9.3
+    ipython==8.12.3
+    ipython-genutils==0.2.0
+    ipywidgets==8.0.4
+    isort==5.9.3
+    itemadapter==0.3.0
+    itemloaders==1.0.4
+    itsdangerous==2.0.1
+    jaraco.classes==3.2.1
+    jedi==0.18.1
+    jellyfish==0.9.0
+    Jinja2==3.1.2
+    jinja2-time==0.2.0
+    jmespath==0.10.0
+    joblib==1.2.0
+    json5==0.9.6
+    jsonpatch==1.32
+    jsonpointer==2.1
+    jsonschema==4.17.3
+    jupyter==1.0.0
+    jupyter-client==7.4.9
+    jupyter-console==6.6.3
+    jupyter-core==5.3.0
+    jupyter-events==0.6.3
+    jupyter-server==1.23.4
+    jupyter-server-fileid==0.9.0
+    jupyter-server-ydoc==0.8.0
+    jupyter-ydoc==0.2.4
+    jupyterlab==3.6.3
+    jupyterlab-pygments==0.1.2
+    jupyterlab-server==2.22.0
+    jupyterlab-widgets==3.0.5
+    keras==2.12.0
+    keyring==23.13.1
+    kiwisolver==1.4.4
+    lazy-loader==0.2
+    lazy-object-proxy==1.6.0
+    libarchive-c==2.9
+    libclang==16.0.6
+    libmambapy==1.4.1
+    lifelines==0.28.0
+    linkify-it-py==2.0.0
+    llvmlite==0.40.0
+    lmdb==1.4.1
+    locket==1.0.0
+    lxml==4.9.2
+    lz4==4.3.2
+    Markdown==3.4.1
+    markdown-it-py==2.2.0
+    MarkupSafe==2.1.1
+    matplotlib==3.7.1
+    matplotlib-inline==0.1.6
+    mccabe==0.7.0
+    mdit-py-plugins==0.3.0
+    mdurl==0.1.0
+    menuinst==1.4.19
+    mistune==3.0.2
+    mkl-fft==1.3.6
+    mkl-random==1.2.2
+    mkl-service==2.4.0
+    ml-dtypes==0.2.0
+    mlxtend==0.23.0
+    more-itertools==8.12.0
+    mpmath==1.3.0
+    msgpack==1.0.3
+    multidict==6.0.2
+    multipledispatch==0.6.0
+    multitasking==0.0.11
+    munkres==1.1.4
+    mypy-extensions==0.4.3
+    narwhals==1.5.5
+    navigator-updater==0.4.0
+    nbclassic==0.5.5
+    nbclient==0.5.13
+    nbconvert==7.16.4
+    nbformat==5.7.0
+    nest-asyncio==1.5.6
+    networkx==3.1
+    nltk==3.8.1
+    notebook==6.5.4
+    notebook-shim==0.2.2
+    numba==0.57.0
+    numexpr==2.8.4
+    numpy==1.24.3
+    numpydoc==1.5.0
+    oauthlib==3.2.2
+    opencv-python==4.8.1.78
+    openpyxl==3.0.10
+    opt-einsum==3.3.0
+    osqp==0.6.5
+    packaging==23.0
+    pandas==1.5.3
+    pandocfilters==1.5.0
+    panel==1.2.1
+    param==1.13.0
+    paramiko==2.8.1
+    parsel==1.6.0
+    parso==0.8.3
+    partd==1.2.0
+    pathlib==1.0.1
+    pathspec==0.10.3
+    patsy==0.5.3
+    pep8==1.7.1
+    pexpect==4.8.0
+    pickleshare==0.7.5
+    Pillow==9.4.0
+    pip==23.2.1
+    pipreqs==0.5.0
+    pkginfo==1.9.6
+    platformdirs==2.5.2
+    plotly==5.9.0
+    pluggy==1.0.0
+    ply==3.11
+    pooch==1.4.0
+    poyo==0.5.0
+    prometheus-client==0.14.1
+    prompt-toolkit==3.0.36
+    Protego==0.1.16
+    protobuf==4.23.4
+    psutil==5.9.0
+    ptyprocess==0.7.0
+    pure-eval==0.2.2
+    py-cpuinfo==8.0.0
+    pyarrow==11.0.0
+    pyasn1==0.4.8
+    pyasn1-modules==0.2.8
+    pycodestyle==2.10.0
+    pycosat==0.6.4
+    pycparser==2.21
+    pyct==0.5.0
+    pycurl==7.45.2
+    pydeck==0.9.1
+    PyDispatcher==2.0.5
+    pydocstyle==6.3.0
+    pyerfa==2.0.0
+    pyflakes==3.0.1
+    Pygments==2.15.1
+    PyJWT==2.4.0
+    pylint==2.16.2
+    pylint-venv==2.3.0
+    pyls-spyder==0.4.0
+    PyNaCl==1.5.0
+    pyodbc==4.0.34
+    pyOpenSSL==23.2.0
+    pyparsing==3.0.9
+    pyproj==3.6.1
+    PyQt5==5.15.7
+    PyQt5-sip==12.11.0
+    PyQtWebEngine==5.15.4
+    pyrsistent==0.18.0
+    PySocks==1.7.1
+    pytest==7.4.0
+    python-dateutil==2.8.2
+    python-json-logger==2.0.7
+    python-lsp-black==1.2.1
+    python-lsp-jsonrpc==1.0.0
+    python-lsp-server==1.7.2
+    python-slugify==5.0.2
+    python-snappy==0.6.1
+    pytoolconfig==1.2.5
+    pytz==2022.7
+    pyviz-comms==2.3.0
+    PyWavelets==1.4.1
+    pywin32==305.1
+    pywin32-ctypes==0.2.0
+    pywinpty==2.0.10
+    PyYAML==6.0
+    pyzmq==23.2.0
+    QDarkStyle==3.0.2
+    qdldl==0.1.7.post2
+    qstylizer==0.2.2
+    QtAwesome==1.2.2
+    qtconsole==5.4.2
+    QtPy==2.2.0
+    queuelib==1.5.0
+    regex==2022.7.9
+    requests==2.31.0
+    requests-file==1.5.1
+    requests-oauthlib==1.3.1
+    requests-toolbelt==1.0.0
+    rfc3339-validator==0.1.4
+    rfc3986-validator==0.1.1
+    rich==13.7.1
+    rope==1.7.0
+    rsa==4.9
+    Rtree==1.0.1
+    ruamel-yaml-conda==0.17.21
+    ruamel.yaml==0.17.21
+    s3fs==2023.3.0
+    s3transfer==0.6.0
+    sacremoses==0.0.43
+    scikit-image==0.20.0
+    scikit-learn==1.2.2
+    scikit-learn-intelex==20230426.121932
+    scikit-survival==0.22.2
+    scipy==1.10.1
+    Scrapy==2.8.0
+    seaborn==0.12.2
+    Send2Trash==1.8.0
+    service-identity==18.1.0
+    setuptools==68.0.0
+    shap==0.43.0
+    shapely==2.0.2
+    sip==6.6.2
+    six==1.16.0
+    slicer==0.0.7
+    smart-open==5.2.1
+    smmap==5.0.1
+    sniffio==1.2.0
+    snowballstemmer==2.2.0
+    sortedcontainers==2.4.0
+    soupsieve==2.4
+    Sphinx==5.0.2
+    sphinxcontrib-applehelp==1.0.2
+    sphinxcontrib-devhelp==1.0.2
+    sphinxcontrib-htmlhelp==2.0.0
+    sphinxcontrib-jsmath==1.0.1
+    sphinxcontrib-qthelp==1.0.3
+    sphinxcontrib-serializinghtml==1.1.5
+    spyder==5.4.3
+    spyder-kernels==2.4.3
+    SQLAlchemy==1.4.39
+    stack-data==0.2.0
+    statsmodels==0.14.0
+    sympy==1.11.1
+    tables==3.8.0
+    tabulate==0.8.10
+    TBB==0.2
+    tblib==1.7.0
+    tenacity==8.2.2
+    tensorboard==2.15.1
+    tensorboard-data-server==0.7.2
+    tensorflow==2.15.0
+    tensorflow-estimator==2.15.0
+    tensorflow-intel==2.15.0
+    tensorflow-io-gcs-filesystem==0.31.0
+    termcolor==2.4.0
+    terminado==0.17.1
+    text-unidecode==1.3
+    textdistance==4.2.1
+    threadpoolctl==2.2.0
+    three-merge==0.1.1
+    tifffile==2021.7.2
+    tinycss2==1.2.1
+    tldextract==3.2.0
+    toml==0.10.2
+    tomlkit==0.11.1
+    toolz==0.12.0
+    tornado==6.3.2
+    tqdm==4.65.0
+    traitlets==5.7.1
+    transformers==2.1.1
+    Twisted==22.10.0
+    twisted-iocpsupport==1.0.2
+    typing-extensions==4.12.2
+    uc-micro-py==1.0.1
+    ujson==5.4.0
+    Unidecode==1.2.0
+    urllib3==1.26.16
+    w3lib==1.21.0
+    watchdog==2.1.6
+    wcwidth==0.2.5
+    webencodings==0.5.1
+    websocket-client==0.58.0
+    Werkzeug==2.2.3
+    whatthepatch==1.0.2
+    wheel==0.38.4
+    widgetsnbextension==4.0.5
+    win-inet-pton==1.1.0
+    wrapt==1.14.1
+    xarray==2023.6.0
+    xlwings==0.29.1
+    xyzservices==2022.9.0
+    y-py==0.5.9
+    yapf==0.31.0
+    yarg==0.1.9
+    yarl==1.8.1
+    yfinance==0.2.4
+    ypy-websocket==0.8.2
+    zict==2.2.0
+    zipp==3.11.0
+    zope.interface==5.4.0
+    zstandard==0.19.0
+    
 
 
 ```python
@@ -2824,7 +3259,7 @@ for column in lung_cancer_numeric:
 
 
     
-![png](output_83_0.png)
+![png](output_84_0.png)
     
 
 
@@ -3122,7 +3557,7 @@ plt.show()
 
 
     
-![png](output_87_0.png)
+![png](output_88_0.png)
     
 
 
@@ -3201,7 +3636,7 @@ plt.show()
 
 
     
-![png](output_93_0.png)
+![png](output_94_0.png)
     
 
 
@@ -3262,7 +3697,7 @@ plt.show()
 
 
     
-![png](output_95_0.png)
+![png](output_96_0.png)
     
 
 
@@ -4870,7 +5305,7 @@ plt.show()
 
 
     
-![png](output_148_0.png)
+![png](output_149_0.png)
     
 
 
@@ -4923,7 +5358,7 @@ plt.show()
 
 
     
-![png](output_150_0.png)
+![png](output_151_0.png)
     
 
 
@@ -4988,7 +5423,7 @@ plt.show()
 
 
     
-![png](output_154_0.png)
+![png](output_155_0.png)
     
 
 
@@ -5242,7 +5677,7 @@ plt.show()
 
 
     
-![png](output_162_0.png)
+![png](output_163_0.png)
     
 
 
@@ -5295,7 +5730,7 @@ plt.show()
 
 
     
-![png](output_164_0.png)
+![png](output_165_0.png)
     
 
 
@@ -5360,7 +5795,7 @@ plt.show()
 
 
     
-![png](output_168_0.png)
+![png](output_169_0.png)
     
 
 
@@ -5523,7 +5958,7 @@ plt.show()
 
 
     
-![png](output_177_0.png)
+![png](output_178_0.png)
     
 
 
@@ -5576,7 +6011,7 @@ plt.show()
 
 
     
-![png](output_179_0.png)
+![png](output_180_0.png)
     
 
 
@@ -5641,7 +6076,7 @@ plt.show()
 
 
     
-![png](output_183_0.png)
+![png](output_184_0.png)
     
 
 
@@ -5889,7 +6324,7 @@ plt.show()
 
 
     
-![png](output_191_0.png)
+![png](output_192_0.png)
     
 
 
@@ -5942,7 +6377,7 @@ plt.show()
 
 
     
-![png](output_193_0.png)
+![png](output_194_0.png)
     
 
 
@@ -6007,7 +6442,7 @@ plt.show()
 
 
     
-![png](output_197_0.png)
+![png](output_198_0.png)
     
 
 
@@ -6172,7 +6607,7 @@ plt.show()
 
 
     
-![png](output_206_0.png)
+![png](output_207_0.png)
     
 
 
@@ -6225,7 +6660,7 @@ plt.show()
 
 
     
-![png](output_208_0.png)
+![png](output_209_0.png)
     
 
 
@@ -6290,7 +6725,7 @@ plt.show()
 
 
     
-![png](output_212_0.png)
+![png](output_213_0.png)
     
 
 
@@ -6546,7 +6981,7 @@ plt.show()
 
 
     
-![png](output_220_0.png)
+![png](output_221_0.png)
     
 
 
@@ -6604,7 +7039,7 @@ plt.show()
 
 
     
-![png](output_223_0.png)
+![png](output_224_0.png)
     
 
 
@@ -6669,7 +7104,7 @@ plt.show()
 
 
     
-![png](output_227_0.png)
+![png](output_228_0.png)
     
 
 
@@ -6832,7 +7267,7 @@ for container in f1_plot.containers:
 
 
     
-![png](output_231_0.png)
+![png](output_232_0.png)
     
 
 
@@ -6982,7 +7417,7 @@ for container in updated_f1_plot.containers:
 
 
     
-![png](output_235_0.png)
+![png](output_236_0.png)
     
 
 
@@ -7023,8 +7458,8 @@ for container in updated_f1_plot.containers:
         * <span style="color: #FF0000">FATIGUE</span>
         * <span style="color: #FF0000">WHEEZING</span>
 2. Model inference involved indicating the characteristics and predicting the probability of the new case against the model training observations.
-        * Characteristics based on all features used for generating the final selected stacked classifier
-        * Predicted lung cancer probability based on the final selected stacked classifier logistic curve
+    * Characteristics based on all features used for generating the final selected stacked classifier
+    * Predicted lung cancer probability based on the final selected stacked classifier logistic curve
 
 
 
@@ -7083,19 +7518,19 @@ for index, (name, model) in enumerate(final_model.named_estimators_.items()):
 
 
     
-![png](output_240_0.png)
+![png](output_241_0.png)
     
 
 
 
     
-![png](output_240_1.png)
+![png](output_241_1.png)
     
 
 
 
     
-![png](output_240_2.png)
+![png](output_241_2.png)
     
 
 
@@ -7135,7 +7570,7 @@ if hasattr(final_model.final_estimator_, 'coef_'):
 
 
     
-![png](output_242_0.png)
+![png](output_243_0.png)
     
 
 
@@ -7380,7 +7815,7 @@ plt.show()
 
 
     
-![png](output_244_0.png)
+![png](output_245_0.png)
     
 
 
@@ -7418,7 +7853,7 @@ plt.show()
 
 
     
-![png](output_245_0.png)
+![png](output_246_0.png)
     
 
 
@@ -7687,7 +8122,7 @@ plt.show()
 
 
     
-![png](output_248_0.png)
+![png](output_249_0.png)
     
 
 
@@ -7700,14 +8135,14 @@ plt.show()
 X_sample_logit = stacked_balanced_class_best_model_upsampled.decision_function(X_test_sample)[0]
 X_sample_probability = stacked_balanced_class_best_model_upsampled.predict_proba(X_test_sample)[0, 1]
 X_sample_class = "Low-Risk" if X_sample_probability < 0.50 else "High-Risk"
-print(f"Test Case Logit Value: {X_sample_logit}")
+print(f"Test Case Risk Index: {X_sample_logit}")
 print(f"Test Case Probability: {X_sample_probability}")
-print(f"Test Case Class: {X_sample_class}")
+print(f"Test Case Risk Category: {X_sample_class}")
 ```
 
-    Test Case Logit Value: -0.3863877455601523
+    Test Case Risk Index: -0.3863877455601523
     Test Case Probability: 0.4045871790163868
-    Test Case Class: Low-Risk
+    Test Case Risk Category: Low-Risk
     
 
 
@@ -7751,7 +8186,7 @@ plt.show()
 
 
     
-![png](output_250_0.png)
+![png](output_251_0.png)
     
 
 
@@ -8020,7 +8455,7 @@ plt.show()
 
 
     
-![png](output_253_0.png)
+![png](output_254_0.png)
     
 
 
@@ -8033,14 +8468,14 @@ plt.show()
 X_sample_logit = stacked_balanced_class_best_model_upsampled.decision_function(X_test_sample)[0]
 X_sample_probability = stacked_balanced_class_best_model_upsampled.predict_proba(X_test_sample)[0, 1]
 X_sample_class = "Low-Risk" if X_sample_probability < 0.50 else "High-Risk"
-print(f"Test Case Logit Value: {X_sample_logit}")
+print(f"Test Case Risk Index: {X_sample_logit}")
 print(f"Test Case Probability: {X_sample_probability}")
-print(f"Test Case Class: {X_sample_class}")
+print(f"Test Case Risk Category: {X_sample_class}")
 ```
 
-    Test Case Logit Value: 2.6153097148460773
+    Test Case Risk Index: 2.6153097148460773
     Test Case Probability: 0.931840411014508
-    Test Case Class: High-Risk
+    Test Case Risk Category: High-Risk
     
 
 
@@ -8084,15 +8519,15 @@ plt.show()
 
 
     
-![png](output_255_0.png)
+![png](output_256_0.png)
     
 
 
 ## 1.7. Predictive Model Deployment <a class="anchor" id="1.7"></a>
 
-### 1.7.1 Application Programming Interface (API) Development <a class="anchor" id="1.7.1"></a>
+### 1.7.1 Local Model Object Development <a class="anchor" id="1.7.1"></a>
 
-### 1.7.2 User Interface (UI) Development <a class="anchor" id="1.7.2"></a>
+### 1.7.2 User Interface Development <a class="anchor" id="1.7.2"></a>
 
 ### 1.7.3 Model Serving <a class="anchor" id="1.7.3"></a>
 
@@ -8185,7 +8620,7 @@ plt.show()
 * **[Article]** [Stacking to Improve Model Performance: A Comprehensive Guide on Ensemble Learning in Python](https://medium.com/@brijesh_soni/stacking-to-improve-model-performance-a-comprehensive-guide-on-ensemble-learning-in-python-9ed53c93ce28) by Brijesh Soni (Medium)
 * **[Article]** [Stacking Ensemble Machine Learning With Python](https://machinelearningmastery.com/stacking-ensemble-machine-learning-with-python/) by Jason Brownlee (Machine Learning Mastery)
 * **[Article]** [Machine Learning Model deployment with FastAPI, Streamlit and Docker](https://medium.com/latinxinai/fastapi-and-streamlit-app-with-docker-compose-e4d18d78d61d) by Felipe Fernandez (Medium)
-* **[Article]** [End-to-end machine learning using FastAPI, Streamlit, Docker, Google Cloud Platform](https://medium.com/@marcozaninitaly/end-to-end-machine-learning-using-fastapi-streamlit-docker-google-cloud-platform-fcdf9f9216e0) by Marco Zanin (Medium)
+* **[Article]** [End-To-End Machine Learning using FastAPI, Streamlit, Docker, Google Cloud Platform](https://medium.com/@marcozaninitaly/end-to-end-machine-learning-using-fastapi-streamlit-docker-google-cloud-platform-fcdf9f9216e0) by Marco Zanin (Medium)
 * **[Article]** [FastAPI and Streamlit: The Python Duo You Must Know About](https://towardsdatascience.com/fastapi-and-streamlit-the-python-duo-you-must-know-about-72825def1243) by Paul Lusztin (Medium)
 * **[Article]** [How to Build an Instant Machine Learning Web Application with Streamlit and FastAPI](https://developer.nvidia.com/blog/how-to-build-an-instant-machine-learning-web-application-with-streamlit-and-fastapi/) by Kurtis Pykes (Developer.Nvidia.Com)
 * **[Article]** [ML - Deploy Machine Learning Models Using FastAPI](https://dorian599.medium.com/ml-deploy-machine-learning-models-using-fastapi-6ab6aef7e777) by Dorian Machado (Medium)
