@@ -113,7 +113,7 @@ The predictor variables for the study are:
 ##################################
 #!pip uninstall scikit-learn --yes
 #!pip uninstall imblearn --yes
-#!pip install scikit-learn==1.2.2
+#pip install scikit-learn==1.2.2
 #!pip install imblearn
 ```
 
@@ -8527,9 +8527,15 @@ plt.show()
 
 ### 1.7.1 Local Model Object Development <a class="anchor" id="1.7.1"></a>
 
+![Alt text](../images/local_model_development_python.png)
+
 ### 1.7.2 User Interface Development <a class="anchor" id="1.7.2"></a>
 
+![Alt text](../images/ui_development_streamlit.png)
+
 ### 1.7.3 Model Serving <a class="anchor" id="1.7.3"></a>
+
+![Alt text](../images/streamlit_ui.png)
 
 # 2. Summary <a class="anchor" id="Summary"></a>
 
