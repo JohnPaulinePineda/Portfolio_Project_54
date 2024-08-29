@@ -42,7 +42,7 @@
 
 # 1. Table of Contents <a class="anchor" id="TOC"></a>
 
-This project implements the **Logistic Regression Model** as an independent learner and as a meta-learner of a stacking ensemble model with **Decision Trees**, **Random Forest**, and **Support Vector Machine** classifier algorithms using various helpful packages in <mark style="background-color: #CCECFF"><b>Python</b></mark> to estimate probability of a dichotomous categorical response variable by modelling the relationship between one or more predictor variables and a binary outcome. The resulting predictions derived from the candidate models were evaluated using the F1 score that ensures both false positives and false negatives are considered, providing a more balanced view of model classification performance. Resampling approaches including **Synthetic Minority Oversampling Technique** and **Condensed Nearest Neighbors** for imbalanced classification problems were applied by augmenting the dataset used for model training based on its inherent characteristics to achieve a more reasonably balanced distribution between the majority and minority classes. Additionally, **Class Weights** were also implemented by amplifying the loss contributed by the minority class and diminishing the loss from the majority class, forcing the model to focus more on correctly predicting the minority class. Penalties including **Least Absolute Shrinkage and Selection Operator** and **Ridge Regularization** were evaluated to impose constraints on the weight updates. All results were consolidated in a [<span style="color: #FF0000"><b>Summary</b></span>](#Summary) presented at the end of the document. 
+This project implements the **Logistic Regression Model** as an independent learner and as a meta-learner of a stacking ensemble model with **Decision Trees**, **Random Forest**, and **Support Vector Machine** classifier algorithms using various helpful packages in <mark style="background-color: #CCECFF"><b>Python</b></mark> to estimate probability of a dichotomous categorical response variable by modelling the relationship between one or more predictor variables and a binary outcome. The resulting predictions derived from the candidate models were evaluated using the F1 score that ensures both false positives and false negatives are considered, providing a more balanced view of model classification performance. Resampling approaches including **Synthetic Minority Oversampling Technique** and **Condensed Nearest Neighbors** for imbalanced classification problems were applied by augmenting the dataset used for model training based on its inherent characteristics to achieve a more reasonably balanced distribution between the majority and minority classes. Additionally, **Class Weights** were also implemented by amplifying the loss contributed by the minority class and diminishing the loss from the majority class, forcing the model to focus more on correctly predicting the minority class. Penalties including **Least Absolute Shrinkage and Selection Operator** and **Ridge Regularization** were evaluated to impose constraints on the weight updates. The final model was deployed as a prototype application with a web interface via **Streamlit**. All results were consolidated in a [<span style="color: #FF0000"><b>Summary</b></span>](#Summary) presented at the end of the document. 
 
 [Machine Learning Classification Models](http://appliedpredictivemodeling.com/) are algorithms that learn to assign predefined categories or labels to input data based on patterns and relationships identified during the training phase. Classification is a supervised learning task, meaning the models are trained on a labeled dataset where the correct output (class or label) is known for each input. Once trained, these models can predict the class of new, unseen instances.
 
@@ -51,6 +51,8 @@ This project implements the **Logistic Regression Model** as an independent lear
 [Imbalanced Class Learning](http://appliedpredictivemodeling.com/) refers to the process of building and training models to predict a dichotomous categorical response in scenarios where the two classes are not equally represented in the dataset. This imbalance can cause challenges in training machine learning models, leading to biased predictions that favor the majority class or misleading estimation of model performance using the accuracy metric. Several strategies can be employed to effectively handle class imbalance including resampling, class weighting, cost-sensitive learning, and choosing appropriate metrics. in effect, models can be trained to perform well on both the minority and majority classes, ensuring more reliable and fair predictions.
 
 [Regularization Methods](http://appliedpredictivemodeling.com/), in the context of binary classification using Logistic Regression, are primarily used to prevent overfitting and improve the model's generalization to new data. Overfitting occurs when a model is too complex and learns not only the underlying pattern in the data but also the noise. This leads to poor performance on unseen data. Regularization introduces a penalty for large coefficients in the model, which helps in controlling the model complexity. In Logistic Regression, this is done by adding a regularization term to the loss function, which penalizes large values of the coefficients. This forces the model to keep the coefficients small, thereby reducing the likelihood of overfitting. Addiitonally, by penalizing the complexity of the model through the regularization term, regularization methods also help the model generalize better to unseen data. This is because the model is less likely to overfit the training data and more likely to capture the true underlying pattern.
+
+[Streamlit](https://streamlit.io/) is an open-source Python library that simplifies the creation and deployment of web applications for machine learning and data science projects. It allows developers and data scientists to turn Python scripts into interactive web apps quickly without requiring extensive web development knowledge. Streamlit seamlessly integrates with popular Python libraries such as Pandas, Matplotlib, Plotly, and TensorFlow, allowing one to leverage existing data processing and visualization tools within the application. Streamlit apps can be easily deployed on various platforms, including Streamlit Community Cloud, Heroku, or any cloud service that supports Python web applications.
 
 ## 1.1. Data Background <a class="anchor" id="1.1"></a>
 
@@ -113,7 +115,7 @@ The predictor variables for the study are:
 ##################################
 #!pip uninstall scikit-learn --yes
 #!pip uninstall imblearn --yes
-#pip install scikit-learn==1.2.2
+#!pip install scikit-learn==1.2.2
 #!pip install imblearn
 ```
 
@@ -8527,15 +8529,15 @@ plt.show()
 
 ### 1.7.1 Local Model Object Development <a class="anchor" id="1.7.1"></a>
 
-![Alt text](../images/local_model_development_python.png)
+![local_model_development_python.png](771332e7-1de8-4a7e-9af2-887ac2c7f458.png)
 
 ### 1.7.2 User Interface Development <a class="anchor" id="1.7.2"></a>
 
-![Alt text](../images/ui_development_streamlit.png)
+![ui_development_streamlit.png](f082995f-6bea-49b1-b7c6-6bc4ca740071.png)
 
 ### 1.7.3 Model Serving <a class="anchor" id="1.7.3"></a>
 
-![Alt text](../images/streamlit_ui.png)
+![streamlit_ui.png](7d436452-f351-4a42-8878-d38b04a9a55f.png)
 
 # 2. Summary <a class="anchor" id="Summary"></a>
 
