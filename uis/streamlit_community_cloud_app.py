@@ -138,7 +138,7 @@ if entered:
     # Defining fixed colors to
     # represent different category levels
     ##################################
-    colors = ['blue','red']
+    colors = ['red','blue']
     level_order = ['Absent','Present']
     
     ##################################
