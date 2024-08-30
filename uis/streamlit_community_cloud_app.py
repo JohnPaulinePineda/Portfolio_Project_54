@@ -154,7 +154,7 @@ if entered:
     axs[0, 0].set_xlabel(None)
     axs[0, 0].set_ylim(0, 200)
     axs[0, 0].legend(title='LUNG_CANCER', loc='upper center')
-    for patch, color in zip(axs[0, 0].patches, ['blue','blue','red','red'] ):
+    for patch, color in zip(axs[0, 0].patches, ['red','red','blue','blue'] ):
         patch.set_facecolor(color)
         patch.set_alpha(0.2)
 
@@ -165,7 +165,7 @@ if entered:
     axs[0, 1].set_xlabel(None)
     axs[0, 1].set_ylim(0, 200)
     axs[0, 1].legend(title='LUNG_CANCER', loc='upper center')
-    for patch, color in zip(axs[0, 1].patches, ['blue','blue','red','red'] ):
+    for patch, color in zip(axs[0, 1].patches, ['red','red','blue','blue'] ):
         patch.set_facecolor(color)
         patch.set_alpha(0.2)
 
@@ -176,7 +176,7 @@ if entered:
     axs[0, 2].set_xlabel(None)
     axs[0, 2].set_ylim(0, 200)
     axs[0, 2].legend(title='LUNG_CANCER', loc='upper center')
-    for patch, color in zip(axs[0, 2].patches, ['blue','blue','red','red'] ):
+    for patch, color in zip(axs[0, 2].patches, ['red','red','blue','blue'] ):
         patch.set_facecolor(color)
         patch.set_alpha(0.2)
 
@@ -187,7 +187,7 @@ if entered:
     axs[0, 3].set_xlabel(None)
     axs[0, 3].set_ylim(0, 200)
     axs[0, 3].legend(title='LUNG_CANCER', loc='upper center')
-    for patch, color in zip(axs[0, 3].patches, ['blue','blue','red','red'] ):
+    for patch, color in zip(axs[0, 3].patches, ['red','red','blue','blue'] ):
         patch.set_facecolor(color)
         patch.set_alpha(0.2)
 
@@ -198,7 +198,7 @@ if entered:
     axs[0, 4].set_xlabel(None)
     axs[0, 4].set_ylim(0, 200)
     axs[0, 4].legend(title='LUNG_CANCER', loc='upper center')
-    for patch, color in zip(axs[0, 4].patches, ['blue','blue','red','red'] ):
+    for patch, color in zip(axs[0, 4].patches, ['red','red','blue','blue'] ):
         patch.set_facecolor(color)
         patch.set_alpha(0.2)
 
@@ -209,7 +209,7 @@ if entered:
     axs[1, 0].set_xlabel(None)
     axs[1, 0].set_ylim(0, 200)
     axs[1, 0].legend(title='LUNG_CANCER', loc='upper center')
-    for patch, color in zip(axs[1, 0].patches, ['blue','blue','red','red'] ):
+    for patch, color in zip(axs[1, 0].patches, ['red','red','blue','blue'] ):
         patch.set_facecolor(color)
         patch.set_alpha(0.2)
 
@@ -220,7 +220,7 @@ if entered:
     axs[1, 1].set_xlabel(None)
     axs[1, 1].set_ylim(0, 200)
     axs[1, 1].legend(title='LUNG_CANCER', loc='upper center')
-    for patch, color in zip(axs[1, 1].patches, ['blue','blue','red','red'] ):
+    for patch, color in zip(axs[1, 1].patches, ['red','red','blue','blue'] ):
         patch.set_facecolor(color)
         patch.set_alpha(0.2)
 
@@ -231,7 +231,7 @@ if entered:
     axs[1, 2].set_xlabel(None)
     axs[1, 2].set_ylim(0, 200)
     axs[1, 2].legend(title='LUNG_CANCER', loc='upper center')
-    for patch, color in zip(axs[1, 2].patches, ['blue','blue','red','red'] ):
+    for patch, color in zip(axs[1, 2].patches, ['red','red','blue','blue'] ):
         patch.set_facecolor(color)
         patch.set_alpha(0.2)
 
@@ -242,7 +242,7 @@ if entered:
     axs[1, 3].set_xlabel(None)
     axs[1, 3].set_ylim(0, 200)
     axs[1, 3].legend(title='LUNG_CANCER', loc='upper center')
-    for patch, color in zip(axs[1, 3].patches, ['blue','blue','red','red'] ):
+    for patch, color in zip(axs[1, 3].patches, ['red','red','blue','blue'] ):
         patch.set_facecolor(color)
         patch.set_alpha(0.2)
 
@@ -253,7 +253,7 @@ if entered:
     axs[1, 4].set_xlabel(None)
     axs[1, 4].set_ylim(0, 200)
     axs[1, 4].legend(title='LUNG_CANCER', loc='upper center')
-    for patch, color in zip(axs[1, 4].patches, ['blue','blue','red','red'] ):
+    for patch, color in zip(axs[1, 4].patches, ['red','red','blue','blue'] ):
         patch.set_facecolor(color)
         patch.set_alpha(0.2)
 
