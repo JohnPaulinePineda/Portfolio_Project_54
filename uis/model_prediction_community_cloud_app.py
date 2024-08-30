@@ -5,17 +5,18 @@ import os
 import joblib
 import numpy as np
 from sklearn.linear_model import LogisticRegression
+from pathlib import Path
 
 ##################################
 # Defining file paths
 ##################################
-MODELS_PATH = r"models"
+MODELS_PATH = Path("models")
 
 ##################################
 # Loading the final classification model
 # from the MODELS_PATH
 ##################################
-final_classification_model = joblib.load(os.path.join("..",MODELS_PATH, "stacked_balanced_class_best_model_upsampled.pkl"))
+final_classification_model = joblib.load(MODELS_PATH / "stacked_balanced_class_best_model_upsampled.pkl")
 
 ##################################
 # Formulating a function to
