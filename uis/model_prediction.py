@@ -15,7 +15,7 @@ MODELS_PATH = r"models"
 # Loading the final classification model
 # from the MODELS_PATH
 ##################################
-final_classification_model = joblib.load(os.path.join(os.getcwd(), MODELS_PATH, "stacked_balanced_class_best_model_upsampled.pkl"))
+final_classification_model = joblib.load(os.path.join("..", MODELS_PATH, "stacked_balanced_class_best_model_upsampled.pkl"))
 
 ##################################
 # Formulating a function to

@@ -23,17 +23,20 @@ DATASETS_FINAL_TRAIN_TARGET_PATH = r"datasets\final\train\target"
 # Loading the dataset
 # from the DATASETS_FINAL_TRAIN_PATH
 ##################################
-X_train_smote = pd.read_csv(os.path.join(os.getcwd(), DATASETS_FINAL_TRAIN_FEATURES_PATH, "X_train_smote.csv"))
-y_train_smote = pd.read_csv(os.path.join(os.getcwd(), DATASETS_FINAL_TRAIN_TARGET_PATH, "y_train_smote.csv"))
+X_train_smote = pd.read_csv(os.path.join("..", DATASETS_FINAL_TRAIN_FEATURES_PATH, "X_train_smote.csv"))
+y_train_smote = pd.read_csv(os.path.join("..", DATASETS_FINAL_TRAIN_TARGET_PATH, "y_train_smote.csv"))
 
 ##################################
 # Rebuilding the upsampled training data
 # for plotting categorical distributions
 ##################################
 lung_cancer_train_smote = pd.concat([X_train_smote, y_train_smote], axis=1)
-lung_cancer_train_smote.iloc[:,0:10] = lung_cancer_train_smote.iloc[:,0:10].replace({0: 'Absent', 1: 'Present'})
+cat_columns_all = lung_cancer_train_smote.columns
+cat_columns_predictors = cat_columns_all[:-1]
+lung_cancer_train_smote = lung_cancer_train_smote.astype('object')
+lung_cancer_train_smote[cat_columns_predictors] = lung_cancer_train_smote[cat_columns_predictors].replace({0: 'Absent', 1: 'Present'})
 lung_cancer_train_smote['LUNG_CANCER'] = lung_cancer_train_smote['LUNG_CANCER'].replace({0: 'No', 1: 'Yes'})
-lung_cancer_train_smote[lung_cancer_train_smote.columns[0:11]] = lung_cancer_train_smote[lung_cancer_train_smote.columns[0:11]].astype('category')
+
 
 ##################################
 # Setting the page layout to wide
