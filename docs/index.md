@@ -32,9 +32,9 @@
         * [1.6.8 Model Testing](#1.6.8)
         * [1.6.9 Model Inference](#1.6.9)
     * [1.7 Predictive Model Deployment Using Streamlit and Streamlit Community Cloud](#1.7)
-        * [1.7.1 Local Model Object Development](#1.7.1)
-        * [1.7.2 User Interface (UI) Development](#1.7.2)
-        * [1.7.3 Model Serving](#1.7.2)
+        * [1.7.1 Model Prediction Application Code Development](#1.7.1)
+        * [1.7.2 User Interface Application Code Development](#1.7.2)
+        * [1.7.3 Web Application](#1.7.2)
 * [**2. Summary**](#Summary)   
 * [**3. References**](#References)
 
@@ -4147,6 +4147,8 @@ print('Initial Training Dataset Dimensions: ')
 display(X_train_initial.shape)
 display(y_train_initial.shape)
 print('Initial Training Target Variable Breakdown: ')
+display(y_train_initial.value_counts())
+print('Initial Training Target Variable Proportion: ')
 display(y_train_initial.value_counts(normalize = True))
 ```
 
@@ -4162,6 +4164,16 @@ display(y_train_initial.value_counts(normalize = True))
 
 
     Initial Training Target Variable Breakdown: 
+    
+
+
+    LUNG_CANCER
+    1    202
+    0     29
+    Name: count, dtype: int64
+
+
+    Initial Training Target Variable Proportion: 
     
 
 
@@ -4183,6 +4195,8 @@ print('Test Dataset Dimensions: ')
 display(X_test.shape)
 display(y_test.shape)
 print('Test Target Variable Breakdown: ')
+display(y_test.value_counts())
+print('Test Target Variable Proportion: ')
 display(y_test.value_counts(normalize = True))
 ```
 
@@ -4198,6 +4212,16 @@ display(y_test.value_counts(normalize = True))
 
 
     Test Target Variable Breakdown: 
+    
+
+
+    LUNG_CANCER
+    1    68
+    0    10
+    Name: count, dtype: int64
+
+
+    Test Target Variable Proportion: 
     
 
 
@@ -9162,9 +9186,10 @@ joblib.dump(stacked_unbalanced_class_best_model_downsampled,
 ### 1.6.7 Model Selection <a class="anchor" id="1.6.7"></a>
 
 1. The stacked classifier developed from the **train data (SMOTE-upsampled)** was selected as the final model by demonstrating the best validation **F1 score** with minimal overfitting :
-    * **train data (SMOTE-upsampled)** = 0.9571
-    * **train data (cross-validated)** = 0.9584
-    * **validation data** = 0.9709
+    * **train data (SMOTE-upsampled)** = 0.9568
+    * **train data (cross-validated)** = 0.9488
+    * **validation data** = 0.9615
+    * **test data** = 0.9489
 2. The final model configuration are described as follows:
     * **Base learner**: [decision tree model](https://scikit-learn.org/stable/modules/generated/sklearn.tree.DecisionTreeClassifier.html) with optimal hyperparameters:
         * <span style="color: #FF0000">max_depth</span> = 5
@@ -10555,19 +10580,60 @@ plt.show()
 
 ## 1.7. Predictive Model Deployment <a class="anchor" id="1.7"></a>
 
-### 1.7.1 Local Model Object Development <a class="anchor" id="1.7.1"></a>
+### 1.7.1 Model Prediction Application Code Development <a class="anchor" id="1.7.1"></a>
 
-![local_model_development_python.png](771332e7-1de8-4a7e-9af2-887ac2c7f458.png)
+1. A model prediction application code in Python was developed to:
+    * compute risk indices for the test case and the study population data as baseline
+    * estimate lung cancer probabilities for the test case and the study population data as baseline
+    * predict risk categories for the test case
+2. The model prediction application code was saved in a repository that was eventually cloned for uploading to the Streamlit community cloud.
 
-### 1.7.2 User Interface Development <a class="anchor" id="1.7.2"></a>
+![ModelDeployment1_ModelPredictionApplicationCode.png](793869ab-c222-42c3-a287-fc2997fd6172.png)
 
-![ui_development_streamlit.png](f082995f-6bea-49b1-b7c6-6bc4ca740071.png)
+### 1.7.2 User Interface Application Code Development <a class="anchor" id="1.7.2"></a>
 
-### 1.7.3 Model Serving <a class="anchor" id="1.7.3"></a>
+1. A user interface application code in Python was developed to:
+    * compute risk indices for the test case and the study population data as baseline
+    * estimate lung cancer probabilities for the test case and the study population data as baseline
+    * predict risk categories for the test case
+2. The user interface application code was saved in a repository that was eventually cloned for uploading to the Streamlit community cloud.
 
-![streamlit_ui.png](7d436452-f351-4a42-8878-d38b04a9a55f.png)
+![ModelDeployment1_UserInterfaceApplicationCode.png](04867edc-15c3-4a27-a755-bb150a384388.png)
+
+### 1.7.3 Web Application <a class="anchor" id="1.7.3"></a>
+
+1. The prediction model was deployed using a web application hosted at [<mark style="background-color: #CCECFF"><b>Streamlit</b></mark>](https://lung-cancer-diagnosis-probability-estimation.streamlit.app).
+2. The user interface input consists of the following:
+    * radio buttons to:
+        * enable binary category selection (Present | Absent) to identify the status of the test case for each of the ten clinical symptoms and behavioral indicators
+    * action button to:
+        * process study population data as baseline
+        * process user input as test case
+        * render all entries into visualization charts
+        * execute all computations, estimations and predictions
+        * render test case prediction into logistic probability plot
+3. The user interface ouput consists of the following:
+    * count plots to:
+        * provide a visualization of the proportion of lung cancer categories (Yes | No) by status (Present | Absent) as baseline
+        * indicate the entries made from the user input to visually assess the test case characteristics against the study population 
+    * logistic curve plot to:
+        * provide a visualization of the baseline logistic regression probability curve using the study population with lung cancer categories (Yes | No)
+        * indicate the estimated risk index and lung cancer probability of the test case into the baseline logistic regression probability curvee
+    * summary table to:
+        * present the computed risk index, estimated lung cancer probability and predicted risk category for the test case 
+
+
+![ModelDeployment1_WebApplication.png](2f861ce9-e253-481e-b991-c2d9426bfb46.png)
 
 # 2. Summary <a class="anchor" id="Summary"></a>
+
+![ModelDeployment1_Summary_0.png](53fa4215-867a-4f8b-9321-2dfbb72d4cb2.png)
+
+![ModelDeployment1_Summary_1.png](0d6f3518-3953-4b5c-845b-a50bd1ca1016.png)
+
+![ModelDeployment1_Summary_2.png](c5c5dab7-ec6c-42f4-91b4-50b562453e6f.png)
+
+![ModelDeployment1_Summary_3.png](79e581f8-5e78-487a-b207-ad9991d27255.png)
 
 # 3. References <a class="anchor" id="References"></a>
 
