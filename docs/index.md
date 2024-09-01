@@ -34,7 +34,7 @@
     * [1.7 Predictive Model Deployment Using Streamlit and Streamlit Community Cloud](#1.7)
         * [1.7.1 Model Prediction Application Code Development](#1.7.1)
         * [1.7.2 User Interface Application Code Development](#1.7.2)
-        * [1.7.3 Web Application](#1.7.2)
+        * [1.7.3 Web Application](#1.7.3)
 * [**2. Summary**](#Summary)   
 * [**3. References**](#References)
 
@@ -53,6 +53,10 @@ This project implements the **Logistic Regression Model** as an independent lear
 [Regularization Methods](http://appliedpredictivemodeling.com/), in the context of binary classification using Logistic Regression, are primarily used to prevent overfitting and improve the model's generalization to new data. Overfitting occurs when a model is too complex and learns not only the underlying pattern in the data but also the noise. This leads to poor performance on unseen data. Regularization introduces a penalty for large coefficients in the model, which helps in controlling the model complexity. In Logistic Regression, this is done by adding a regularization term to the loss function, which penalizes large values of the coefficients. This forces the model to keep the coefficients small, thereby reducing the likelihood of overfitting. Addiitonally, by penalizing the complexity of the model through the regularization term, regularization methods also help the model generalize better to unseen data. This is because the model is less likely to overfit the training data and more likely to capture the true underlying pattern.
 
 [Streamlit](https://streamlit.io/) is an open-source Python library that simplifies the creation and deployment of web applications for machine learning and data science projects. It allows developers and data scientists to turn Python scripts into interactive web apps quickly without requiring extensive web development knowledge. Streamlit seamlessly integrates with popular Python libraries such as Pandas, Matplotlib, Plotly, and TensorFlow, allowing one to leverage existing data processing and visualization tools within the application. Streamlit apps can be easily deployed on various platforms, including Streamlit Community Cloud, Heroku, or any cloud service that supports Python web applications.
+
+[Streamlit Community Cloud](https://streamlit.io/cloud), formerly known as Streamlit Sharing, is a free cloud-based platform provided by Streamlit that allows users to easily deploy and share Streamlit apps online. It is particularly popular among data scientists, machine learning engineers, and developers for quickly showcasing projects, creating interactive demos, and sharing data-driven applications with a wider audience without needing to manage server infrastructure. Significant features include free hosting (Streamlit Community Cloud provides free hosting for Streamlit apps, making it accessible for users who want to share their work without incurring hosting costs), easy deployment (users can connect their GitHub repository to Streamlit Community Cloud, and the app is automatically deployed from the repository), continuous deployment (if the code in the connected GitHub repository is updated, the app is automatically redeployed with the latest changes), 
+sharing capabilities (once deployed, apps can be shared with others via a simple URL, making it easy for collaborators, stakeholders, or the general public to access and interact with the app), built-in authentication (users can restrict access to their apps using GitHub-based authentication, allowing control over who can view and interact with the app), and community support (the platform is supported by a community of users and developers who share knowledge, templates, and best practices for building and deploying Streamlit apps).
+
 
 ## 1.1. Data Background <a class="anchor" id="1.1"></a>
 
@@ -6256,15 +6260,15 @@ joblib.dump(stacked_unbalanced_class_best_model_original,
 [Hyperparameter Tuning](https://link.springer.com/book/10.1007/978-1-4614-6849-3?page=1) is an iterative process that involves experimenting with different hyperparameter combinations, evaluating the model's performance, and refining the hyperparameter values to achieve the best possible performance on new, unseen data - aimed at building effective and well-generalizing machine learning models. A model's performance depends not only on the learned parameters (weights) during training but also on hyperparameters, which are external configuration settings that cannot be learned from the data.
 
 1. The optimal [logistic regression model](https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LogisticRegression.html) (**individual classifier**) determined from the 5-fold cross-validation of **train data (SMOTE-upsampled)** contained the following hyperparameters:
-    * <span style="color: #FF0000">penalty</span> = L2
+    * <span style="color: #FF0000">penalty</span> = L1
     * <span style="color: #FF0000">class_weight</span> = none
     * <span style="color: #FF0000">solver</span> = saga
     * <span style="color: #FF0000">max_iter</span> = 500
     * <span style="color: #FF0000">random_state</span> = 88888888
 2. The **F1 scores** estimated for the different data subsets were as follows:
-    * **train data (SMOTE-upsampled)** = 0.9495
-    * **train data (cross-validated)** = 0.9474
-    * **validation data** = 0.9615
+    * **train data (SMOTE-upsampled)** = 0.9122
+    * **train data (cross-validated)** = 0.9109
+    * **validation data** = 0.9278
 3. Minimal overfitting noted based on the small difference in the apparent and cross-validated **F1 scores**.
 
 
@@ -6931,7 +6935,7 @@ joblib.dump(individual_balanced_class_best_model_upsampled,
 
 
 
-#### 1.6.5.2 Stacked Classifier <a class="anchor" id="1.6.5.2"></a>
+### 1.6.5.2 Stacked Classifier <a class="anchor" id="1.6.5.2"></a>
 
 [Synthetic Minority Oversampling Technique](https://dl.acm.org/doi/10.5555/1622407.1622416) is specifically designed to increase the representation of the minority class by generating new minority instances between existing instances. The new instances created are not just the copy of existing minority cases, instead for each minority class instance, the algorithm generates synthetic examples by creating linear combinations of the feature vectors between that instance and its k nearest neighbors. The synthetic samples are placed along the line segments connecting the original instance to its neighbors.
 
@@ -6948,7 +6952,7 @@ joblib.dump(individual_balanced_class_best_model_upsampled,
 [Model Stacking](https://www.manning.com/books/ensemble-methods-for-machine-learning) - also known as stacked generalization, is an ensemble approach which involves creating a variety of base learners and using them to create intermediate predictions, one for each learned model. A meta-model is incorporated that gains knowledge of the same target from intermediate predictions. Unlike bagging, in stacking, the models are typically different (e.g. not all decision trees) and fit on the same dataset (e.g. instead of samples of the training dataset). Unlike boosting, in stacking, a single model is used to learn how to best combine the predictions from the contributing models (e.g. instead of a sequence of models that correct the predictions of prior models). Stacking is appropriate when the predictions made by the base learners or the errors in predictions made by the models have minimal correlation. Achieving an improvement in performance is dependent upon the choice of base learners and whether they are sufficiently skillful in their predictions.
 
 1. The optimal [decision tree model](https://scikit-learn.org/stable/modules/generated/sklearn.tree.DecisionTreeClassifier.html) (**base learner**) determined from the 5-fold cross-validation of **train data (SMOTE-upsampled)** contained the following hyperparameters:
-    * <span style="color: #FF0000">max_depth</span> = 5
+    * <span style="color: #FF0000">max_depth</span> = 3
     * <span style="color: #FF0000">class_weight</span> = none
     * <span style="color: #FF0000">criterion</span> = entropy
     * <span style="color: #FF0000">min_samples_leaf</span> = 3
@@ -6961,21 +6965,21 @@ joblib.dump(individual_balanced_class_best_model_upsampled,
     * <span style="color: #FF0000">min_samples_leaf</span> = 3
     * <span style="color: #FF0000">random_state</span> = 88888888
 3. The optimal [support vector machine model](https://scikit-learn.org/stable/modules/generated/sklearn.svm.SVC.html) (**base learner**) determined from the 5-fold cross-validation of **train data (SMOTE-upsampled)** contained the following hyperparameters:
-    * <span style="color: #FF0000">C</span> = 0.50
+    * <span style="color: #FF0000">C</span> = 1.00
     * <span style="color: #FF0000">class_weight</span> = none
     * <span style="color: #FF0000">kernel</span> = linear
     * <span style="color: #FF0000">probability</span> = true
     * <span style="color: #FF0000">random_state</span> = 88888888  
 4. The optimal [logistic regression model](https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LogisticRegression.html) (**meta-learner**) determined from the 5-fold cross-validation of **train data (SMOTE-upsampled)** contained the following hyperparameters:
-    * <span style="color: #FF0000">penalty</span> = None
+    * <span style="color: #FF0000">penalty</span> = none
     * <span style="color: #FF0000">class_weight</span> = none
     * <span style="color: #FF0000">solver</span> = saga
     * <span style="color: #FF0000">max_iter</span> = 500
     * <span style="color: #FF0000">random_state</span> = 88888888
 5. The **F1 scores** estimated for the different data subsets were as follows:
-    * **train data (SMOTE-upsampled)** = 0.9571
-    * **train data (cross-validated)** = 0.9584
-    * **validation data** = 0.9709
+    * **train data (SMOTE-upsampled)** = 0.9568
+    * **train data (cross-validated)** = 0.9489
+    * **validation data** = 0.9615
 6. Minimal overfitting noted based on the small difference in the apparent and cross-validated **F1 scores**.
 
 
@@ -8421,7 +8425,7 @@ joblib.dump(individual_unbalanced_class_best_model_downsampled,
     * <span style="color: #FF0000">min_samples_leaf</span> = 3
     * <span style="color: #FF0000">random_state</span> = 88888888
 2. The optimal [random forest model](https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestClassifier.html#) (**base learner**) determined from the 5-fold cross-validation of **train data (CNN-downsampled)** contained the following hyperparameters:
-    * <span style="color: #FF0000">max_depth</span> = 2
+    * <span style="color: #FF0000">max_depth</span> = 3
     * <span style="color: #FF0000">class_weight</span> = balanced
     * <span style="color: #FF0000">criterion</span> = entropy
     * <span style="color: #FF0000">max_features</span> = sqrt
@@ -8434,7 +8438,7 @@ joblib.dump(individual_unbalanced_class_best_model_downsampled,
     * <span style="color: #FF0000">probability</span> = true
     * <span style="color: #FF0000">random_state</span> = 88888888  
 4. The optimal [logistic regression model](https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LogisticRegression.html) (**meta-learner**) determined from the 5-fold cross-validation of **train data (CNN-downsampled)** contained the following hyperparameters:
-    * <span style="color: #FF0000">penalty</span> = None
+    * <span style="color: #FF0000">penalty</span> = none
     * <span style="color: #FF0000">class_weight</span> = balanced
     * <span style="color: #FF0000">solver</span> = saga
     * <span style="color: #FF0000">max_iter</span> = 500
@@ -9189,10 +9193,9 @@ joblib.dump(stacked_unbalanced_class_best_model_downsampled,
     * **train data (SMOTE-upsampled)** = 0.9568
     * **train data (cross-validated)** = 0.9488
     * **validation data** = 0.9615
-    * **test data** = 0.9489
 2. The final model configuration are described as follows:
     * **Base learner**: [decision tree model](https://scikit-learn.org/stable/modules/generated/sklearn.tree.DecisionTreeClassifier.html) with optimal hyperparameters:
-        * <span style="color: #FF0000">max_depth</span> = 5
+        * <span style="color: #FF0000">max_depth</span> = 3
         * <span style="color: #FF0000">class_weight</span> = none
         * <span style="color: #FF0000">criterion</span> = entropy
         * <span style="color: #FF0000">min_samples_leaf</span> = 3
@@ -9205,13 +9208,13 @@ joblib.dump(stacked_unbalanced_class_best_model_downsampled,
         * <span style="color: #FF0000">min_samples_leaf</span> = 3
         * <span style="color: #FF0000">random_state</span> = 88888888
     * **Base learner**: [support vector machine model](https://scikit-learn.org/stable/modules/generated/sklearn.svm.SVC.html) with optimal hyperparameters:
-        * <span style="color: #FF0000">C</span> = 0.50
+        * <span style="color: #FF0000">C</span> = 1.00
         * <span style="color: #FF0000">class_weight</span> = none
         * <span style="color: #FF0000">kernel</span> = linear
         * <span style="color: #FF0000">probability</span> = true
         * <span style="color: #FF0000">random_state</span> = 88888888  
     * **Meta-learner**: [logistic regression model](https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LogisticRegression.html) with optimal hyperparameters:
-        * <span style="color: #FF0000">penalty</span> = None
+        * <span style="color: #FF0000">penalty</span> = none
         * <span style="color: #FF0000">class_weight</span> = none
         * <span style="color: #FF0000">solver</span> = saga
         * <span style="color: #FF0000">max_iter</span> = 500
@@ -9333,10 +9336,10 @@ for container in f1_plot.containers:
 ### 1.6.8 Model Testing <a class="anchor" id="1.6.8"></a>
 
 1. The selected stacked classifier developed from the **train data (SMOTE-upsampled)** also demonstrated a high **F1 score** on the independent test dataset:
-    * **train data (SMOTE-upsampled)** = 0.9571
-    * **train data (cross-validated)** = 0.9584
-    * **validation data** = 0.9709
-    * **test data** = 0.9352
+    * **train data (SMOTE-upsampled)** = 0.9568
+    * **train data (cross-validated)** = 0.9488
+    * **validation data** = 0.9615
+    * **test data** = 0.9489
     
 
 
@@ -10578,7 +10581,13 @@ plt.show()
     
 
 
-## 1.7. Predictive Model Deployment <a class="anchor" id="1.7"></a>
+## 1.7. Predictive Model Deployment Using Streamlit and Streamlit Community Cloud <a class="anchor" id="1.7"></a>
+
+[Streamlit](https://streamlit.io/) is an open-source Python library that simplifies the creation and deployment of web applications for machine learning and data science projects. It allows developers and data scientists to turn Python scripts into interactive web apps quickly without requiring extensive web development knowledge. Streamlit seamlessly integrates with popular Python libraries such as Pandas, Matplotlib, Plotly, and TensorFlow, allowing one to leverage existing data processing and visualization tools within the application. Streamlit apps can be easily deployed on various platforms, including Streamlit Community Cloud, Heroku, or any cloud service that supports Python web applications.
+
+[Streamlit Community Cloud](https://streamlit.io/cloud), formerly known as Streamlit Sharing, is a free cloud-based platform provided by Streamlit that allows users to easily deploy and share Streamlit apps online. It is particularly popular among data scientists, machine learning engineers, and developers for quickly showcasing projects, creating interactive demos, and sharing data-driven applications with a wider audience without needing to manage server infrastructure. Significant features include free hosting (Streamlit Community Cloud provides free hosting for Streamlit apps, making it accessible for users who want to share their work without incurring hosting costs), easy deployment (users can connect their GitHub repository to Streamlit Community Cloud, and the app is automatically deployed from the repository), continuous deployment (if the code in the connected GitHub repository is updated, the app is automatically redeployed with the latest changes), 
+sharing capabilities (once deployed, apps can be shared with others via a simple URL, making it easy for collaborators, stakeholders, or the general public to access and interact with the app), built-in authentication (users can restrict access to their apps using GitHub-based authentication, allowing control over who can view and interact with the app), and community support (the platform is supported by a community of users and developers who share knowledge, templates, and best practices for building and deploying Streamlit apps).
+
 
 ### 1.7.1 Model Prediction Application Code Development <a class="anchor" id="1.7.1"></a>
 
@@ -10586,7 +10595,7 @@ plt.show()
     * compute risk indices for the test case and the study population data as baseline
     * estimate lung cancer probabilities for the test case and the study population data as baseline
     * predict risk categories for the test case
-2. The model prediction application code was saved in a repository that was eventually cloned for uploading to the Streamlit community cloud.
+2. The model prediction application code was saved in a repository that was eventually cloned for uploading to Streamlit Community Cloud.
 
 ![ModelDeployment1_ModelPredictionApplicationCode.png](793869ab-c222-42c3-a287-fc2997fd6172.png)
 
@@ -10596,7 +10605,7 @@ plt.show()
     * compute risk indices for the test case and the study population data as baseline
     * estimate lung cancer probabilities for the test case and the study population data as baseline
     * predict risk categories for the test case
-2. The user interface application code was saved in a repository that was eventually cloned for uploading to the Streamlit community cloud.
+2. The user interface application code was saved in a repository that was eventually cloned for uploading to Streamlit Community Cloud.
 
 ![ModelDeployment1_UserInterfaceApplicationCode.png](04867edc-15c3-4a27-a755-bb150a384388.png)
 
@@ -10627,7 +10636,7 @@ plt.show()
 
 # 2. Summary <a class="anchor" id="Summary"></a>
 
-![ModelDeployment1_Summary_0.png](53fa4215-867a-4f8b-9321-2dfbb72d4cb2.png)
+![ModelDeployment1_Summary_0.png](39f37d50-664f-4792-be20-915cec32bef2.png)
 
 ![ModelDeployment1_Summary_1.png](0d6f3518-3953-4b5c-845b-a50bd1ca1016.png)
 
