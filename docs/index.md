@@ -42,7 +42,7 @@
 
 # 1. Table of Contents <a class="anchor" id="TOC"></a>
 
-This project implements the **Logistic Regression Model** as an independent learner and as a meta-learner of a stacking ensemble model with **Decision Trees**, **Random Forest**, and **Support Vector Machine** classifier algorithms using various helpful packages in <mark style="background-color: #CCECFF"><b>Python</b></mark> to estimate probability of a dichotomous categorical response variable by modelling the relationship between one or more predictor variables and a binary outcome. The resulting predictions derived from the candidate models were evaluated using the F1 score that ensures both false positives and false negatives are considered, providing a more balanced view of model classification performance. Resampling approaches including **Synthetic Minority Oversampling Technique** and **Condensed Nearest Neighbors** for imbalanced classification problems were applied by augmenting the dataset used for model training based on its inherent characteristics to achieve a more reasonably balanced distribution between the majority and minority classes. Additionally, **Class Weights** were also implemented by amplifying the loss contributed by the minority class and diminishing the loss from the majority class, forcing the model to focus more on correctly predicting the minority class. Penalties including **Least Absolute Shrinkage and Selection Operator** and **Ridge Regularization** were evaluated to impose constraints on the weight updates. The final model was deployed as a prototype application with a web interface via **Streamlit**. All results were consolidated in a [<span style="color: #FF0000"><b>Summary</b></span>](#Summary) presented at the end of the document. 
+This project implements the **Logistic Regression Model** as an independent learner and as a meta-learner of a stacking ensemble model with **Decision Trees**, **Random Forest**, and **Support Vector Machine** classifier algorithms using various helpful packages in <mark style="background-color: #CCECFF"><b>Python</b></mark> to estimate probability of a dichotomous categorical response variable by modelling the relationship between one or more predictor variables and a binary outcome. The resulting predictions derived from the candidate models were evaluated using the F1 score that ensures both false positives and false negatives are considered, providing a more balanced view of model classification performance. Resampling approaches including **Synthetic Minority Oversampling Technique** and **Condensed Nearest Neighbors** for imbalanced classification problems were applied by augmenting the dataset used for model training based on its inherent characteristics to achieve a more reasonably balanced distribution between the majority and minority classes. Additionally, **Class Weights** were also implemented by amplifying the loss contributed by the minority class and diminishing the loss from the majority class, forcing the model to focus more on correctly predicting the minority class. Penalties including **Least Absolute Shrinkage and Selection Operator** and **Ridge Regularization** were evaluated to impose constraints on the model coefficient updates. The final model was deployed as a prototype application with a web interface via **Streamlit**. All results were consolidated in a [<span style="color: #FF0000"><b>Summary</b></span>](#Summary) presented at the end of the document. 
 
 [Machine Learning Classification Models](http://appliedpredictivemodeling.com/) are algorithms that learn to assign predefined categories or labels to input data based on patterns and relationships identified during the training phase. Classification is a supervised learning task, meaning the models are trained on a labeled dataset where the correct output (class or label) is known for each input. Once trained, these models can predict the class of new, unseen instances.
 
@@ -2690,9 +2690,9 @@ len(categorical_column_quality_summary[(categorical_column_quality_summary['Uniq
 1. No data transformation and scaling applied to the numeric predictor due to the minimal number of outliers and normal skewness values.
 2. All dichotomous categorical predictors were one-hot encoded for the correlation analysis process.
 3. All variables were retained since majority reported sufficiently moderate correlation with no excessive multicollinearity.
-    * All variables Minimal correlation observed between the predictors using the point-biserial coefficient for evaluating numeric and dichotomous categorical variable.
+    * Minimal correlation observed between the predictors using the point-biserial coefficient for evaluating numeric and dichotomous categorical variables.
     * Minimal correlation observed between the predictors using the phi coefficient for evaluating both dichotomous categorical variables.
-4. Among pairwise combinations of variables in the training subset, the highest correlation values were noted for:
+4. Among pairwise combinations of variables in the training subset, sufficiently high correlation values were observed but with no excessive multicollinearity noted:
     * <span style="color: #FF0000">ANXIETY</span> and <span style="color: #FF0000">YELLOW_FINGERS</span>: Phi.Coefficient = +0.570
     * <span style="color: #FF0000">ANXIETY</span> and <span style="color: #FF0000">SWALLOWING_DIFFICULTY</span>: Phi.Coefficient = +0.490
     * <span style="color: #FF0000">SHORTNESS_OF_BREATH</span> and <span style="color: #FF0000">FATIGUE</span>: Phi.Coefficient = +0.440
@@ -3140,7 +3140,7 @@ plt.show()
 
 ### 1.5.1 Exploratory Data Analysis <a class="anchor" id="1.5.1"></a>
 
-1. The lung cancer prevalence estimated for the overall dataset is 87.38%.
+1. The lung cancer prevalence estimated for the overall dataset is 87.38%, indicating **class imbalance**.
 2. Higher counts for the following categorical predictors are associated with better differentiation between <span style="color: #FF0000">LUNG_CANCER=Yes</span> and <span style="color: #FF0000">LUNG_CANCER=No</span>: 
     * <span style="color: #FF0000">YELLOW_FINGERS</span>
     * <span style="color: #FF0000">ANXIETY</span>
@@ -3504,7 +3504,7 @@ display(lung_cancer_categorical_summary.sort_values(by=['ChiSquare.Test.PValue']
 ### 1.6.1 Pre-Modelling Data Preparation <a class="anchor" id="1.6.1"></a>
 
 1. All dichotomous categorical predictors and the target variable were one-hot encoded for the downstream modelling process. 
-2. Predictors determined with insufficient association with the <span style="color: #FF0000">LUNG_CANCER</span> target variables were exlucded for the subsequent modelling steps.
+2. Predictors determined with insufficient association with the <span style="color: #FF0000">LUNG_CANCER</span> target variables were excluded for the subsequent modelling steps.
     * <span style="color: #FF0000">AGE</span>: T.Test.Statistic=-1.574, T.Test.PValue=0.116
     * <span style="color: #FF0000">CHRONIC_DISEASE</span>: ChiSquare.Test.Statistic=3.161, ChiSquare.Test.PValue=0.075
     * <span style="color: #FF0000">GENDER</span>: ChiSquare.Test.Statistic=1.021, ChiSquare.Test.PValue=0.312
@@ -4004,10 +4004,11 @@ display(lung_cancer_filtered)
     * **train data (initial)**: 75% of the original data with class stratification applied
         * **train data (final)**: 75% of the **train (initial)** data with class stratification applied
         * **validation data**: 25% of the **train (initial)** data with class stratification applied
-2. Models will be developed from the **train data (final)**. Using the same dataset, a subset of models with optimal hyperparameters will be selected, based on cross-validation.
-3. Among candidate models with optimal hyperparameters, the final model will be selected based on performance on the **validation data**. 
-4. Performance of the selected final model (and other candidate models for post-model selection comparison) will be evaluated using the **test data**. 
-5. The preprocessed data is comprised of:
+2. Resampling (upsampling and downsampling) algorithms were applied on the **train data (final)** to evaluate the effects of remedial actions against class imbalance. 
+3. Models were developed from the original, upsampled and downsampled **train data (final)**. Using the same dataset, a subset of models with optimal hyperparameters were selected, based on cross-validation.
+4. Among candidate models with optimal hyperparameters, the final model were selected based on performance on the **validation data**. 
+5. Performance of the selected final model (and other candidate models for post-model selection comparison) were evaluated using the **test data**. 
+6. The preprocessed data is comprised of:
     * **309 rows** (observations)
         * **270 LUNG_CANCER=Yes**: 87.38%
         * **39 LUNG_CANCER=No**: 12.82%
@@ -4025,22 +4026,22 @@ display(lung_cancer_filtered)
              * <span style="color: #FF0000">COUGHING</span>
              * <span style="color: #FF0000">SWALLOWING_DIFFICULTY</span>
              * <span style="color: #FF0000">CHEST_PAIN</span>
-6. The **train data (final)** subset is comprised of:
+7. The **train data (final)** subset is comprised of:
     * **173 rows** (observations)
         * **151 LUNG_CANCER=Yes**: 87.28%
         * **22 LUNG_CANCER=No**: 12.72%
     * **11 columns** (variables)
-7. The **validation data** subset is comprised of:
+8. The **validation data** subset is comprised of:
     * **58 rows** (observations)
         * **51 LUNG_CANCER=Yes**: 87.93%
         * **7 LUNG_CANCER=No**: 12.07%
     * **11 columns** (variables)
-8. The **train data (final)** subset with **SMOTE-upsampled** minority class(**LUNG_CANCER=No**) is comprised of:
+9. The **train data (final)** subset with **SMOTE-upsampled** minority class(**LUNG_CANCER=No**) is comprised of:
     * **302 rows** (observations)
         * **151 LUNG_CANCER=Yes**: 50.00%
         * **151 LUNG_CANCER=No**: 50.00%
     * **11 columns** (variables)
-9. The **train data (final)** subset with **CNN-downsampled** minority class(**LUNG_CANCER=Yes**) is comprised of:
+10. The **train data (final)** subset with **CNN-downsampled** minority class(**LUNG_CANCER=Yes**) is comprised of:
     * **173 rows** (observations)
         * **39 LUNG_CANCER=Yes**: 63.93%
         * **22 LUNG_CANCER=No**: 36.07%
@@ -9485,7 +9486,11 @@ for container in updated_f1_plot.containers:
 
 ### 1.6.9 Model Inference <a class="anchor" id="1.6.9"></a>
 
-1. For the final selected stacked classifier developed from the **train data (SMOTE-upsampled)**, the contributions of the base learners and predictors, ranked by feature importance, are given as follows:
+1. For the final selected stacked classifier developed from the **train data (SMOTE-upsampled)**, the contributions of the base learners, ranked by importance, are given as follows:
+    * **Base learner**: [random forest model](https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestClassifier.html#)
+    * **Base learner**: [decision tree model](https://scikit-learn.org/stable/modules/generated/sklearn.tree.DecisionTreeClassifier.html)
+    * **Base learner**: [support vector machine model](https://scikit-learn.org/stable/modules/generated/sklearn.svm.SVC.html)
+3. For each base learner of the final selected stacked classifier developed from the **train data (SMOTE-upsampled)**, the contributions of the predictors, ranked by importance, are given as follows:
     * **Base learner**: [random forest model](https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestClassifier.html#)
         * <span style="color: #FF0000">ALLERGY</span>
         * <span style="color: #FF0000">ALCOHOL_CONSUMING </span>
@@ -9513,8 +9518,8 @@ for container in updated_f1_plot.containers:
         * <span style="color: #FF0000">COUGHING</span>
         * <span style="color: #FF0000">CHEST_PAIN</span>
         * <span style="color: #FF0000">YELLOW_FINGERS</span>
-2. Model inference involved indicating the characteristics and predicting the probability of the new case against the model training observations.
-    * Characteristics based on all features used for generating the final selected stacked classifier
+4. Model inference involved indicating the characteristics and predicting the probability of the new case against the model training observations.
+    * Characteristics based on all predictors used for generating the final selected stacked classifier
     * Predicted lung cancer probability based on the final selected stacked classifier logistic curve
 
 
