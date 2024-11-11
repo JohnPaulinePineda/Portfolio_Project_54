@@ -132,7 +132,7 @@ if entered:
     # for comparing the test case characteristics
     # against the training data distribution
     ##################################
-    fig, axs = plt.subplots(2, 5, figsize=(17, 8))
+    fig, axs = plt.subplots(2, 5, figsize=(17, 8), dpi=1000)
     
     ##################################
     # Defining fixed colors to
@@ -292,7 +292,7 @@ if entered:
     # for plotting the estimated logistic curve
     # of the final classification model
     ##################################
-    fig, ax = plt.subplots(figsize=(17, 8))
+    fig, ax = plt.subplots(figsize=(17, 8), dpi=1000)
     
     ##################################
     # Plotting the computed logit value
