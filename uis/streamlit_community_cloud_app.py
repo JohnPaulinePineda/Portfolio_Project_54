@@ -105,7 +105,7 @@ st.markdown(
 for _, var in enumerate(variables):
     _, col2, _ = st.columns(3)
     with col2:
-        response = st.radio(f"**{var}**:", ["Present", "Absent"], key=var)
+        response = st.radio(f"**{var}**:", ["Present", "Absent"], key=var, horizontal=True)
         categorical_responses[var] = response
         numeric_responses[var] = 1 if response == "Present" else 0
         
