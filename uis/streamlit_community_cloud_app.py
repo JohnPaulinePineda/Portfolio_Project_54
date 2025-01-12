@@ -87,9 +87,24 @@ st.markdown("""---""")
 # Looping to create radio buttons for each variable
 # and storing the user inputs
 ##################################
-cols = st.columns(5)
-for i, var in enumerate(variables):
-    with cols[i % 5]:
+st.markdown(
+    """
+    <style>
+    div[data-testid="stHorizontalBlock"] {
+        width: 100% !important;
+    }
+    div[data-testid="stHorizontalBlock"] > label {
+        display: block;
+        text-align: center;
+        width: 100%;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+for _, var in enumerate(variables):
+    _, col2, _ = st.columns(3)
+    with col2:
         response = st.radio(f"**{var}**:", ["Present", "Absent"], key=var)
         categorical_responses[var] = response
         numeric_responses[var] = 1 if response == "Present" else 0
