@@ -87,9 +87,9 @@ st.markdown("""---""")
 # Looping to create radio buttons for each variable
 # and storing the user inputs
 ##################################
-for _, var in enumerate(variables):
-    col = st.columns(1)[0]
-    with col:
+for i, var in enumerate(variables):
+    col1 = st.columns(1)[0]
+    with col1:
         response = st.radio(f"**{var}**:", ["Present", "Absent"], key=var, horizontal=True)
         categorical_responses[var] = response
         numeric_responses[var] = 1 if response == "Present" else 0
