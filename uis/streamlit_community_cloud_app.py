@@ -88,8 +88,8 @@ st.markdown("""---""")
 # and storing the user inputs
 ##################################
 for _, var in enumerate(variables):
-    _, col2, _ = st.columns(3)
-    with col2:
+    col = st.columns(1)
+    with col:
         response = st.radio(f"**{var}**:", ["Present", "Absent"], key=var, horizontal=True)
         categorical_responses[var] = response
         numeric_responses[var] = 1 if response == "Present" else 0
