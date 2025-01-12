@@ -87,21 +87,6 @@ st.markdown("""---""")
 # Looping to create radio buttons for each variable
 # and storing the user inputs
 ##################################
-st.markdown(
-    """
-    <style>
-    div[data-testid="stHorizontalBlock"] {
-        width: 100% !important;
-    }
-    div[data-testid="stHorizontalBlock"] > label {
-        display: block;
-        text-align: center;
-        width: 100%;
-    }
-    </style>
-    """,
-    unsafe_allow_html=True,
-)
 for _, var in enumerate(variables):
     _, col2, _ = st.columns(3)
     with col2:
