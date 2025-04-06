@@ -2841,7 +2841,7 @@ for column in lung_cancer_numeric:
 ```python
 ##################################
 # Creating a dataset copy and
-# converting all values to numeric
+# converting all values to numeric (integer or float)
 # for correlation analysis
 ##################################
 pd.set_option('future.no_silent_downcasting', True)
@@ -2849,6 +2849,11 @@ lung_cancer_correlation = lung_cancer.copy()
 lung_cancer_correlation_object = lung_cancer_correlation.iloc[:,2:15].columns
 lung_cancer_correlation[lung_cancer_correlation_object] = lung_cancer_correlation[lung_cancer_correlation_object].replace({'Absent': 0, 'Present': 1})
 lung_cancer_correlation = lung_cancer_correlation.drop(['GENDER','LUNG_CANCER'], axis=1)
+lung_cancer_correlation['AGE'] = lung_cancer_correlation['AGE'].astype(float)
+object_cols_to_convert = lung_cancer_correlation.columns[1:]
+for col in object_cols_to_convert:
+    if lung_cancer_correlation[col].dtype == 'object':
+        lung_cancer_correlation[col] = lung_cancer_correlation[col].astype(int)
 display(lung_cancer_correlation)
 ```
 
@@ -2890,7 +2895,7 @@ display(lung_cancer_correlation)
   <tbody>
     <tr>
       <th>0</th>
-      <td>69</td>
+      <td>69.0</td>
       <td>0</td>
       <td>1</td>
       <td>1</td>
@@ -2907,7 +2912,7 @@ display(lung_cancer_correlation)
     </tr>
     <tr>
       <th>1</th>
-      <td>74</td>
+      <td>74.0</td>
       <td>1</td>
       <td>0</td>
       <td>0</td>
@@ -2924,7 +2929,7 @@ display(lung_cancer_correlation)
     </tr>
     <tr>
       <th>2</th>
-      <td>59</td>
+      <td>59.0</td>
       <td>0</td>
       <td>0</td>
       <td>0</td>
@@ -2941,7 +2946,7 @@ display(lung_cancer_correlation)
     </tr>
     <tr>
       <th>3</th>
-      <td>63</td>
+      <td>63.0</td>
       <td>1</td>
       <td>1</td>
       <td>1</td>
@@ -2958,7 +2963,7 @@ display(lung_cancer_correlation)
     </tr>
     <tr>
       <th>4</th>
-      <td>63</td>
+      <td>63.0</td>
       <td>0</td>
       <td>1</td>
       <td>0</td>
@@ -2992,7 +2997,7 @@ display(lung_cancer_correlation)
     </tr>
     <tr>
       <th>304</th>
-      <td>56</td>
+      <td>56.0</td>
       <td>0</td>
       <td>0</td>
       <td>0</td>
@@ -3009,7 +3014,7 @@ display(lung_cancer_correlation)
     </tr>
     <tr>
       <th>305</th>
-      <td>70</td>
+      <td>70.0</td>
       <td>1</td>
       <td>0</td>
       <td>0</td>
@@ -3026,7 +3031,7 @@ display(lung_cancer_correlation)
     </tr>
     <tr>
       <th>306</th>
-      <td>58</td>
+      <td>58.0</td>
       <td>1</td>
       <td>0</td>
       <td>0</td>
@@ -3043,7 +3048,7 @@ display(lung_cancer_correlation)
     </tr>
     <tr>
       <th>307</th>
-      <td>67</td>
+      <td>67.0</td>
       <td>1</td>
       <td>0</td>
       <td>1</td>
@@ -3060,7 +3065,7 @@ display(lung_cancer_correlation)
     </tr>
     <tr>
       <th>308</th>
-      <td>62</td>
+      <td>62.0</td>
       <td>0</td>
       <td>0</td>
       <td>0</td>
@@ -3104,18 +3109,19 @@ for i in range(len(lung_cancer_correlation.columns)):
             lung_cancer_correlation_matrix.iloc[i, j] = 1.0
         else:
             if lung_cancer_correlation.dtypes.iloc[i] == 'int64' and lung_cancer_correlation.dtypes.iloc[j] == 'int64':
-                # Pearson correlation for two continuous variables
+                # Phi coefficient for two binary variables
                 corr = lung_cancer_correlation.iloc[:, i].corr(lung_cancer_correlation.iloc[:, j])
-            elif lung_cancer_correlation.dtypes.iloc[i] == 'int64' or lung_cancer_correlation.dtypes.iloc[j] == 'int64':
+            elif lung_cancer_correlation.dtypes.iloc[i] == 'float64' or lung_cancer_correlation.dtypes.iloc[j] == 'int64':
                 # Point-biserial correlation for one continuous and one binary variable
-                continuous_var = lung_cancer_correlation.iloc[:, i] if lung_cancer_correlation.dtypes.iloc[i] == 'int64' else lung_cancer_correlation.iloc[:, j]
+                continuous_var = lung_cancer_correlation.iloc[:, i] if lung_cancer_correlation.dtypes.iloc[i] == 'float64' else lung_cancer_correlation.iloc[:, j]
                 binary_var = lung_cancer_correlation.iloc[:, j] if lung_cancer_correlation.dtypes.iloc[j] == 'int64' else lung_cancer_correlation.iloc[:, i]
                 corr, _ = pointbiserialr(continuous_var, binary_var)
             else:
-                # Phi coefficient for two binary variables
+                # Pearson correlation for two continuous variables
                 corr = lung_cancer_correlation.iloc[:, i].corr(lung_cancer_correlation.iloc[:, j])
             lung_cancer_correlation_matrix.iloc[i, j] = corr
             lung_cancer_correlation_matrix.iloc[j, i] = corr
+
 ```
 
 
@@ -7713,7 +7719,7 @@ joblib.dump(stacked_balanced_class_best_model_upsampled,
 
 
 
-### 1.6.6 Model Fitting using Downsampled Training Data | Hyperparameter Tuning | Validation <a class="anchor" id="1.6.5"></a>
+### 1.6.6 Model Fitting using Downsampled Training Data | Hyperparameter Tuning | Validation <a class="anchor" id="1.6.6"></a>
 
 #### 1.6.6.1 Individual Classifier <a class="anchor" id="1.6.6.1"></a>
 
